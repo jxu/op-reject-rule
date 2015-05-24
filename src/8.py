@@ -27,7 +27,7 @@ for i in range(0, 1000-13+1):
     j = 1
     for c in x:
         j *= int(c)
-        r = max(r, j)
+    r = max(r, j)
         
 print(r)
         

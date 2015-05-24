@@ -6,4 +6,4 @@ for i in range(101):
 print(a**2 - b)
     
 # One-liner
-print(sum(range(101))**2 - sum([i*i for i in range(101)]))
+print(sum(range(101))**2 - sum(i*i for i in range(101)))

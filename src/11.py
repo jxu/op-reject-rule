@@ -22,16 +22,16 @@ g = """08 02 22 97 38 15 00 40 00 75 04 05 07 78 52 12 50 77 91 08
 g = [r.split(' ') for r in g.split('\n')] # Python power
 g = [[int(n) for n in r] for r in g]
 
-p = 0
+
 for i in range(20):
     for j in range(20):
         if i <= 16:
-            p = max(p, g[i][j] * g[i+1][j] * g[i+2][j] * g[i+3][j]) # Down
+            d = g[i][j] * g[i+1][j] * g[i+2][j] * g[i+3][j] # Down
         if j <= 16:
-            p = max(p, g[i][j] * g[i][j+1] * g[i][j+2] * g[i][j+3]) # Right
+            r = g[i][j] * g[i][j+1] * g[i][j+2] * g[i][j+3] # Right
         if i <= 16 and j <= 16:
-            p = max(p, g[i][j] * g[i+1][j+1] * g[i+2][j+2] * g[i+3][j+3]) # Right down
+            rd = g[i][j] * g[i+1][j+1] * g[i+2][j+2] * g[i+3][j+3] # Right down
         if i >= 3 and j <= 16:
-            p = max(p, g[i][j] * g[i-1][j+1] * g[i-2][j+2] * g[i-3][j+3]) # Right up
+            ru = g[i][j] * g[i-1][j+1] * g[i-2][j+2] * g[i-3][j+3] # Right up
             
-print(p)
+print(max(d, r, rd, ru))

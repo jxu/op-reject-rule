@@ -9,14 +9,20 @@ while not total_factors > 500:
 
     m = n
     # Factor list not necessary, possible to only keep track of one factor at a time
-    factor_list = [] 
-    while (m != 1):
-        for p in range(2, m+1):
+    factor_list = []
+    
+    prime = False
+    while not prime:
+        prime = True
+        for p in range(2, int(m**0.5)+1):
             if (m % p == 0):
                 m //= p
                 factor_list.append(p)
+                prime = False
                 break
-                
+    
+    factor_list.append(m)
+    
     factor_count = [factor_list.count(i) for i in set(factor_list)]
     
     total_factors = 1
@@ -25,7 +31,3 @@ while not total_factors > 500:
 
 print(factor_list)
 print(n)
-        
-
-    
-    

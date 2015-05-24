@@ -1,6 +1,4 @@
 chain_lens = [0]*1000000
-max_len = 0
-max_i = 0
 
 for i in range(1, 1000000):
     current_len = 1
@@ -19,9 +17,6 @@ for i in range(1, 1000000):
             current_len += 1
         
     chain_lens[i] = current_len 
-    if current_len > max_len:
-        max_len = current_len
-        max_i = i
  
-print(max_i, max_len)
-        
+print(chain_lens.index(max(chain_lens)), max(chain_lens))
+

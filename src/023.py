@@ -13,16 +13,16 @@ for i in range(1, 28123):
     
 print(abundant_nums)
 
-def is_sum(n, nums):
-    for a in nums:
-        if n - a in nums: # O(1) for set
-            return True
+sums = [0]*28123
+
+for a in range(len(abundant_nums)):
+    for b in range(a, len(abundant_nums)):
+        x = abundant_nums[a] + abundant_nums[b]
+        if x >= 28123: break
+        sums[x] = 1
         
-    return False
-    
 s = 0
-for i in range(1, 28123):
-    if not is_sum(i, set(abundant_nums)):
-        s += i
-        
+for n in range(len(sums)):
+    if sums[n] == 0: s += n
+    
 print(s)

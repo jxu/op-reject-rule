@@ -4,7 +4,7 @@ Code for an elegant, concise language.
 
 **Solution Highlights**
 
-3 5
+3 5 12 14 17 
 
 General Notes
 -------------

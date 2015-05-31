@@ -5,7 +5,6 @@ Code for an elegant, concise language.
 **Solution Highlights**
 
 3 5 12 14 17 18 21 23 24
-491
 
 General Notes
 -------------

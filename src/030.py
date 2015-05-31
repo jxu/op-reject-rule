@@ -2,9 +2,9 @@
 s = 0
 for i in range(2, 10**6):
         p = sum(int(d)**5 for d in str(i))
-        if p == i: print(i)
+        if p == i: s += i
         
 print(s)
         
 # One-line horror
-print(sum(i if sum(int(d)**5 for d in str(i))==i else 0 for i in range(2, 10**6)))
+print(sum(i for i in range(2, 10**6) if sum(int(d)**5 for d in str(i))==i))

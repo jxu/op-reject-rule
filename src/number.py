@@ -1,4 +1,5 @@
-# Commonly used prime number functions
+# Commonly used number-related functions
+
 def sieve(n):
     """Sieve of Eratosthenes. Returns a set"""
     nums = [0] * n

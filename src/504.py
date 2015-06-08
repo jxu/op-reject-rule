@@ -1,7 +1,8 @@
 # Pick's theorem: A = i + b/2 - 1
 # 4 triangles: 73.9 s
 # Upper-lower triangles: 20.0 s
-# a,c and b,d symmetry: 6.5 s (third possible)
+# a,c and b,d symmetry (third possible): 6.5 s
+# Only integer math: 5.7 s
 from fractions import gcd
 import time
 
@@ -13,9 +14,9 @@ def lattice(m):
     for a in range(101):
         for h in range(101):
             for c in range(101):
-                A = (a+c)*h/2
+                A2 = (a+c)*h
                 B = gcd(a, h) + gcd(h, c) + a + c
-                tri_table[a][h][c] = A - B/2 + 1
+                tri_table[a][h][c] = (A2 + B)//2 + 1
 
     s = 0
     for a in range(1, m+1):

@@ -8,10 +8,9 @@ def both_truncate(n):
 
     return l
 
-primes = number.sieve(10**6)
-sp = set(primes)
+sp = set(number.sieve(10**6))
 s = 0
-for p in primes:
+for p in sp:
     if p > 7 and all(i in sp for i in both_truncate(p)):
         s += p
 

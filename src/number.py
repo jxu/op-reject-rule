@@ -7,8 +7,12 @@ def sieve(n):
         if nums[i] == 0:
             for j in range(i*i, n, i):
                 nums[j] = 1
-        
+
     return [i for i in range(2, n) if nums[i] == 0]
+
+
+def sieve_set(n):
+    return set(sieve(n))
 
 
 def is_prime(n):
@@ -26,6 +30,22 @@ def is_square(n):
         if x in seen: return False
         seen.add(x)
     return True
+
+
+def prime_factors(n):
+    factors = []
+    m = n
+    prime = False
+    while not prime:
+        prime = True
+        for i in range(2, int(m**0.5)+1):
+            if m%i == 0:
+                m //= i
+                factors.append(i)
+                prime = False
+                break
+
+    return factors + [m]
 
 
 if __name__ == "__main__":

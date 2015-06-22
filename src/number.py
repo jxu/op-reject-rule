@@ -1,7 +1,8 @@
 # Commonly used number-related functions
+import math
 
 def sieve(n):
-    """Sieve of Eratosthenes. Returns a list"""
+    """Sieve of Eratosthenes. Returns a list. About O(n)"""
     nums = [0] * n
     for i in range(2, int(n**0.5)+1):
         if nums[i] == 0:
@@ -46,6 +47,39 @@ def prime_factors(n):
                 break
 
     return factors + [m]
+
+
+def combination(n, k):
+    f = math.factorial
+    return f(n) // f(k) // f(n-k)
+
+
+def permutation(n, k):
+    f = math.factorial
+    return f(n) // f(n-k)
+
+
+def take_closest(l, n, bisect=True):
+    """If bisect: Assumes l is sorted. Returns closest value to n.
+       If two numbers are equally close, return the smallest number. Credit: Lauritz V. Thaulow
+       If not bisect: Use lambda and min to go through list, O(n) time."""
+    if bisect:
+        from bisect import bisect_left
+        pos = bisect_left(l, n)
+        if pos == 0:
+            return l[0]
+        if pos == len(l):
+            return l[-1]
+        before = l[pos - 1]
+        after = l[pos]
+        if after - n < n - before:
+           return after
+        else:
+           return before
+
+    else:
+        return min(l, key=lambda x:abs(x-n))
+
 
 
 if __name__ == "__main__":

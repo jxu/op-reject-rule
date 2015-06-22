@@ -13,11 +13,3 @@ def S(n):
 
 
 S(10**4)
-
-start = time.clock()
-for a in range(10**6):
-    if a%1000 == 0: print(a)
-    for b in range(a, 10**4 * int((a+1)**0.5)):
-        pass
-
-print(time.clock()-start)

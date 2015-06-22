@@ -60,7 +60,7 @@ def permutation(n, k):
 
 
 def take_closest(l, n, bisect=True):
-    """If bisect: Assumes l is sorted. Returns closest value to n.
+    """If bisect (binary search): Assumes l is sorted. Returns closest value to n.
        If two numbers are equally close, return the smallest number. Credit: Lauritz V. Thaulow
        If not bisect: Use lambda and min to go through list, O(n) time."""
     if bisect:

@@ -1,6 +1,8 @@
 # Commonly used number-related functions
 import math
 
+prime_100 = (2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47, 53, 59, 61, 67, 71, 73, 79, 83, 89, 97)
+
 def sieve(n):
     """Sieve of Eratosthenes. Returns a list. About O(n)"""
     nums = [0] * n
@@ -37,16 +39,19 @@ def prime_factors(n):
     factors = []
     m = n
     prime = False
+    prime_20 = (2, 3, 5, 7, 11, 13, 17, 19)
     while not prime:
         prime = True
-        for i in range(2, int(m**0.5)+1):
+        r = prime_100 + tuple(range(101, int(m**0.5)+1, 2))
+        for i in r:
             if m%i == 0:
                 m //= i
                 factors.append(i)
                 prime = False
                 break
 
-    return factors + [m]
+    if m != 1: factors += [m]
+    return factors
 
 
 def combination(n, k):

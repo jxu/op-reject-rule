@@ -86,6 +86,12 @@ def take_closest(l, n, bisect=True):
         return min(l, key=lambda x:abs(x-n))
 
 
+def gcd(a, b):
+    """Euclid's algorithm. Identical to fractions.gcd(a, b)"""
+    while b:
+        a, b = b, a%b
+    return a
+
 
 if __name__ == "__main__":
     pass

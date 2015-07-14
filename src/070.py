@@ -1,6 +1,6 @@
 # Closest would be "very prime" number (but not prime itself)
-# Use semi-primes
-from number import phi, sieve
+# Use semi-primes with factors close to each other (sqrt(10**7))
+from number import sieve
 import time
 
 start = time.process_time()
@@ -12,11 +12,11 @@ for p_i in range(len(primes)):
     p = primes[p_i]
     for q_i in range(p_i+1, len(primes)):
         q = primes[q_i]
+
         n = p*q
-
         if n >= 10**7: break
+        t = (p-1)*(q-1)  # Both primes
 
-        t = phi(n)
         if sorted(str(t)) == sorted(str(n)):
             if n/t < min_r:
                 min_r = n/t

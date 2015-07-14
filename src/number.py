@@ -93,5 +93,24 @@ def gcd(a, b):
     return a
 
 
+def phi(n, product_formula = True):
+    """Euler's product formula or straightforward calculation of Euler's totient function."""
+    if n == 0: return 0
+    if product_formula:
+        r = n
+        spf = set(prime_factors(n))
+        for p in spf:
+            r *= 1 - 1/p
+
+        return round(r)
+
+    else:
+        r = 0
+        for k in range(1, n+1):
+            if gcd(n, k) == 1:
+                r += 1
+        return r
+
+
 if __name__ == "__main__":
     pass

@@ -15,10 +15,12 @@ def p(n):
 
     s = 0
     k = 1
+    sign = 1
     while pent[k] <= n:
-        s += (-1)**(k-1) * p(n - pent[k])
-        s += (-1)**(k-1) * p(n - pent[-k])
+        s += sign * p(n - pent[k])
+        s += sign * p(n - pent[-k])
         k += 1
+        sign *= -1
 
 
     memo[n] = s

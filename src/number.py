@@ -15,6 +15,7 @@ def sieve(n):
 
 
 def sieve_set(n):
+    """Returns a set of sieve(n)"""
     return set(sieve(n))
 
 
@@ -93,7 +94,7 @@ def gcd(a, b):
     return a
 
 
-def phi(n, product_formula = True):
+def phi(n, product_formula=True):
     """Euler's product formula or straightforward calculation of Euler's totient function."""
     if n == 0: return 0
     if product_formula:
@@ -112,5 +113,25 @@ def phi(n, product_formula = True):
         return r
 
 
+def dijkstra(graph, start):
+    """Dijkstra's algorithm using heaps.
+       Test using g = {0:{1:2}, 1:{0:2, 2:6}, 2:{1:6}}  Credit: Janne Karila"""
+    from heapq import heappush, heappop
+
+    A = [None] * len(graph)
+    queue = [(0, start)]
+    while queue:
+        path_len, v = heappop(queue)
+        if A[v] is None: # v is unvisited
+            A[v] = path_len
+            for w, edge_len in graph[v].items():
+                if A[w] is None:
+                    heappush(queue, (path_len + edge_len, w))
+
+    return A
+
+
+
 if __name__ == "__main__":
-    pass
+    g = {0:{1:2}, 1:{0:2, 2:6}, 2:{1:6}}
+    print(dijkstra(g, 0))

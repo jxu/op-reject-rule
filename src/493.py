@@ -1,12 +1,12 @@
 # Approx 6.818
-import math, number
+import number
 
 
 def create_combo(combo, combos, last):
     if sum(combo) == 20:
         combos.append(combo)
 
-    if sum(combo) < 20 and len(combo)+1 <= 7:
+    if sum(combo) < 20 and len(combo) < 7:
         for i in range(last, 11):
                 create_combo(combo + [i], combos, i)
 
@@ -28,4 +28,4 @@ for c in combos:
     s += len(c)*orderings
 
 
-print(s, o, str(s/o))
+print(s, o, round(s/o, 9))

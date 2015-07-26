@@ -1,12 +1,11 @@
 # De Bruijn sequences return...
 # Generate strings using DFS, ignoring strings with "seen" subsequences
 
-candidates = []
 N = 5
 s = 0
 
 def S(arrange, seen):
-    global candidates, s
+    global s
 
     if len(arrange) == 2**N and 2*arrange.count(0) == 2**N:
         print(''.join(map(str, arrange)))

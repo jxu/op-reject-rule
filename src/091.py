@@ -7,8 +7,8 @@ def tri_search(n):
                 continue
             asq = x1**2 + y1**2
             
-            for x2 in range(n+1):
-                for y2 in range(n+1):
+            for x2 in range(x1, n+1):
+                for y2 in range(y1+1):
                     if x2 == 0 and y2 == 0 or x1 == x2 and y1 == y2:
                         continue
                     
@@ -19,7 +19,8 @@ def tri_search(n):
                         r += 1
                         
         print(x1, r)
-                        
-    return r//2 # points counted twice
-                    
+
+    return r
+
+    
 print(tri_search(50))

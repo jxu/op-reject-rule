@@ -4,35 +4,24 @@ with open("p079_keylog.txt") as f:
     
 logins = set(logins)
 
-
 adj_list = set()
 digits = set()
 for l in logins:
     adj_list.add((l[0], l[1]))
     adj_list.add((l[1], l[2]))
-    for c in l:
-        digits.add(c)
+    for c in l: digits.add(c)
 
 s = ""
-    
 while adj_list:
     rem = digits.copy()
     for a in adj_list:
-        try: 
+        if a[1] in rem: 
             rem.remove(a[1])
-        except:
-            pass
-        
-    digits.remove(list(rem)[0])
-    s += list(rem)[0]
     
-    new_adj_list = set()
+    rem = list(rem)[0]      
+    digits.remove(rem)
+    s += rem
+
+    adj_list = set(a for a in adj_list if a[0] != rem)
     
-    for a in adj_list:
-        if a[0] != list(rem)[0]:
-            new_adj_list.add(a)
-            
-            
-    adj_list = new_adj_list
-            
-print(s + '0')
+print(s + list(digits)[0])

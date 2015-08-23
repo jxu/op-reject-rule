@@ -1,5 +1,5 @@
 # Occult pentagram
-# Numbering clockwise: outside, inside (join_order)
+# Numbering clockwise: outside, inside (join_order) 
 from itertools import permutations
 
 all_seq = permutations(list(range(1, 11)), 10)
@@ -7,7 +7,7 @@ all_seq = permutations(list(range(1, 11)), 10)
 def seq_sum(seq, a, b, c):
     return seq[a] + seq[b] + seq[c]
 
-max_str = []
+max_str = 0
 for seq in all_seq:
     target_sum = seq_sum(seq, 0, 1, 3)
     
@@ -19,6 +19,6 @@ for seq in all_seq:
             s += str(seq[join_order[i]])
             
         if len(s) == 16:
-            max_str += [int(s)]
+            max_str = max(max_str, int(s))
             
-print(max(max_str))
+print(max_str)

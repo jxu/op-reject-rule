@@ -1,3 +1,4 @@
+# C code in Python
 N_MAX = 100000
 memo = [0]*N_MAX
 memo[0] = 1

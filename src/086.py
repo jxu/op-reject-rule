@@ -5,7 +5,6 @@
 # Minimized dist when x >= y, z  [Found empirically]
 
 N_MAX = 2000
-
 squares = set(x**2 for x in range(int(5**0.5 * N_MAX)))  # Max square = 5 * n^2
 M = [0] * N_MAX
 
@@ -13,7 +12,7 @@ for x in range(1, N_MAX):  # Build solutions from previous
     int_count = 0
     for yz in range(2, 2*x+1):  # yz = possible y+z values
         if x**2 + yz**2 in squares:
-                int_count += min(yz//2, x - (yz+1)//2 + 1)  # Count yz values so x >= y, z
+                int_count += min(yz//2, x - (yz-1)//2)  # Count yz values so x >= y, z
 
     M[x] = M[x-1] + int_count
     if M[x] > 1000000:

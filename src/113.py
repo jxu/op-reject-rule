@@ -11,9 +11,19 @@ for i in range(1, pow_10):
 total_sum = 0
 for i in decreasing:
     print(i, sum(i))
-    total_sum += sum(i)
+    total_sum += sum(i)  # n choose 9
 
 total_sum += sum(decreasing[-1])  # Increasing
 final = total_sum - 10*pow_10 - 1  # Magic adjustment factor
 
 print(final)
+
+
+# Alternate solution (thread 113 #1)
+from number import combination
+count = 0
+for i in range(1, 101):
+    count += combination(8+i, i)  # Increase the digit (no leading 0)
+    count += combination(9+i, i)  # Decrease the digit
+    count -= 10  # Keep digit same
+print(count)

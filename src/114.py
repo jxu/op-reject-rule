@@ -1,6 +1,6 @@
 # Recursive solution f(n)
 # Define in terms of smaller f: ex. 1110xxxx, x = f(n-4)
-# The solution is also f(n) = f(n-1) + ... + f(0) + f(-1)
+# The solution is also f(n) = f(n-1) + f(n-4) + ... + f(0) + f(-1)
 def f(n):
     if n < 3: return 1
 

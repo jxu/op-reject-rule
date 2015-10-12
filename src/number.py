@@ -131,7 +131,14 @@ def dijkstra(graph, start):
     return A
 
 
+def product(iterable):
+    product = 1
+    for i in iterable: product *= i
+    return product
+
+
 
 if __name__ == "__main__":
-    g = {0:{1:2}, 1:{0:2, 2:6}, 2:{1:6}}
-    print(dijkstra(g, 0))
+    #g = {0:{1:2}, 1:{0:2, 2:6}, 2:{1:6}}
+    #print(dijkstra(g, 0))
+    print(product((3,4,5)))

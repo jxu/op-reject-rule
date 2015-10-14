@@ -11,4 +11,4 @@ Code for an elegant, concise language.
     461 491
     504
 
-Celebrating 100 solved!
+Celebrating 125 solved!

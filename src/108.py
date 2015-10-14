@@ -8,7 +8,7 @@ from itertools import product
 
 small_primes = (2, 3, 5, 7, 11, 13, 17)
 least_n = 2*3*5*7*11*13*17
-for pow_list in product(range(3), repeat=7):
+for pow_list in product(range(5), repeat=7):
     d = 1
     for a in pow_list:
         d *= 2*a + 1

@@ -1,9 +1,5 @@
-squares = set(i**2 for i in range(1000))
-for b in range(2, 1000000, 2):
-    L1 = (b//2)**2 + (b+1)**2
-    L2 = (b//2)**2 + (b-1)**2
-
-    if L1 in squares:
-        print("L", L1**0.5)
-    if L2 in squares:
-        print(L2**0.5)
+# (b/2)^2 + (b+-1)^2 = L^2
+# => reduces to x^2 - 5y^2 = -1 (also A007805!)
+# Wolfram Alpha positive integer solutions (b+-1 are the positive and negative solutions to b+1)
+print(sum((17, 305, 5473, 98209, 1762289, 31622993, 567451585, 10182505537, 182717648081, \
+           3278735159921, 58834515230497, 1055742538989025)))

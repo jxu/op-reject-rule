@@ -137,8 +137,16 @@ def product(iterable):
     return product
 
 
+def highly_composite():
+    hc = []
+    with open("highly_composite.txt", 'r') as f:
+        for rows in f:
+            hc.append(int(rows.split(' ')[1]))
+    return hc
+
+
 
 if __name__ == "__main__":
     #g = {0:{1:2}, 1:{0:2, 2:6}, 2:{1:6}}
     #print(dijkstra(g, 0))
-    print(product((3,4,5)))
+    print(highly_composite())

@@ -133,7 +133,7 @@ def dijkstra(graph, start):
 
 def product(iterable):
     product = 1
-    for i in iterable: product *= i
+    for i in iterable: product *= i  # No reduce() :(
     return product
 
 
@@ -145,8 +145,21 @@ def highly_composite():
     return hc
 
 
+def mul_inv(a, b):
+    """Modular multiplicative inverse, ax = 1 mod m. Credit: rosettacode.org"""
+    b0 = b
+    x0, x1 = 0, 1
+    if b == 1: return 1
+    while a > 1:
+        assert b != 0, "a and b must be coprime"
+        q = a // b
+        a, b = b, a%b
+        x0, x1 = x1 - q * x0, x0
+    if x1 < 0: x1 += b0
+    return x1
+
 
 if __name__ == "__main__":
     #g = {0:{1:2}, 1:{0:2, 2:6}, 2:{1:6}}
     #print(dijkstra(g, 0))
-    print(highly_composite())
+    print(mul_inv(3, 9))

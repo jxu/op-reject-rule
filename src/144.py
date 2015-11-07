@@ -42,6 +42,5 @@ for bounce in range(1000):
     plt.plot([a, a + t], [b, b + r_slope*t], alpha=0.8)
     a, b = a + t, b + r_slope*t
     print(a, b)
-    r_slope = r_slope
 
 plt.show()

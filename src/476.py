@@ -1,0 +1,1 @@
+# Lob-Richmond procedure https://en.wikipedia.org/wiki/Malfatti_circles#Malfatti.27s_problem

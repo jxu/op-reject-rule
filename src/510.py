@@ -7,6 +7,11 @@ def S(n):
 
     # The rest: Values of a, b such that ab is square and d is integer
 
+    for a in range(1, 1000):
+        for b in range(1, a):
+            if a*b % (a + b + 2*(a*b)**0.5) == 0:
+                print(a, b)
+
 
 
     return s

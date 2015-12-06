@@ -36,6 +36,16 @@ def is_square(n):
     return True
 
 
+def is_square_fp(n):
+    """Returns if a number is square, avoiding some floating point errors"""
+    return int(n**0.5 + 0.5)**2 == n
+
+
+def is_square_gmpy(n):
+    import gmpy2
+    return gmpy2.is_square(n)
+
+
 def prime_factors(n):
     factors = []
     m = n

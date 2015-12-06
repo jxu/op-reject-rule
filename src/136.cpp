@@ -2,7 +2,7 @@
 #include <algorithm>
 
 const int MAX_N = 50000000;
-int d[MAX_N+1];
+char d[MAX_N+1];
 
 int main()
 {

@@ -27,12 +27,13 @@ int main()
 
     for (int i=0; i<=200000; i++) // Brute force everyday
     {
-        for (int j=0; j<=200000-i; j++)
+        for (int j=i; j<=200000-i; j++)
         {
             int k = 200000-i-j;
+            int d = (i==j) ? 1 : 2; // Count (i,j) and (j,i)
             int ijk2 = fact_pow2[i] + fact_pow2[j] + fact_pow2[k];
             int ijk5 = fact_pow5[i] + fact_pow5[j] + fact_pow5[k];
-            if (n2 - ijk2 >= 12 && n5 - ijk5 >= 12) c++;  // Nice
+            if (n2 - ijk2 >= 12 && n5 - ijk5 >= 12) c+=d;
         }
     }
     std::cout << c << std::endl;

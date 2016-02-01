@@ -18,9 +18,11 @@ for r in range(0, 200):
             j[n] = 'X'
             s += 1
     #print(r, s, s-last_s)
-    print(r, ' '*(5-len(str(r))), "".join(j))
+    print(r+1, ' '*(5-len(str(r+1))), "".join(j))
     last_s = s
     z += s
 
-
-
+s=0
+for i in range(10**7):
+    s += i
+print(s)

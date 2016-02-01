@@ -8,7 +8,13 @@ def f(N):
 
     return r
 
-print(f(10**6))
-#print(pow(f(10**6), 10))
+def f(a, b):
+    s = 1
+    for i in range(a, b+1):
+        s *= i
+        while not s % 10:
+            s //= 10
+        s = s % 10**10
+    return s
 
-print(f(10**5))
+print(f(1, 1000))

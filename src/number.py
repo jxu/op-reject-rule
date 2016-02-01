@@ -19,10 +19,14 @@ def sieve_set(n):
     return set(sieve(n))
 
 
-def is_prime(n):
+def is_prime(n, probable=True):
     """Returns whether a number is prime or not"""
-    if n < 2: return False
-    return all(n%i for i in range(2, int(n**0.5)+1))
+    if not probable:
+        if n < 2: return False
+        return all(n%i for i in range(2, int(n**0.5)+1))
+    else:
+        import gmpy2
+        return gmpy2.is_prime(n)
 
 
 def is_square(n):
@@ -169,7 +173,15 @@ def mul_inv(a, b):
     return x1
 
 
+def powerset(s):
+    # Custom powerset in #545
+    #from itertools import chain, combinations
+    #return chain.from_iterable(combinations(s, r) for r in range(len(s)+1))
+    pass
+
+
 if __name__ == "__main__":
     #g = {0:{1:2}, 1:{0:2, 2:6}, 2:{1:6}}
     #print(dijkstra(g, 0))
-    print(mul_inv(3, 9))
+    #print(mul_inv(3, 9))
+    pass

@@ -3,7 +3,7 @@
 # 20010 = 2*3*5*23*29, factor base = 2*2*7*11
 from number import sieve, product
 from itertools import chain, combinations
-from gmpy2 import is_prime
+from number import is_prime  # Or gmpy2
 
 MAX_TEST = 10**9
 

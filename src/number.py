@@ -19,11 +19,13 @@ def sieve_set(n):
     return set(sieve(n))
 
 
-def is_prime(n, probable=True):
+def is_prime(n, gmpy=False):
     """Returns whether a number is prime or not"""
-    if not probable:
+    if not gmpy:
         if n < 2: return False
-        return all(n%i for i in range(2, int(n**0.5)+1))
+        if n == 2: return True
+        if n%2 == 0: return False
+        return all(n%i for i in range(3, int(n**0.5)+1, 2))
     else:
         import gmpy2
         return gmpy2.is_prime(n)
@@ -179,7 +181,7 @@ def custom_powerset(s, min_combo, max_combo):
 
 
 if __name__ == "__main__":
-    #g = {0:{1:2}, 1:{0:2, 2:6}, 2:{1:6}}
-    #print(dijkstra(g, 0))
-    #print(mul_inv(3, 9))
-    pass
+    import time
+    start_time = time.clock()
+    sieve(10**8)
+    print(time.clock() - start_time)

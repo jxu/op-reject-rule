@@ -1,5 +1,6 @@
 # Commonly used number-related functions
 import math
+import random
 
 prime_100 = (2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47, 53, 59, 61, 67, 71, 73, 79, 83, 89, 97)
 
@@ -19,16 +20,31 @@ def sieve_set(n):
     return set(sieve(n))
 
 
-def is_prime(n, gmpy=False):
-    """Returns whether a number is prime or not"""
-    if not gmpy:
-        if n < 2: return False
-        if n == 2: return True
-        if n%2 == 0: return False
-        return all(n%i for i in range(3, int(n**0.5)+1, 2))
-    else:
-        import gmpy2
-        return gmpy2.is_prime(n)
+def is_prime(n, trials=20):
+    """Returns whether a number is prime or not using Miller-Rabin. Credit: Albert Sweigart"""
+    if n < 2: return False
+    # Small trial division
+    if n in prime_100: return True
+    if any(n % p == 0 for p in prime_100): return False
+
+    s = n - 1
+    t = 0
+    while s % 2 == 0:
+        s = s // 2
+        t += 1
+
+    for trials in range(trials):
+        a = random.randrange(2, n - 1)
+        v = pow(a, s, n)
+        if v != 1: # this test does not apply if v is 1.
+            i = 0
+            while v != (n - 1):
+                if i == t - 1:
+                    return False
+                else:
+                    i = i + 1
+                    v = (v ** 2) % n
+    return True
 
 
 def is_square(n):
@@ -181,7 +197,9 @@ def custom_powerset(s, min_combo, max_combo):
 
 
 if __name__ == "__main__":
-    import time
-    start_time = time.clock()
-    sieve(10**8)
-    print(time.clock() - start_time)
+    #import time
+    #start_time = time.clock()
+    #sieve(10**8)
+    #print(time.clock() - start_time)
+    for i in range(10):
+        print(i, is_prime(i))

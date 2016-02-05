@@ -17,7 +17,7 @@ def F_valid(factors):
     ps = powerset(factors, 1, len(factors))
     for x in ps:
         f = product(x)+1
-        if is_prime(f) and not f in (2, 3, 5, 23, 29):
+        if not f in (2, 3, 5, 23, 29) and is_prime(f, trials=10):
             return False
 
     return True

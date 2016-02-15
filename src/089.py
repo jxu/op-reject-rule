@@ -13,9 +13,9 @@ def roman_decode(roman):
 
 def roman_encode(x):
     ret = []
-    for value in reversed(numeral_values):
-        n, x = divmod(x, value[1])
-        ret.append(value[0]*n)
+    for symbol, value in reversed(numeral_values):
+        n, x = divmod(x, value)
+        ret.append(symbol*n)
     return ''.join(ret)
 
 

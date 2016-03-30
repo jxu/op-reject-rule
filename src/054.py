@@ -40,7 +40,7 @@ def eval_hand(hand):
     if len(pairs) == 1: return (1, pairs[0])
     return (0, max(values))
 
-def tiebreaker(hand1, hand2):
+def tiebreaker(hand1, hand2, hand1_info, hand2_info):
     pass
 
 
@@ -62,9 +62,10 @@ with open("p054_poker.txt") as f:
         hand1_rank, hand1_info = eval_hand(hand1)
         hand2_rank, hand2_info = eval_hand(hand2)
 
-        print(hand1, hand2)
+        #print(hand1, hand2)
         if hand1_rank > hand2_rank: player1_wins += 1
-        elif tiebreaker(hand1, hand2): player1_wins += 1
+        elif hand1_rank == hand2_rank and \
+        tiebreaker(hand1, hand2, hand1_info, hand2_info): player1_wins += 1
 
 print(player1_wins)
 

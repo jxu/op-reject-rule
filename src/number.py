@@ -126,16 +126,25 @@ def gcd(a, b):
     return a
 
 
-def phi(n, product_formula=True):
+def phi(n, product_formula=True, use_float=False):
     """Euler's product formula or straightforward calculation of Euler's totient function."""
     if n == 0: return 0
     if product_formula:
-        r = n
         spf = set(prime_factors(n))
-        for p in spf:
-            r *= 1 - 1/p
 
-        return round(r)
+        if use_float:
+            r = n
+            for p in spf:
+                r *= 1 - 1/p
+            return round(r)
+
+        else:
+            num = n
+            den = 1
+            for p in spf:
+                num *= p-1
+                den *= p
+            return num // den
 
     else:
         r = 0
@@ -197,9 +206,4 @@ def custom_powerset(s, min_combo, max_combo):
 
 
 if __name__ == "__main__":
-    #import time
-    #start_time = time.clock()
-    #sieve(10**8)
-    #print(time.clock() - start_time)
-    for i in range(10):
-        print(i, is_prime(i))
+    print(phi(100))

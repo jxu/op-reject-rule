@@ -205,5 +205,28 @@ def custom_powerset(s, min_combo, max_combo):
     return chain.from_iterable(combinations(s, r) for r in range(min_combo, max_combo+1))
 
 
+def totient_sum(N):
+    """Find the sum of phi(n) for 1 to N. O(log n) space, O(?) time
+       Credit: daniel.is.fischer"""
+    R_memo = {0:0, 1:1}
+
+    def F(n): # Future use
+        q, r = divmod(n, 6)
+        f = q*(3*q - 2 + r)
+        if r == 5: f += 1
+        return f
+    
+    
+    def R(N):
+        if N in R_memo: return R_memo[N]
+        else:
+            s = N*(N+1)//2 - sum(R(N//m) for m in range(2, N+1))
+            R_memo[N] = s
+            return s
+
+    return R(N)       
+    
+    
+
 if __name__ == "__main__":
-    print(phi(100))
+    print(totient_sum(100000))

@@ -206,17 +206,53 @@ def custom_powerset(s, min_combo, max_combo):
 
 
 def totient_sum(N):
-    """Find the sum of phi(n) for 1 to N. O(log n) space, O(?) time
+    """Find the sum of phi(n) for 1 to N. O(log n) space, O(n^(3/4)) time
        Credit: daniel.is.fischer"""
+    K = int((N/2)**0.5)
+    M = N // (2*K+1)
+    rsmall = [0]*(M+1)
+    rlarge = [0]*K
+
+    def F(n):
+        return (n+1)*n//2
+
+    def R(n):
+        switch = int((n/2)**0.5)
+        count = F(n) - F(n//2)
+        m = 5
+        k = (n-5)//10
+        while k >= switch:
+            nextk = (n // (m+1) - 1) // 2
+            count -= (k - nextk)*rsmall[m]
+            k = nextk
+            m += 1
+
+        while k > 0:
+            m = n // (2*k+1)
+            if m <= M:
+                count -= rsmall[m]
+            else:
+                count -= rlarge[((N//m) - 1) // 2]
+            k -= 1
+
+        if n <= M:
+            rsmall[n] = count
+        else:
+            rlarge[((N//n) - 1) // 2] = count
+
+
+    for n in range(5, M+1):
+        R(n)
+
+    for j in range(K-1, -1, -1):
+        R(N // (2*j + 1))
+
+    #print(rlarge, rsmall)
+    return rlarge[0]
+
+def totient_sum_simple(N):
     R_memo = {0:0, 1:1}
 
-    def F(n): # Future use
-        q, r = divmod(n, 6)
-        f = q*(3*q - 2 + r)
-        if r == 5: f += 1
-        return f
-    
-    
     def R(N):
         if N in R_memo: return R_memo[N]
         else:
@@ -224,9 +260,8 @@ def totient_sum(N):
             R_memo[N] = s
             return s
 
-    return R(N)       
-    
-    
+    return R(N)
+
 
 if __name__ == "__main__":
-    print(totient_sum(100000))
+    print(totient_sum_simple(10**8))

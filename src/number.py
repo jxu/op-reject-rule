@@ -250,21 +250,10 @@ def totient_sum(N):
     #print(rlarge, rsmall)
     return rlarge[0]
 
-def totient_sum_simple(N):
-    R_memo = {0:0, 1:1}
-
-    def R(N):
-        if N in R_memo: return R_memo[N]
-        else:
-            s = N*(N+1)//2 - sum(R(N//m) for m in range(2, N+1))
-            R_memo[N] = s
-            return s
-
-    return R(N)
-
 
 def totient_range(n):
-    """Uses sieve and Euler's product formula for O(n log log n) time. Credit: Marcus Stuhr"""
+    """Calculates all totients in a range using a sieve and Euler's product formula for O(n log log n) time.
+       Credit: Marcus Stuhr"""
     tots = [x for x in range(0, n+1)]
     for p in range(2, n+1):
         if p == tots[p]:

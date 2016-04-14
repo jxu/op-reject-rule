@@ -1,6 +1,8 @@
 # Commonly used number-related functions
+from __future__ import division
 import math
 import random
+
 
 prime_100 = (2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47, 53, 59, 61, 67, 71, 73, 79, 83, 89, 97)
 
@@ -72,7 +74,7 @@ def prime_factors(n):
     factors = []
     m = n
     prime = False
-    prime_20 = (2, 3, 5, 7, 11, 13, 17, 19)
+    #prime_20 = (2, 3, 5, 7, 11, 13, 17, 19)
     while not prime:
         prime = True
         r = prime_100 + tuple(range(101, int(m**0.5)+1, 2))
@@ -126,25 +128,15 @@ def gcd(a, b):
     return a
 
 
-def phi(n, product_formula=True, use_float=False):
+def phi(n, product_formula=True):
     """Euler's product formula or straightforward calculation of Euler's totient function."""
     if n == 0: return 0
     if product_formula:
         spf = set(prime_factors(n))
-
-        if use_float:
-            r = n
-            for p in spf:
-                r *= 1 - 1/p
-            return round(r)
-
-        else:
-            num = n
-            den = 1
-            for p in spf:
-                num *= p-1
-                den *= p
-            return num // den
+        r = n
+        for p in spf:
+            r -= r//p  # r *= (1 - 1/p)
+        return r
 
     else:
         r = 0
@@ -259,11 +251,11 @@ def totient_range(n):
         if p == tots[p]:
             k = p
             while k <= n:
-                tots[k] -= tots[k] / p
+                tots[k] -= tots[k] // p
                 k += p
 
     return tots
 
 
 if __name__ == "__main__":
-    print(totient_range(100))
+    print(phi(100))

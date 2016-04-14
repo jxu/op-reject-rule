@@ -263,5 +263,18 @@ def totient_sum_simple(N):
     return R(N)
 
 
+def totient_range(n):
+    """Uses sieve and Euler's product formula for O(n log log n) time. Credit: Marcus Stuhr"""
+    tots = [x for x in range(0, n+1)]
+    for p in range(2, n+1):
+        if p == tots[p]:
+            k = p
+            while k <= n:
+                tots[k] -= tots[k] / p
+                k += p
+
+    return tots
+
+
 if __name__ == "__main__":
-    print(totient_sum_simple(10**8))
+    print(totient_range(100))

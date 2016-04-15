@@ -5,6 +5,7 @@ import random
 
 
 prime_100 = (2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47, 53, 59, 61, 67, 71, 73, 79, 83, 89, 97)
+module_primes = []
 
 def sieve(n):
     """Sieve of Eratosthenes. Returns a list. About O(n)"""
@@ -70,15 +71,20 @@ def is_square_gmpy(n):
     return gmpy2.is_square(n)
 
 
-def prime_factors(n):
+def prime_factors(n, N_MAX=10000):
+    """Return all factors. Calculates primes once to use."""
+    global module_primes
+    if not module_primes:
+        module_primes = sieve(N_MAX)
+
+    assert(n <= N_MAX**2)  # Assert big enough prime factors to test
+    
     factors = []
     m = n
     prime = False
-    #prime_20 = (2, 3, 5, 7, 11, 13, 17, 19)
     while not prime:
         prime = True
-        r = prime_100 + tuple(range(101, int(m**0.5)+1, 2))
-        for i in r:
+        for i in module_primes:
             if m%i == 0:
                 m //= i
                 factors.append(i)

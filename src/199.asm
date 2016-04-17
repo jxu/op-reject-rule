@@ -27,6 +27,10 @@ main:	l.d	$f22, ONE		# Load floats
 	li	$a0, 1
 	
 	jal	pcirc
+	
+	li	$v0, 3			# Print area
+	mov.d	$f12, $f20
+	syscall
 
 	li	$v0, 10			# Exit
 	syscall
@@ -60,9 +64,11 @@ pcirc:	addi	$sp, $sp, -28		# Push $ra, $a0, $f10, $f12, $f14 (32 bytes)
 	l.d	$f12, 16($sp)		# (a and b should be same from parameters)
 	mov.d	$f14, $f16
 	add	$a0, $a0, 1
-	add	$sp, $sp, -4		# Force doubleword align???
+	add	$sp, $sp, -4		# *Force doubleword align???
 	jal	pcirc		
-	add	$sp, $sp, 4		# Mystery alignment 
+	add	$sp, $sp, 4		# *Mystery alignment 
+	
+	
 
 pcexit:	lw	$ra, 0($sp)		# Restore $ra
 	addi	$sp, $sp, 28		# Restore $sp

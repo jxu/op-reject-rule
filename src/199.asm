@@ -1,4 +1,5 @@
 # Translation of python code for the challenge 
+# Completed program (10 levels) takes forever to run, but the result is correct
 
 # $f10, $f12, $f14 = arguments 1, 2, 3 (a, b, c)
 # $a0 = argument 4 (level)
@@ -17,23 +18,35 @@ ONE:	.double	1.0
 	
 main:	l.d	$f22, ONE		# Load floats
 	l.d	$f24, PI
-	l.d	$f20, SAREA
+	l.d	$f20, SAREA		
 	
-					# Repeat place_circle 3 times
-	l.d	$f10, ONE		# Load pcirc arguments (-1, SRAD, SRAD, 1)
+	li	$t0, 3			# Repeat place_circle 3 times
+ml:	l.d	$f10, ONE		# Load pcirc arguments (-1, SRAD, SRAD, 1)
 	neg.d	$f10, $f10		# a = -1
 	l.d	$f12, SRAD
 	l.d	$f14, SRAD
 	li	$a0, 1
-	
 	jal	pcirc
 	
-	li	$v0, 3			# Print area
+	sub	$t0, $t0, 1
+	bgtz	$t0, ml
+	
+	l.d	$f10, SRAD		# Load pcirc arguments (SRAD, SRAD, SRAD, 1)
+	l.d	$f12, SRAD
+	l.d	$f14, SRAD
+	li	$a0, 1
+	jal 	pcirc
+	
+	sub.d	$f20, $f24, $f20	# ratio = PI - area
+	div.d	$f20, $f20, $f24	# ratio /= PI
+	
+	li	$v0, 3			# Print ratio
 	mov.d	$f12, $f20
 	syscall
 
 	li	$v0, 10			# Exit
 	syscall
+	
 	
 pcirc:	addi	$sp, $sp, -36		# Push $ra, $a0, $f10, $f12, $f14, leave room for d (40 bytes)
 	sw	$ra, 0($sp)		# |$ra |$a0 |$f10     |$f12     |$f14     |d        |
@@ -59,9 +72,9 @@ pcirc:	addi	$sp, $sp, -36		# Push $ra, $a0, $f10, $f12, $f14, leave room for d (
 	mul.d	$f18, $f18, $f24	# temp *= PI  
 	add.d	$f20, $f20, $f18	# area += temp  (temp = pi*(1/d)^2)
 	
-	beq	$a0, 3, pcexit		# Exit loop if level == MAX_LEVEL
+	beq	$a0, 10, pcexit		# Exit loop if level == MAX_LEVEL
 	
-	#l.d	$f10, 8($sp)		# Load arguments from stack (a, b, d, level+1)
+pcl:	#l.d	$f10, 8($sp)		# Load arguments from stack (a, b, d, level+1)
 	#l.d	$f12, 16($sp)		# (a and b should be same from parameters)
 	mov.d	$f14, $f16
 	#lw	$a0, 4($sp)
@@ -87,7 +100,6 @@ pcirc:	addi	$sp, $sp, -36		# Push $ra, $a0, $f10, $f12, $f14, leave room for d (
 	add	$sp, $sp, -4		# *
 	jal	pcirc		
 	add	$sp, $sp, 4		# *
-	
 	
 
 pcexit:	lw	$ra, 0($sp)		# Restore $ra

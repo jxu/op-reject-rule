@@ -1,4 +1,4 @@
-# Translation of python code because why not
+# Translation of python code for the challenge 
 
 # $f10, $f12, $f14 = arguments 1, 2, 3 (a, b, c)
 # $a0 = argument 4 (level)
@@ -20,7 +20,7 @@ main:	l.d	$f22, ONE		# Load floats
 	l.d	$f20, SAREA
 	
 					# Repeat place_circle 3 times
-	l.d	$f10, ONE		# Load pcirc arguments -1, SRAD, SRAD, 1
+	l.d	$f10, ONE		# Load pcirc arguments (-1, SRAD, SRAD, 1)
 	neg.d	$f10, $f10		# a = -1
 	l.d	$f12, SRAD
 	l.d	$f14, SRAD
@@ -31,7 +31,7 @@ main:	l.d	$f22, ONE		# Load floats
 	li	$v0, 10			# Exit
 	syscall
 	
-pcirc:	addi	$sp, $sp, -28		# Push $ra, $a0, $f10, $f12, $f14
+pcirc:	addi	$sp, $sp, -28		# Push $ra, $a0, $f10, $f12, $f14 (32 bytes)
 	sw	$ra, 0($sp)		
 	sw	$a0, 4($sp)
 	s.d	$f10, 8($sp)
@@ -49,10 +49,21 @@ pcirc:	addi	$sp, $sp, -28		# Push $ra, $a0, $f10, $f12, $f14
 	add.d	$f16, $f16, $f12	# d += b
 	add.d	$f16, $f16, $f14	# d += c  (d = 2*sqrt(a*b + a*c + b*c) + a + b + c)
 	
-	div.d	$f16, $f22, $f16	# temp = 1/d
-	mul.d	$f16, $f16, $f16	# temp = temp*temp
-	mul.d	$f16, $f16, $f24	# temp *= PI  
-	add.d	$f20, $f20, $f16	# area += temp  (pi*(1/d)^2)
-
+	div.d	$f18, $f22, $f16	# temp = 1/d
+	mul.d	$f18, $f18, $f18	# temp = temp*temp
+	mul.d	$f18, $f18, $f24	# temp *= PI  
+	add.d	$f20, $f20, $f18	# area += temp  (temp = pi*(1/d)^2)
 	
-	jr	$ra			# Return to main
+	beq	$a0, 2, pcexit		# Exit loop if level == max_level (imm)
+	
+	l.d	$f10, 8($sp)		# Load arguments (a, b, d, level+1)
+	l.d	$f12, 16($sp)		# (a and b should be same from parameters)
+	mov.d	$f14, $f16
+	add	$a0, $a0, 1
+	add	$sp, $sp, -4		# Force doubleword align???
+	jal	pcirc		
+	add	$sp, $sp, 4		# Mystery alignment 
+
+pcexit:	lw	$ra, 0($sp)		# Restore $ra
+	addi	$sp, $sp, 28		# Restore $sp
+	jr	$ra			# Return 

@@ -35,9 +35,9 @@ main:	l.d	$f22, ONE		# Load floats
 	li	$v0, 10			# Exit
 	syscall
 	
-pcirc:	addi	$sp, $sp, -28		# Push $ra, $a0, $f10, $f12, $f14 (32 bytes)
-	sw	$ra, 0($sp)		
-	sw	$a0, 4($sp)
+pcirc:	addi	$sp, $sp, -36		# Push $ra, $a0, $f10, $f12, $f14, leave room for d (40 bytes)
+	sw	$ra, 0($sp)		# |$ra |$a0 |$f10     |$f12     |$f14     |d        |
+	sw	$a0, 4($sp)		
 	s.d	$f10, 8($sp)
 	s.d	$f12, 16($sp)
 	s.d	$f14, 24($sp)
@@ -52,24 +52,44 @@ pcirc:	addi	$sp, $sp, -28		# Push $ra, $a0, $f10, $f12, $f14 (32 bytes)
 	add.d	$f16, $f16, $f10	# d += a
 	add.d	$f16, $f16, $f12	# d += b
 	add.d	$f16, $f16, $f14	# d += c  (d = 2*sqrt(a*b + a*c + b*c) + a + b + c)
+	s.d	$f16, 32($sp)		# Store d
 	
 	div.d	$f18, $f22, $f16	# temp = 1/d
 	mul.d	$f18, $f18, $f18	# temp = temp*temp
 	mul.d	$f18, $f18, $f24	# temp *= PI  
 	add.d	$f20, $f20, $f18	# area += temp  (temp = pi*(1/d)^2)
 	
-	beq	$a0, 2, pcexit		# Exit loop if level == max_level (imm)
+	beq	$a0, 3, pcexit		# Exit loop if level == MAX_LEVEL
 	
-	l.d	$f10, 8($sp)		# Load arguments (a, b, d, level+1)
-	l.d	$f12, 16($sp)		# (a and b should be same from parameters)
+	#l.d	$f10, 8($sp)		# Load arguments from stack (a, b, d, level+1)
+	#l.d	$f12, 16($sp)		# (a and b should be same from parameters)
 	mov.d	$f14, $f16
+	#lw	$a0, 4($sp)
 	add	$a0, $a0, 1
 	add	$sp, $sp, -4		# *Force doubleword align???
 	jal	pcirc		
 	add	$sp, $sp, 4		# *Mystery alignment 
 	
+	l.d	$f10, 8($sp)		# Load arguments (a, c, d, level+1)
+	l.d	$f12, 24($sp)		
+	l.d	$f14, 32($sp)
+	lw	$a0, 4($sp)
+	add	$a0, $a0, 1
+	add	$sp, $sp, -4		# *
+	jal	pcirc		
+	add	$sp, $sp, 4		# *
+	
+	l.d	$f10, 16($sp)		# Load arguments (b, c, d, level+1)
+	l.d	$f12, 24($sp)		
+	l.d	$f14, 32($sp)
+	lw	$a0, 4($sp)
+	add	$a0, $a0, 1
+	add	$sp, $sp, -4		# *
+	jal	pcirc		
+	add	$sp, $sp, 4		# *
+	
 	
 
 pcexit:	lw	$ra, 0($sp)		# Restore $ra
-	addi	$sp, $sp, 28		# Restore $sp
+	addi	$sp, $sp, 36		# Restore $sp
 	jr	$ra			# Return 

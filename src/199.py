@@ -3,7 +3,7 @@ from math import pi
 
 start_rad = 1 + 2/(3**0.5)
 area = 3*pi*(1/start_rad)**2
-MAX_LEVEL = 2
+MAX_LEVEL = 3
 
 def place_circle(a, b, c, level):
     d = 2*(a*b + a*c + b*c)**0.5 + a + b + c

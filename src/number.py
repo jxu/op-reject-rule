@@ -263,5 +263,15 @@ def totient_range(n):
     return tots
 
 
+def factors(n):
+    """Naive implementation"""
+    f = []
+    for i in range(1, int(n**0.5)+1):
+        if n%i == 0:
+            f += [i]
+            if i != n//i: f += [n//i]
+    return f
+
+
 if __name__ == "__main__":
-    print(phi(100))
+    pass

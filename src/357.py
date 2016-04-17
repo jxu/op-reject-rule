@@ -1,28 +1,17 @@
-# Numbers must be square-free (otherwise div by d), n = p-1
-from number import sieve, prime_factors
+# Numbers must be square-free (otherwise div by d), n = p-1, n = 2(p-2)
+from number import sieve
 
-primes = sieve(10**4)
+primes = sieve(10**8)
+sp = set(primes)
+p_minus1 = set(p-1 for p in primes)
+p_div2 = set(2*(p-2) for p in primes)
+n_intersect = p_minus1.intersection(p_div2)
+n_intersect.add(1)
 
-def f(N_MAX):
-    p_minus1 = [p-1 for p in primes]
-    print(len(p_minus1))
-        
-    
-    
-    #squarefree = [1]*(N_MAX+1)
-    
-    #n_div2 = [0]*(N_MAX+1)
-    #SQRT_N_MAX = int(N_MAX**0.5) + 1
-    #for p in primes:
-    #    if p > SQRT_N_MAX: break
-    #    for i in range(p**2, N_MAX+1, p**2):
-    #        squarefree[i] = 0
+def valid(n):
+    for i in range(1, int(n**0.5)+1):
+        if n%i == 0 and i + n//i not in sp:
+            return False
+    return True
 
-
-
-print(prime_factors(20))
-print(prime_factors(100))
-
-
-print(f(10**4))
-
+print(sum(n for n in n_intersect if valid(n)))

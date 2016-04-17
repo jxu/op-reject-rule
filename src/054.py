@@ -42,14 +42,15 @@ def eval_hand(hand):
 
 def tiebreaker(hand1, hand2, hand1_info, hand2_info):
     # Return True if player 1 wins
-    #print(hand1_info, hand2_info)
+    #print(hand1, hand1_info, hand2, hand2_info)
     assert(type(hand1_info) != list) # Shortcut, no identical Two Pairs
     assert(type(hand1_info) == int) # Flushes (None type) can't be compared
     if hand1_info != hand2_info:
         return (hand1_info > hand2_info)
 
-    values1 = sorted(c[0] for c in hand1)
-    values2 = sorted(c[0] for c in hand2)
+    values1 = sorted((c[0] for c in hand1), reverse=True)
+    values2 = sorted((c[0] for c in hand2), reverse=True)
+    print(values1, values2, values1 > values2)
     return (values1 > values2)
 
 
@@ -73,23 +74,17 @@ with open("p054_poker.txt") as f:
         hand1_rank, hand1_info = eval_hand(hand1)
         hand2_rank, hand2_info = eval_hand(hand2)
 
-        #print(hand1, hand1_rank, hand2, hand2_rank)
-
         ranks1[hand1_rank] += 1
         ranks2[hand2_rank] += 1
-
-
 
         if hand1_rank > hand2_rank:
             player1_wins += 1
 
-        elif hand1_rank == hand2_rank and \
-        tiebreaker(hand1, hand2, hand1_info, hand2_info):
+        elif hand1_rank == hand2_rank and tiebreaker(hand1, hand2, hand1_info, hand2_info):
             player1_wins += 1
 
 
-#print(eval_hand([(2,'D'), (5,'D'), (14,'D'), (14,'D'), (14,'D')]))
-print(player1_wins)
-
+#print(eval_hand([(2,'D'), (2,'D'), (1,'H'), (4,'D'), (2,'D')]))
 print(ranks1)
 print(ranks2)
+print(player1_wins)

@@ -2,8 +2,6 @@
 import copy
 
 grid_sum = 0
-temp_original_grid = None
-
 
 with open("p096_sudoku.txt", 'r') as f:
     lines = f.readlines()
@@ -21,25 +19,20 @@ def is_safe(grid, x, y, num):
     return not in_square and not in_row and not in_col
 
 
-def pretty_print(grid):
+def pretty_print(original_grid, grid, three_digit):
     for i in range(9):
-        original_grid_row = ' '.join(str(a) for a in temp_original_grid[i])
+        original_grid_row = ' '.join(str(a) for a in original_grid[i])
         original_grid_row = original_grid_row.replace('0', '.')
         grid_row = ' '.join(str(a) for a in grid[i])
         print(original_grid_row + '\t\t\t' + grid_row)
 
+    print("3-digit number:", three_digit)
+    print()
+
 
 def solve_grid(grid, x, y):
     if 0 not in grid[8]:  # Solved
-        pretty_print(grid)
-        three_digit = 100*grid[0][0] + 10*grid[0][1] + grid[0][2]
-        print(three_digit)
-        print()
-
-        global grid_sum
-        grid_sum += three_digit
-
-        return True
+        return True, None
 
     # Move to next empty square
     while grid[y][x]:
@@ -52,19 +45,22 @@ def solve_grid(grid, x, y):
         if is_safe(grid, x, y, num):
             grid[y][x] = num
 
-            #print(grid[y][x])
-            if (solve_grid(grid, x, y)):  # Next solution is valid
-                return True
+            if (solve_grid(grid, x, y)[0]):  # Next solution is valid
+                return True, grid
 
             grid[y][x] = 0  # Remove this solution
 
-    return False  # Backtrack
+    return False, None  # Backtrack
 
 
 for li in range(0, 500, 10):
     print(lines[li].rstrip())
     grid = [[int(b) for b in a.rstrip()] for a in lines[li+1:li+10]]
-    temp_original_grid = copy.deepcopy(grid)
-    solve_grid(grid, 0, 0)
+    original_grid = copy.deepcopy(grid)
 
-print(grid_sum)
+    solved_grid = solve_grid(grid, 0, 0)[1]
+    three_digit = 100*solved_grid[0][0] + 10*solved_grid[0][1] + solved_grid[0][2]
+    grid_sum += three_digit
+    pretty_print(original_grid, solved_grid, three_digit)
+
+print("3-digit numbers sum:", grid_sum)

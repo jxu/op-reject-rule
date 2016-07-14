@@ -7,12 +7,8 @@ with open("p096_sudoku.txt", 'r') as f:
     lines = f.readlines()
 
 def is_safe(grid, x, y, num):
-    in_square = False
-    for ix in range(x-x%3, x-x%3+3):
-        for iy in range(y-y%3, y-y%3+3):
-            if num == grid[iy][ix]:
-                in_square = True
-
+    sx, sy = x - x%3, y - y%3
+    in_square = any(num in row[sx:sx+3] for row in grid[sy:sy+3])
     in_row = num in grid[y]
     in_col = num in [grid[i][x] for i in range(9)]
 
@@ -21,13 +17,11 @@ def is_safe(grid, x, y, num):
 
 def pretty_print(original_grid, grid, three_digit):
     for i in range(9):
-        original_grid_row = ' '.join(str(a) for a in original_grid[i])
-        original_grid_row = original_grid_row.replace('0', '.')
+        original_grid_row = ' '.join(str(a) for a in original_grid[i]).replace('0', '.')
         grid_row = ' '.join(str(a) for a in grid[i])
         print(original_grid_row + '\t\t\t' + grid_row)
 
-    print("3-digit number:", three_digit)
-    print()
+    print("3-digit number: %s\n" % three_digit)
 
 
 def solve_grid(grid, x, y):
@@ -63,4 +57,4 @@ for li in range(0, 500, 10):
     grid_sum += three_digit
     pretty_print(original_grid, solved_grid, three_digit)
 
-print("3-digit numbers sum:", grid_sum)
+print("3-digit numbers sum: %s" % grid_sum)

@@ -6,7 +6,7 @@ grid_sum = 0
 with open("p096_sudoku.txt", 'r') as f:
     lines = f.readlines()
 
-def is_safe(grid, x, y, num):
+def is_safe(grid, x, y, num):  # Beautiful isn't it
     sx, sy = x - x%3, y - y%3
     in_square = any(num in row[sx:sx+3] for row in grid[sy:sy+3])
     in_row = num in grid[y]

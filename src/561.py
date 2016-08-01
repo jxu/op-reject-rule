@@ -12,6 +12,12 @@
 # Q(n) = sum(f(i)+1, i from 1 to n/4) + sum(904961(f(i)+1), i from 1 to n/4) = 904962 * sum(f(i)+1, i from 1 to n/4)
 # Summation function of ruler sequence: A005187 (defined recursively)
 
+# Addendum: empirical testing is actually not needed. A simple analysis by al13n, the first solver, follows from the
+# related "factorizations" (n+1)^m (((n+2)/2)^m - 1) and ((n+1)/2)^m ((n+2)^m - 1).
+# I noticed a starting point in that the (n+1)(n+2)/2 is even or odd depending on n mod 4, but I wasn't clever enough
+# to go from there.
+# The problem took me 5 days to solve, and it was on the easy side of number theory...
+
 def E_test(m, n):
     r = ((n+1)*(n+2)//2)**m - (n+1)**m
     E = 0
@@ -33,7 +39,7 @@ def special_sum(n):
     return special_sum(n//2) + n
 
 def Q(n):
-    assert n % 4 == 0
+    #assert n % 4 == 0
     return 904962*special_sum(n//4)
 
 print(Q(10**12))

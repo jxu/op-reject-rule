@@ -4,14 +4,14 @@
 # S((p_m#)^n) = ((n+1)(n+2)/2)^m - (n+1)^m
 
 def E_test(m, n):
-    r = ((n+1)*(n+2)//2)**m - (n+1)**2
-    r_old = r
-    E = 1
+    r = pow((n+1)*(n+2)//2, m, 2**100) - pow(n+1, m, 2**100)
+    E = 0
     while r%2 == 0:
         r //= 2
         E += 1
     print(E, end='\t')
-    if n%4 == 0: print()
+    if n%4 == 3: print()
 
+print('\t', end='')
 for n in range(1, 101):
-    E_test(11, n)
+    E_test(16, n)

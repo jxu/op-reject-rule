@@ -11,7 +11,7 @@ Code for an elegant, concise language.*
     265
     317
     461 491
-    504 527 545
+    504 527 545 561
 
 Celebrating ~~125~~ 150 solved!
 

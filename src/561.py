@@ -9,6 +9,9 @@
 # E(m, 2 mod 4) = 0
 # E(m, n = 3 mod 4) = m * (f((n+1)//4)+1)  ex. E(10, 15) = 10 * (f(4)+1) = 30
 
+# Q(n) = sum(f(i)+1, i from 1 to n/4) + sum(904961(f(i)+1), i from 1 to n/4) = 904962 * sum(f(i)+1, i from 1 to n/4)
+# Summation function of ruler sequence: A005187 (defined recursively)
+
 def E_test(m, n):
     r = ((n+1)*(n+2)//2)**m - (n+1)**m
     E = 0
@@ -23,3 +26,14 @@ def small_m_test():
     print('\t', end='')
     for n in range(1, 9):
         E_test(101, n)
+
+# Actual calculations
+def special_sum(n):
+    if n == 0: return 0
+    return special_sum(n//2) + n
+
+def Q(n):
+    assert n % 4 == 0
+    return 904962*special_sum(n//4)
+
+print(Q(10**12))

@@ -43,3 +43,6 @@ def Q(n):
     return 904962*special_sum(n//4)
 
 print(Q(10**12))
+
+# One-liner using alternate sum formula: 2n - hamming(2n)
+print(904962*(10**12//2 - bin(10**12//2).count("1")))

@@ -24,7 +24,9 @@ def sieve_set(n):
 
 
 def is_prime(n, trials=20):
-    """Returns whether a number is prime or not using Miller-Rabin. Credit: Albert Sweigart"""
+    """Returns whether a number is prime or not using Miller-Rabin. Credit: Albert Sweigart
+       Improve by checking small number of potential witnesses, ex. if n < 2047 test a = 2, if n < 25,326,001, test
+       a = 2, 3, 5, etc. Smallest number requiring first n prime numbers is A006945"""
     if n < 2: return False
     # Small trial division
     if n in prime_100: return True

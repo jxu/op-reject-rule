@@ -54,6 +54,7 @@ def is_prime(n, trials=20):
 
 def is_square(n):
     """Returns if a number is square without floating point math. Credit: Alex Martelli"""
+    if n == 1: return True
     x = n // 2
     seen = set([x])
     while x * x != n:

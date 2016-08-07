@@ -25,8 +25,8 @@ def sieve_set(n):
 
 def is_prime(n, trials=20):
     """Returns whether a number is prime or not using Miller-Rabin. Credit: Albert Sweigart
-       Improve by checking small number of potential witnesses, ex. if n < 2047 test a = 2, if n < 25,326,001, test
-       a = 2, 3, 5, etc. Smallest number requiring first n prime numbers is A006945"""
+    Improve by checking small number of potential witnesses, ex. if n < 2047 test a = 2, if n < 25,326,001, test
+    a = 2, 3, 5, etc. Smallest number requiring first n prime numbers is A006945"""
     if n < 2: return False
     # Small trial division
     if n in prime_100: return True
@@ -109,8 +109,8 @@ def permutation(n, k):
 
 def take_closest(l, n, bisect=True):
     """If bisect (binary search): Assumes l is sorted. Returns closest value to n.
-       If two numbers are equally close, return the smallest number. Credit: Lauritz V. Thaulow
-       If not bisect: Use lambda and min to go through list, O(n) time."""
+    If two numbers are equally close, return the smallest number. Credit: Lauritz V. Thaulow
+    If not bisect: Use lambda and min to go through list, O(n) time."""
     if bisect:
         from bisect import bisect_left
         pos = bisect_left(l, n)
@@ -156,7 +156,7 @@ def phi(n, product_formula=True):
 
 def dijkstra(graph, start):
     """Dijkstra's algorithm using heaps.
-       Test using g = {0:{1:2}, 1:{0:2, 2:6}, 2:{1:6}}  Credit: Janne Karila"""
+    Test using g = {0:{1:2}, 1:{0:2, 2:6}, 2:{1:6}}  Credit: Janne Karila"""
     from heapq import heappush, heappop
 
     A = [None] * len(graph)
@@ -207,7 +207,7 @@ def custom_powerset(s, min_combo, max_combo):
 
 def totient_sum(N):
     """Find the sum of phi(n) for 1 to N. O(log n) space, O(n^(3/4)) time
-       Credit: daniel.is.fischer"""
+    Credit: daniel.is.fischer"""
     K = int((N/2)**0.5)
     M = N // (2*K+1)
     rsmall = [0]*(M+1)
@@ -253,7 +253,7 @@ def totient_sum(N):
 
 def totient_range(n):
     """Calculates all totients in a range using a sieve and Euler's product formula for O(n log log n) time.
-       Credit: Marcus Stuhr"""
+    Credit: Marcus Stuhr"""
     tots = [x for x in range(0, n+1)]
     for p in range(2, n+1):
         if p == tots[p]:

@@ -25,8 +25,9 @@ def sieve_set(n):
 
 def is_prime(n, trials=20):
     """Returns whether a number is prime or not using Miller-Rabin. Credit: Albert Sweigart
-    Improve by checking small number of potential witnesses, ex. if n < 2047 test a = 2, if n < 25,326,001, test
-    a = 2, 3, 5, etc. Smallest number requiring first n prime numbers is A006945"""
+    First check divisibility by small primes (below 100).
+    Deterministic variant by checking small set of potential witnesses.
+    Smallest number requiring first n prime numbers is A006945."""
     if n < 2: return False
     # Small trial division
     if n in prime_100: return True
@@ -38,8 +39,32 @@ def is_prime(n, trials=20):
         s = s // 2
         t += 1
 
-    for trials in range(trials):
-        a = random.randrange(2, n - 1)
+    # Testing is_prime set of potential witnesses is big speedup! (n<10^6: 13.8 -> 3.1 s, n<10^7: 136.2 -> 34.9 s)
+    # Still twice as slow as gmpy2 though :(
+    witnesses = None
+    if n < 2047:
+        witnesses = (2,)
+    elif n < 1373653:
+        witnesses = (2, 3)
+    elif n < 25326001:
+        witnesses = (2, 3, 5)
+    elif n < 3215031751:
+        witnesses = (2, 3, 5, 7)
+    elif n < 3474749660383:
+        witnesses = (2, 3, 5, 7, 11, 13)
+    elif n < 341550071728321:
+        witnesses = (2, 3, 5, 7, 11, 13, 17)
+
+    small_n = n < 341550071728321
+    if small_n: trials = len(witnesses)
+
+
+    for trial in range(trials):
+        if small_n:
+            a = witnesses[trial]
+        else:
+            a = random.randrange(2, n - 1)
+
         v = pow(a, s, n)
         if v != 1: # this test does not apply if v is 1.
             i = 0
@@ -274,6 +299,16 @@ def factors(n):
             f += [i]
             if i != n//i: f += [n//i]
     return f
+
+
+def time_is_prime():
+    # Placeholder, maybe turn into general timing fucntion?
+    import time
+    import gmpy2
+    start = time.clock()
+    for i in range(10**6):
+        is_prime(i)
+    print(time.clock()-start)
 
 
 if __name__ == "__main__":

@@ -29,4 +29,15 @@ def S(n, d):
 
 
 #print(S(20, 7))
-print(S(10**11, 2017))
+#print(S(10**11, 2017))
+
+def f_test():
+    l = []
+    for p in sieve(100):
+        for a in range(1, 11):
+            x = (p**(a+1)-1)//(p-1)
+            print(x, p, a)
+            if x in l: print(x)
+            l.append(x)
+
+f_test()

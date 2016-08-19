@@ -13,11 +13,11 @@ class IsPrimeTest(unittest.TestCase):
         for n in range(2, 1000):
             self.assertEqual(number.is_prime(n), gmpy2.is_prime(n), msg=n)
 
-    def test_strong_psuedoprimes(self):
+    def test_strong_pseudoprimes(self):
         """Tests strong pseudoprimes base 2: A001262"""
-        strong_psuedoprimes = (2047, 3277, 4033, 4681, 8321, 15841, 29341, 42799, 49141, 52633, 65281, 74665, 80581,
+        strong_pseudoprimes = (2047, 3277, 4033, 4681, 8321, 15841, 29341, 42799, 49141, 52633, 65281, 74665, 80581,
                                85489, 88357, 90751, 104653, 130561, 196093, 220729)
-        for sp in strong_psuedoprimes:
+        for sp in strong_pseudoprimes:
             self.assertEqual(number.is_prime(sp), gmpy2.is_prime(sp), msg=sp)
 
     def test_deterministic_nums(self):

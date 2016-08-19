@@ -1,4 +1,4 @@
-// Rewrite of 265 using bit math and integers instead of strings
+// Rewrite of 265.py using bit math and integers instead of strings
 
 #include <iostream>
 #include <bitset>

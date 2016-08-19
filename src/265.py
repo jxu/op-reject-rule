@@ -2,6 +2,7 @@
 # Generate strings using DFS, ignoring strings with "seen" subsequences
 
 def S(arrange, seen, N):
+    # len(arrange) can be removed if 00000 is marked as seen
     if len(arrange) == 2**N and 2*arrange.count(0) == 2**N:
         print(''.join(map(str, arrange)))
         return int(''.join(map(str, arrange)), 2)

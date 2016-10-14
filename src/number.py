@@ -5,6 +5,8 @@ import random
 
 
 prime_100 = (2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47, 53, 59, 61, 67, 71, 73, 79, 83, 89, 97)
+set_prime_100 = set(prime_100)
+
 module_primes = None
 
 def sieve(n):
@@ -30,7 +32,7 @@ def is_prime(n, trials=20):
     Smallest number requiring first n prime numbers is A006945."""
     if n < 2: return False
     # Small trial division
-    if n in prime_100: return True
+    if n in set_prime_100: return True
     if any(n % p == 0 for p in prime_100): return False
 
     s = n - 1

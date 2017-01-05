@@ -1,5 +1,6 @@
 # Translation of python code for the challenge 
-# Completed program (10 levels) takes forever to run, but the result is correct
+# Completed program (10 levels) takes forever to run in MARS but runs in SPIM!
+# To-do: Print rounded
 
 # $f10, $f12, $f14 = arguments 1, 2, 3 (a, b, c)
 # $a0 = argument 4 (level)

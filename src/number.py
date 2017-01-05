@@ -311,5 +311,18 @@ def time_is_prime():
     print(time.clock()-start)
 
 
+def int_to_base(n, b):
+    """Returns a list of digits in arbitrary base"""
+    assert n >= 0  # Untested for negative nums
+
+    if n == 0:
+        return [0]
+    digits = []
+    while n:
+        digits.append(int(n % b))
+        n //= b
+    return digits[::-1]
+
+
 if __name__ == "__main__":
     pass

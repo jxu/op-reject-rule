@@ -1,4 +1,5 @@
-"""My experiment with unit tests, for functions in number.py that might be updated often."""
+# My experiment with unit tests, for functions in number.py that might be updated often.
+
 import number, gmpy2
 import unittest
 

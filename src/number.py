@@ -309,12 +309,12 @@ def timeit(f):
         result = f(*args, **kwargs)
         time_end = clock()
 
-        all_args = "args:"
-        if args: all_args += ' ' + str(args)
-        if kwargs: all_args += ' ' + str(kwargs)
+        all_args = list(map(str, args))
+        for key in kwargs:
+            all_args.append("{}={}".format(key, kwargs[key]))
 
-        print("{} {}  took {:2.4f}s".format(f.__name__, all_args,
-                                            time_end - time_start))
+        print("{}({})   took {:2.4f}s".format(f.__name__, ', '.join(all_args),
+                                              time_end - time_start))
         return result
 
     return timed

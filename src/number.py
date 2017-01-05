@@ -301,14 +301,23 @@ def factors(n):
     return f
 
 
-def time_is_prime():
-    # Placeholder, maybe turn into general timing fucntion?
-    import time
-    import gmpy2
-    start = time.clock()
-    for i in range(10**6):
-        is_prime(i)
-    print(time.clock()-start)
+def timeit(f):
+    """Timing decorator for functions. Example usage: sieve = timeit(sieve)"""
+    from time import clock
+    def timed(*args, **kwargs):
+        time_start = clock()
+        result = f(*args, **kwargs)
+        time_end = clock()
+
+        all_args = "args:"
+        if args: all_args += ' ' + str(args)
+        if kwargs: all_args += ' ' + str(kwargs)
+
+        print("{} {}  took {:2.4f}s".format(f.__name__, all_args,
+                                            time_end - time_start))
+        return result
+
+    return timed
 
 
 def int_to_base(n, b):
@@ -325,4 +334,5 @@ def int_to_base(n, b):
 
 
 if __name__ == "__main__":
-    pass
+    sieve = timeit(sieve)
+    sieve(10**8)

@@ -333,6 +333,11 @@ def int_to_base(n, b):
     return digits[::-1]
 
 
+def pandigital(n, b):
+    """Checks if n contains all digits from 0 to b-1"""
+    digit_list = int_to_base(n, b)
+    return set(digit_list) == set(range(b))
+
+
 if __name__ == "__main__":
-    sieve = timeit(sieve)
-    sieve(10**8)
+    pass

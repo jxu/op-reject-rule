@@ -1,21 +1,20 @@
-# Use small wheels similar to sieve of Eratosthenes
+# JUST BASIC RECURSION WOW
 
-from number import sieve, product
-from bisect import bisect_right
+from number import sieve
 
-def generalised_hamming(cutoff, n):
-    primes = sieve(100)
-    i = bisect_right(primes, cutoff)
-    small_primes = primes[:i]
-    large_primes = primes[i:]
+CUTOFF = 100
+N = 10**9
+primes = sieve(CUTOFF+1)
 
-    wheel_size = product(small_primes)
-    nums = [0] * wheel_size
-    for i in small_primes:
-        for j in range(i, wheel_size, i):
-            nums[j] = 1
+generalised_hamming = []
 
-    not_hamming = [i for i in range(1, wheel_size) if nums[i] == 0]
-    print(wheel_size, len(not_hamming)/float(wheel_size))
+def recurse(num, current_prime=primes[0]):
+    if num > N: return
+    generalised_hamming.append(num)
+    for prime in primes:
+        if prime >= current_prime:
+            recurse(num * prime, prime)
 
-generalised_hamming(23, 10**9)
+
+recurse(1)
+print(len(generalised_hamming))

@@ -226,6 +226,14 @@ def mul_inv(a, b):
     return x1
 
 
+def powerset(iterable):
+    """From itertools recipes
+    powerset([1,2,3]) --> () (1,) (2,) (3,) (1,2) (1,3) (2,3) (1,2,3)"""
+    from itertools import chain, combinations
+    s = list(iterable)
+    return chain.from_iterable(combinations(s, r) for r in range(len(s) + 1))
+
+
 def custom_powerset(s, min_combo, max_combo):
     from itertools import chain, combinations
     return chain.from_iterable(combinations(s, r) for r in range(min_combo, max_combo+1))

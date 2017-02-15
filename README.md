@@ -15,4 +15,13 @@ Code for an elegant, concise language.*
 
 Celebrating ~~125~~ 150 solved!
 
+Some features of number.py:
+
+- Simple Sieve of Eratosthenes
+- Miller-Rabin primality test with potential witnesses
+- Euler's totient function using product formula
+- Timeit wrapper
+- Others: binary search, Dijkstra's algorithm, modular multiplicative inverse,
+totient sum and totient range, int to base conversion, etc.
+
 <sub>*And occasionally C++ for speed</sub>

@@ -347,5 +347,14 @@ def pandigital(n, b):
     return set(digit_list) == set(range(b))
 
 
+def is_smooth(n, primes):
+    """Test if n has only factors in primes"""
+    for p in primes:
+        while n % p == 0:
+            n //= p
+
+    return n == 1
+
+
 if __name__ == "__main__":
     pass

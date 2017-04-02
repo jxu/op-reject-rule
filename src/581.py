@@ -5,7 +5,9 @@
 # From Lehmer's paper Table A, there are 869 pairs for 41-smooth numbers.
 # So I estimate < 1500 pairs for 47-smooth
 # Theorem 7 gives bounds for largest smooth pair, but they are extremely weak
-# ex. S_1(13) < 10^10^9.925 ?? Does a better upper bound exist?
+# ex. S_1(13) < 10^10^9.925 ??
+# According to M. F. Hasler at A002072, for n primes, 10^n/n is an upper bound
+# except for n=4.
 
 # Attempt simple recursive solution with guess at max smooth number.
 # Curiously, using Størmer's Theorem and solving 2^15 - 1 Pell's equations with

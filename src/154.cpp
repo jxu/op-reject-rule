@@ -33,8 +33,8 @@ int main()
             if ((fact_pow2[200000]-ijk2 >= 12) && (fact_pow5[200000]-ijk5 >= 12))
             {
                 // Permutations
-                if (i==j && j==k) c += 1;
-                else if ((i==j && j<k) || (i<j && j==k)) c += 3;
+                //if (i==j && j==k) c += 1;
+                if ((i==j && j<k) || (i<j && j==k)) c += 3;
                 else c += 6; // i < j < k
             }
         }

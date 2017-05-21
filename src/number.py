@@ -162,6 +162,19 @@ def gcd(a, b):
     return a
 
 
+def lcm(a, b):
+    """Get lcm by reduction of the gcd"""
+    return a * b // gcd(a, b)
+
+
+def lcm_n(n):
+    """Find lcm of integers 1 to n.
+    Skip calculating lcm for 1 to n/2 since those are covered by the upper half"""
+    x = 1
+    for i in range(max(n//2, 1), n+1):
+        x = lcm(x, i)
+    return x
+
 def phi(n, product_formula=True):
     """Euler's product formula or straightforward calculation of Euler's totient function."""
     if n == 0: return 0
@@ -357,4 +370,4 @@ def is_smooth(n, primes):
 
 
 if __name__ == "__main__":
-    pass
+    print(lcm_n(1))

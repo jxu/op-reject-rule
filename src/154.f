@@ -28,7 +28,7 @@ c Compile with f77 -O3 -o 154 154.f
               K = 200000 - I - J
               IJK2 = FPOW2(I) + FPOW2(J) + FPOW2(K)
               IJK5 = FPOW5(I) + FPOW5(J) + FPOW5(K)
-              IF ((FPOW2(200000) - IJK2 .GE .12) .AND. 
+              IF ((FPOW2(200000) - IJK2 .GE. 12) .AND. 
      +            (FPOW5(200000) - IJK5 .GE. 12)) THEN
                   IF ((I.EQ.J .AND. J.LT.K) .OR. 
      +                (I.LT.J .AND. J.EQ.K)) THEN 
@@ -41,5 +41,5 @@ c Compile with f77 -O3 -o 154 154.f
       ENDDO
 
       WRITE(*,*) C
-      STOP 
+      STOP
       END

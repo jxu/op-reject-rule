@@ -12,6 +12,7 @@ Code for an elegant, concise language.*
     317
     461 491
     504 527 545 561 581
+	605
 
 Celebrating ~~125~~ 150 solved!
 

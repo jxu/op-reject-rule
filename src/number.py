@@ -43,6 +43,7 @@ def is_prime(n, trials=20):
 
     # Testing is_prime set of potential witnesses is big speedup! (n<10^6: 13.8 -> 3.1 s, n<10^7: 136.2 -> 34.9 s)
     # Still twice as slow as gmpy2 though :(
+    # Credit: Pomerance, Selfridge, Wagstaff, Jaeschke
     witness_sets = (
         (2047, (2,)),
         (1373653, (2, 3)),
@@ -52,14 +53,16 @@ def is_prime(n, trials=20):
         (341550071728321, (2, 3, 5, 7, 11, 13, 17))
     )
 
-    small_n = n < 341550071728321
+    small_n = False
     for witness_set in witness_sets:
         if n < witness_set[0]:
             witnesses = witness_set[1]
             trials = len(witnesses)
+            small_n = True
             break
 
     for trial in range(trials):
+        # WITNESS ME
         if small_n:
             a = witnesses[trial]
         else:
@@ -70,7 +73,7 @@ def is_prime(n, trials=20):
             i = 0
             while v != (n - 1):
                 if i == t - 1:
-                    return False
+                    return False  # WITNESSED
                 else:
                     i = i + 1
                     v = (v ** 2) % n

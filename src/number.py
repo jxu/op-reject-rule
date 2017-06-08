@@ -372,5 +372,51 @@ def is_smooth(n, primes):
     return n == 1
 
 
+def prime_count(n, lehmer=False):
+    """Prime-counting function using the Meissel-Lehmer algorithm.
+    Algorithm credit: user448810
+    WIP!!
+    """
+    from bisect import bisect
+
+    limit = 100
+    phi_memo = dict()
+    p = [-1] + sieve(int(n**0.5)+1)  # a-th prime for small a (1-indexed)
+
+    def _phi(x, a):
+        if (x, a) in phi_memo: return phi_memo[(x,a)]
+        if a == 1:
+            return (x + 1) // 2
+        t = _phi(x, a-1) - _phi(x // p[a], a-1)
+        phi_memo[(x,a)] = t
+        return t
+
+    def _pi_legendre(n):
+        if n < limit: return bisect(p, n) - 1  # num primes <= n
+        a = _pi_legendre(int(n**0.5))
+        return _phi(n, a) + a - 1
+
+    def _pi(n):
+        # broken currently
+        if n < limit: return len(sieve(n))  # use bisect
+        a = _pi(int(n**0.25))
+        b = _pi(int(n**0.5))
+        c = _pi(int(n**(1/3)))
+        s = _phi(n, a) + (b+a-2)*(b-a+1)//2
+
+        for i in range(a+1, b+1):
+            w = n / p[i]
+            lim = _pi(int(w**0.5))
+            s -= _pi(int(w))
+            if i <= c:
+                for j in range(i, lim+1):
+                    s += -_pi(int(w / p[j])) + j - 1
+        return s
+
+    if lehmer: return _pi(n)
+    else: return _pi_legendre(n)
+
+
+
 if __name__ == "__main__":
-    print(lcm_n(1))
+    print(prime_count(1000))

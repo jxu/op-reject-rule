@@ -372,6 +372,21 @@ def is_smooth(n, primes):
     return n == 1
 
 
+def memoize(obj):
+    """Decorator that memoizes a function's calls. Credit: Python wiki"""
+    # ignores **kwargs
+    from functools import wraps
+    cache = {}
+
+    @wraps(obj)
+    def memoizer(*args, **kwargs):
+        if args not in cache:
+            cache[args] = obj(*args, **kwargs)
+        return cache[args]
+
+    return memoizer
+
+
 def prime_count_sieve(n, primes):
     """Poor man's prime-counting function. Requires a sorted list of primes
     with primes[0] == 2"""
@@ -385,22 +400,19 @@ def prime_count(n, lehmer=False):
     Algorithm credit: user448810
     WIP!!
     """
-    from bisect import bisect
 
     limit = 100
-    phi_memo = dict()
     p = [-1] + sieve(int(n**0.5)+1)  # a-th prime for small a (1-indexed)
 
+    @memoize
     def _phi(x, a):
-        if (x, a) in phi_memo: return phi_memo[(x,a)]
         if a == 1:
             return (x + 1) // 2
-        t = _phi(x, a-1) - _phi(x // p[a], a-1)
-        phi_memo[(x,a)] = t
-        return t
+        return _phi(x, a-1) - _phi(x // p[a], a-1)
 
     def _pi_legendre(n):
-        if n < limit: return bisect(p, n) - 1  # num primes <= n
+        if n < limit:
+            return prime_count_sieve(n, p[1:])  # num primes <= n
         a = _pi_legendre(int(n**0.5))
         return _phi(n, a) + a - 1
 
@@ -427,5 +439,4 @@ def prime_count(n, lehmer=False):
 
 
 if __name__ == "__main__":
-    primes = sieve(1000)
-    print(prime_count_sieve(100, primes))
+    print(prime_count(10**6))

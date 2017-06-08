@@ -372,6 +372,14 @@ def is_smooth(n, primes):
     return n == 1
 
 
+def prime_count_sieve(n, primes):
+    """Poor man's prime-counting function. Requires a sorted list of primes
+    with primes[0] == 2"""
+    assert primes[0] == 2
+    from bisect import bisect
+    return bisect(primes, n)
+
+
 def prime_count(n, lehmer=False):
     """Prime-counting function using the Meissel-Lehmer algorithm.
     Algorithm credit: user448810
@@ -419,4 +427,5 @@ def prime_count(n, lehmer=False):
 
 
 if __name__ == "__main__":
-    print(prime_count(1000))
+    primes = sieve(1000)
+    print(prime_count_sieve(100, primes))

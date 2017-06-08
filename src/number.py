@@ -395,14 +395,17 @@ def prime_count_sieve(n, primes):
     return bisect(primes, n)
 
 
-def prime_count(n, lehmer=False):
+def prime_count(n, lehmer=True):
     """Prime-counting function using the Meissel-Lehmer algorithm.
-    Algorithm credit: user448810
+    Algorithm credit: user448810 (programming praxis)
+    Fiddly rounding from danaj (Dana Jacobsen)
+    https://programmingpraxis.com/2011/07/22/counting-primes-using-legendres-formula/#comment-5958
     WIP!!
     """
 
-    limit = 100
-    p = [-1] + sieve(int(n**0.5)+1)  # a-th prime for small a (1-indexed)
+    limit = 10**4
+    # a-th prime for small a (1-indexed)
+    p = [None] + sieve(max(limit, int(n**0.5)+1))
 
     @memoize
     def _phi(x, a):
@@ -416,12 +419,15 @@ def prime_count(n, lehmer=False):
         a = _pi_legendre(int(n**0.5))
         return _phi(n, a) + a - 1
 
+    @memoize
     def _pi(n):
         # broken currently
-        if n < limit: return len(sieve(n))  # use bisect
-        a = _pi(int(n**0.25))
-        b = _pi(int(n**0.5))
-        c = _pi(int(n**(1/3)))
+        if n < limit:
+            return prime_count_sieve(n, p[1:])
+        z = int((n + 0.5)**0.5)
+        a = _pi(int(z**0.5 + 0.5))
+        b = _pi(z)
+        c = _pi(int(n**(1/3) + 0.5))
         s = _phi(n, a) + (b+a-2)*(b-a+1)//2
 
         for i in range(a+1, b+1):
@@ -439,4 +445,4 @@ def prime_count(n, lehmer=False):
 
 
 if __name__ == "__main__":
-    print(prime_count(10**6))
+    print(prime_count(10**9))

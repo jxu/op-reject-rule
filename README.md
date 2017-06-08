@@ -21,7 +21,8 @@ Some features of number.py:
 - Simple Sieve of Eratosthenes
 - Miller-Rabin primality test with potential witnesses
 - Euler's totient function using product formula
-- Timeit wrapper
+- Timeit and memoization wrapper
+- Prime-counting function using Meissel-Lehmer
 - Others: binary search, Dijkstra's algorithm, modular multiplicative inverse,
 totient sum and totient range, int to base conversion, etc.
 

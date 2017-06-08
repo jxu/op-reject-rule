@@ -1,13 +1,10 @@
 # BIG MONEY BIG PRIZES
+from number import memoize
 
-memo = dict()
-
+@memoize
 def prizes(day, lates, last_absent):
     if lates < 0 or day < 0: return 0
     if day == 0: return 1
-
-    if (day, lates, last_absent) in memo:
-        return memo[(day, lates, last_absent)]
 
     strings =  prizes(day-1, lates, False)  # O
     strings += prizes(day-1, lates-1, False)  # L
@@ -16,7 +13,6 @@ def prizes(day, lates, last_absent):
         strings += prizes(day-1, lates, True)  # A
         strings += prizes(day-2, lates, True)  # AA
 
-    memo[(day, lates, last_absent)] = strings
     return strings
 
 

@@ -3,17 +3,15 @@ from number import sieve, prime_count
 
 def f(n):
     primes = sieve(int(n**0.5))
-    count = 0
 
     # Case 1: n = p^7
-    count += prime_count(int(n**(1/7)))
+    count = prime_count(int(n**(1/7)))
 
     # Case 2: n = p^3 * q
     for p in primes:
         if p**3 > n: break
         q_max = n // (p**3)
         # Exclude case with p == q
-        #print(q_max, prime_count(q_max) - (q_max >= p))
         count += prime_count(q_max) - (q_max >= p)
 
     # Case 3: n = p*q*r, p < q < r
@@ -31,4 +29,4 @@ def f(n):
     return count
 
 
-print(f(10**6))
+print(f(10**12))

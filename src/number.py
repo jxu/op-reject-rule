@@ -376,7 +376,7 @@ def memoize(obj):
     """Decorator that memoizes a function's calls. Credit: Python wiki"""
     # ignores **kwargs
     from functools import wraps
-    cache = {}
+    cache = obj.cache = {}
 
     @wraps(obj)
     def memoizer(*args, **kwargs):
@@ -395,7 +395,41 @@ def prime_count_sieve(n, primes):
     return bisect(primes, n)
 
 
-def prime_count(n, lehmer=True, limit=10**4):
+# Global list because python, though supposedly passing by assignment, runs way faster with the globals :/
+# I have yet to figure out passing efficiently (and the whole exercise is largely pointless compared to rewriting in
+# a faster language)
+_prime_count_p = None
+
+@memoize
+def _phi(x, a):
+    if a == 1:
+        return (x + 1) // 2
+    return _phi(x, a-1) - _phi(x // _prime_count_p[a], a-1)
+
+
+@memoize
+def _pi(n):
+    limit = 10**4
+    if n < limit:
+        return prime_count_sieve(n, _prime_count_p[1:])
+
+    z = int((n + 0.5)**0.5)
+    a = _pi(int(z**0.5 + 0.5))
+    b = _pi(z)
+    c = _pi(int(n**(1/3) + 0.5))
+    s = _phi(n, a) + (b+a-2)*(b-a+1)//2
+
+    for i in range(a+1, b+1):
+        w = n / _prime_count_p[i]
+        lim = _pi(int(w**0.5))
+        s -= _pi(int(w))
+        if i <= c:
+            for j in range(i, lim+1):
+                s += -_pi(int(w / _prime_count_p[j])) + j - 1
+    return s
+
+
+def prime_count(n):
     """Prime-counting function using the Meissel-Lehmer algorithm.
     Algorithm credit: user448810 (programming praxis)
     Fiddly rounding from danaj (Dana Jacobsen)
@@ -403,44 +437,16 @@ def prime_count(n, lehmer=True, limit=10**4):
     """
     # TODO: write tests
     # a-th prime for small a (1-indexed)
-    p = [None] + sieve(max(limit, int(n**0.5)+1))  # can be optimized
+    global _prime_count_p
+    _prime_count_p = [None] + sieve(max(10**4, int(n**0.5)+1))  # can be optimized
 
-    @memoize
-    def _phi(x, a):
-        if a == 1:
-            return (x + 1) // 2
-        return _phi(x, a-1) - _phi(x // p[a], a-1)
 
-    def _pi_legendre(n):
-        if n < limit:
-            return prime_count_sieve(n, p[1:])  # num primes <= n
-        a = _pi_legendre(int(n**0.5))
-        return _phi(n, a) + a - 1
-
-    @memoize
-    def _pi(n):
-        if n < limit:
-            return prime_count_sieve(n, p[1:])
-
-        z = int((n + 0.5)**0.5)
-        a = _pi(int(z**0.5 + 0.5))
-        b = _pi(z)
-        c = _pi(int(n**(1/3) + 0.5))
-        s = _phi(n, a) + (b+a-2)*(b-a+1)//2
-
-        for i in range(a+1, b+1):
-            w = n / p[i]
-            lim = _pi(int(w**0.5))
-            s -= _pi(int(w))
-            if i <= c:
-                for j in range(i, lim+1):
-                    s += -_pi(int(w / p[j])) + j - 1
-        return s
-
-    if lehmer: return _pi(n)
-    else: return _pi_legendre(n)
-
+    print(len(_pi.cache))
+    x = _pi(n)
+    print(len(_pi.cache))
+    return x
 
 
 if __name__ == "__main__":
-    print(prime_count(10**11))
+    print(prime_count(10**6))
+    print(prime_count(10**6))

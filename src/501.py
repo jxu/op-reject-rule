@@ -1,3 +1,5 @@
+# Ran for 3 minutes until memory error from caching prime count values... this really isn't a task for python
+
 from __future__ import division
 from number import sieve, prime_count
 
@@ -14,6 +16,7 @@ def f(n):
         # Exclude case with p == q
         count += prime_count(q_max) - (q_max >= p)
 
+    print("Starting case 3...")
     # Case 3: n = p*q*r, p < q < r
     for p_i in range(len(primes)):
         p = primes[p_i]
@@ -22,7 +25,8 @@ def f(n):
         for q_i in range(p_i + 1, len(primes)):
             q = primes[q_i]
             if q > (n / p)**0.5: break  # max q when q = r so n = p * q^2
-            print(p, q)
+            print(p, q, n//(p*q))
+
             # q < r < n/pq, so add pi(n/pq) - pi(q)
             count += prime_count(n // (p*q)) - (q_i + 1)
 

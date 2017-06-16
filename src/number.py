@@ -399,6 +399,7 @@ def prime_count_sieve(n, primes):
 # I have yet to figure out passing efficiently (and the whole exercise is largely pointless compared to rewriting in
 # a faster language)
 _prime_count_p = None
+_prime_count_limit = 10**4
 
 @memoize
 def _phi(x, a):
@@ -409,8 +410,7 @@ def _phi(x, a):
 
 @memoize
 def _pi(n):
-    limit = 10**4
-    if n < limit:
+    if n < _prime_count_limit:
         return prime_count_sieve(n, _prime_count_p[1:])
 
     z = int((n + 0.5)**0.5)
@@ -438,15 +438,16 @@ def prime_count(n):
     # TODO: write tests
     # a-th prime for small a (1-indexed)
     global _prime_count_p
-    _prime_count_p = [None] + sieve(max(10**4, int(n**0.5)+1))  # can be optimized
+    sieve_max = int(n**0.5)+1  # can be optimized
 
+    # Recreate sieve if current sieve is smaller than new sieve
+    if _prime_count_p == None or _prime_count_p[-1] < sieve_max:
+        _prime_count_p = [None] + sieve(max(_prime_count_limit, sieve_max))
 
-    print(len(_pi.cache))
-    x = _pi(n)
-    print(len(_pi.cache))
-    return x
+    return _pi(n)
+
 
 
 if __name__ == "__main__":
-    print(prime_count(10**6))
-    print(prime_count(10**6))
+    print(prime_count(10**11))
+    print(prime_count(10**10))

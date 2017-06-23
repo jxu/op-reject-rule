@@ -1,10 +1,28 @@
-def proper_divisor_sum(n):
-    s = 1  # Add 1 as a factor here
-    for i in range(2, int(n**0.5)+1):
-        if n%i == 0:
-            s += i
-            if i != n//i: s += n//i
-    return s
+# Sum of factors is product of prime powers that divide n
+# ex. sum of factors of 120 = (1+2+2^2+2^3)(1+3)(1+5)
+from number import sieve
+
+primes = sieve(10**6)
+sp = set(primes)
+
+def proper_divisor_sum(n):  # credit: grimbal
+    product = 1
+    m = n
+    for p in primes:
+        if p*p > m: break
+
+        s = 1
+        pp = p
+        while m % p == 0:
+            s += pp
+            pp *= p
+            m //= p
+
+        product *= s
+
+    if m > 1: product *= m+1  # prime factor was > sqrt(n)
+    return product - n
+
 
 sums = [0] * 10**6
 for i in range(10**6):

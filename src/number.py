@@ -337,9 +337,8 @@ def factors(n):
 def ruler(n, p):
     """Counts max a such that p^a divides n."""
     a = 0
-    pp = p
-    while n % pp == 0:
-        pp *= p
+    while n % p == 0:
+        n //= p
         a += 1
     return a
 

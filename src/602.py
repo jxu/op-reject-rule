@@ -10,13 +10,15 @@
 # For efficiency, get (-1)^(k+1) (n+1 choose k+1) as -(n+1-k)/(k+1) *
 # (-1)^k (n_1 choose k) (prev. term).
 
+from number import mul_inv
+
 mod = 10**9 + 7
 def A(n, m):
     s = 0
     l = 1
     for k in range(0, m+2):
         s += l * pow(m+1-k, n, mod)
-        l = (-l * (n+1-k) * pow(k+1, mod-2, mod)) % mod
+        l = (-l * (n+1-k) * mul_inv(k+1, mod)) % mod
 
     return s % mod
 

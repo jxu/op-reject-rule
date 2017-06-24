@@ -1,0 +1,1 @@
+pypy -m cProfile -s time $1

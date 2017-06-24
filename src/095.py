@@ -1,9 +1,7 @@
 # Sum of factors is product of prime powers that divide n
 # ex. sum of factors of 120 = (1+2+2^2+2^3)(1+3)(1+5)
 from number import sieve
-
 primes = sieve(10**6)
-sp = set(primes)
 
 def proper_divisor_sum(n):  # credit: grimbal
     product = 1
@@ -24,9 +22,7 @@ def proper_divisor_sum(n):  # credit: grimbal
     return product - n
 
 
-sums = [0] * 10**6
-for i in range(10**6):
-    sums[i] = proper_divisor_sum(i)
+sums = [proper_divisor_sum(i) for i in range(10**6)]
 
 visited = [False]*10**6
 max_chain = None
@@ -35,7 +31,6 @@ max_chain_len = 0
 for i in range(10**6):
     if visited[i]: continue
 
-    visited[i] = True
     seq = [i]
     valid_chain = True
     # Follow chain, marking as visited
@@ -48,7 +43,7 @@ for i in range(10**6):
         seq.append(i)
 
     if valid_chain:
-        chain = seq[seq.index(sums[i]):]  # Get cycle
+        chain = seq[seq.index(sums[i]):]  # Get only chain cycle
         if len(chain) > max_chain_len:
             max_chain_len = len(chain)
             max_chain = chain

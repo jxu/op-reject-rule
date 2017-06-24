@@ -1,20 +1,33 @@
-# Kempner numbers
-from fractions import gcd
+# Kempner function. A002034
+# s(p1^a1 * ... * pk^ak) = max(s(p1^a1), ..., s(pk^ak))
+# So calculate all s(p^a)
+# Then for every multiple of p, calculate  max p^a that divides it (ruler)
+# and store max s(p^a) along the way
+
+from number import sieve, memoize, ruler
+
+@memoize
+def s(p, a):  # s(p^a)
+    if a <= p: return a*p
+    # Count multiples of p until the factorial has enough multiples of p
+    l = 0
+    m = 0
+    while m < a:
+        l += p
+        m += ruler(l, p)
+
+    return l
+
 
 def S(n):
-    n_list = [x for x in range(n+1)]
-    s_list = [0]*(n+1)
+    primes = sieve(n)
+    sl = [0]*(n+1)
 
-    for m in range(1, n+1):
-        for i in range(2, n+1):
-            if s_list[i] == 0:
-                n_list[i] //= gcd(m, n_list[i])
-                if n_list[i] == 1: s_list[i] = m
+    for p in primes:
+        for k in range(p, n+1, p):
+            sl[k] = max(sl[k], s(p, ruler(k, p)))
 
-        #print(n_list)
-    #print(s_list)
-    return sum(s_list[2:])
+    return sum(sl)
 
 
-
-print(S(100))
+print(S(10**8))

@@ -334,6 +334,16 @@ def factors(n):
     return f
 
 
+def ruler(n, p):
+    """Counts max a such that p^a divides n."""
+    a = 0
+    pp = p
+    while n % pp == 0:
+        pp *= p
+        a += 1
+    return a
+
+
 def timeit(f):
     """Timing decorator for functions. Example usage: sieve = timeit(sieve)"""
     from time import clock

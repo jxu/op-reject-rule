@@ -1,10 +1,13 @@
 # My experiment with unit tests, for functions in number.py that might be updated often.
 
-import number, gmpy2
+import number
 import unittest
 
 class IsPrimeTest(unittest.TestCase):
     """Checks is_prime over a range and for special numbers."""
+    def setUp(self):
+        import gmpy2
+
     def test_special_nums(self):
         self.assertFalse(number.is_prime(-1))
         self.assertFalse(number.is_prime(0))
@@ -32,11 +35,12 @@ class IsPrimeTest(unittest.TestCase):
 class PhiTest(unittest.TestCase):
     """Checks Euler's totient function against known values"""
     def test_values(self):
+        primes = number.sieve(10)
         phi_values = (1, 1, 2, 2, 4, 2, 6, 4, 6, 4)
         for n in range(10):
-            self.assertEqual(number.phi(n+1), phi_values[n], msg=n)
+            self.assertEqual(number.phi(n+1, primes), phi_values[n], msg=n)
 
-        self.assertEqual(number.phi(100), 40)
+        self.assertEqual(number.phi(100, primes), 40)
 
 
 class IsSquareTest(unittest.TestCase):

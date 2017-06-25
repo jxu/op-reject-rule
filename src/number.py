@@ -7,7 +7,6 @@ import random
 prime_100 = (2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47, 53, 59, 61, 67, 71, 73, 79, 83, 89, 97)
 set_prime_100 = set(prime_100)
 
-module_primes = None
 
 def sieve(n):
     """Sieve of Eratosthenes. Returns a list. About O(n)"""
@@ -111,28 +110,32 @@ def is_int(n):
     return is_close(n, round(n))
 
 
-def prime_factors(n, N_MAX=10000):
-    """Return all factors. Calculates primes once to use."""
-    global module_primes
-    if not module_primes:
-        module_primes = sieve(N_MAX)
+def prime_factors(n, primes):
+    """Return all prime factors. Requires list of primes up to sqrt(n)."""
 
-    assert(n <= N_MAX**2)  # Assert big enough prime factors to test
+    assert(primes[-1]**2 >= n)  # Assert big enough prime factors to test
     
     factors = []
     m = n
-    prime = False
-    while not prime:
-        prime = True
-        for i in module_primes:
-            if m%i == 0:
-                m //= i
-                factors.append(i)
-                prime = False
-                break
+    for p in primes:
+        if p*p >= n: break
+        while m%p == 0:
+            m //= p
+            factors.append(p)
 
-    if m != 1: factors += [m]
+    if m > 1: factors += [m]  # Only one prime factor >= sqrt(n)
     return factors
+
+
+def factors(n):
+    """Naive implementation."""
+    # To improve: create all factors using prime factorization
+    f = []
+    for i in range(1, int(n**0.5)+1):
+        if n%i == 0:
+            f += [i]
+            if i != n//i: f += [n//i]
+    return f
 
 
 def combination(n, k):
@@ -187,22 +190,20 @@ def lcm_n(n):
         x = lcm(x, i)
     return x
 
-def phi(n, product_formula=True):
-    """Euler's product formula or straightforward calculation of Euler's totient function."""
+def phi(n, primes):
+    """Euler's product formula."""
     if n == 0: return 0
-    if product_formula:
-        spf = set(prime_factors(n))
-        r = n
-        for p in spf:
+    r = n
+    for p in primes:
+        if p*p > n: break
+        if n % p == 0:
+            while n % p == 0:
+                n //= p
             r -= r//p  # r *= (1 - 1/p)
-        return r
 
-    else:
-        r = 0
-        for k in range(1, n+1):
-            if gcd(n, k) == 1:
-                r += 1
-        return r
+    if n > 1: r -= r // n  # If n had prime factor > sqrt(n)
+
+    return r
 
 
 def dijkstra(graph, start):
@@ -322,16 +323,6 @@ def totient_range(n):
                 k += p
 
     return tots
-
-
-def factors(n):
-    """Naive implementation"""
-    f = []
-    for i in range(1, int(n**0.5)+1):
-        if n%i == 0:
-            f += [i]
-            if i != n//i: f += [n//i]
-    return f
 
 
 def ruler(n, p):
@@ -493,5 +484,4 @@ def perm_unique_helper(listunique,result_list,d):
 
 
 if __name__ == "__main__":
-    print(prime_count(10**11))
-    print(prime_count(10**10))
+    pass

@@ -1,6 +1,6 @@
-# Algorithms in Hungary
-# Lazy style (import answer)
-from munkres import Munkres
+# Can be solved with Hungarian Algorithm
+# For fun, I tried simulated annealing. Gets to the maximum most of the time.
+from random import sample
 
 m = \
 """  7  53 183 439 863 497 383 563  79 973 287  63 343 169 583
@@ -22,9 +22,22 @@ m = \
 m = m.split('\n')
 n = []
 for row in m:
-    r = [int(row[i:i+4]) for i in range(0, len(row), 4)]
-    n.append([1000-x for x in r])
-    
-M = Munkres()
-indices = M.compute(n)
-print(sum(1000 - n[i[0]][i[1]] for i in indices))
+    n.append([int(row[i:i+4]) for i in range(0, len(row), 4)])
+
+
+max_tol = 10000
+indices = list(range(15))  # Start on main diagonal
+best_matrix_sum = 6708  # Sum of diagonals
+
+for tol in range(500, -1, -1):
+    for trial in range(100):
+        a, b = sample(indices, 2)
+        indices[a], indices[b] = indices[b], indices[a]  # swap
+        matrix_sum = sum(n[j][indices[j]] for j in range(15))
+        if best_matrix_sum - matrix_sum <= tol:
+            best_matrix_sum = matrix_sum
+            print(indices, matrix_sum)
+
+        else:  # swap back
+            indices[a], indices[b] = indices[b], indices[a]
+

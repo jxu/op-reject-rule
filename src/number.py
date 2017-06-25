@@ -116,14 +116,13 @@ def prime_factors(n, primes):
     assert(primes[-1]**2 >= n)  # Assert big enough prime factors to test
     
     factors = []
-    m = n
     for p in primes:
-        if p*p >= n: break
-        while m%p == 0:
-            m //= p
+        if p*p > n: break
+        while n%p == 0:
+            n //= p
             factors.append(p)
 
-    if m > 1: factors += [m]  # Only one prime factor >= sqrt(n)
+    if n > 1: factors += [n]  # Only one prime factor >= sqrt(n)
     return factors
 
 

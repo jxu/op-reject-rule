@@ -1,4 +1,6 @@
-from number import combination
+from number import combination, memoize
+
+combination = memoize(combination)
 
 def chance(f):
     c = 0
@@ -9,5 +11,5 @@ def chance(f):
     return c
 
 # Manually found range of f. Optimal at about 15/100
-for f in range(2, 20):
+for f in range(1, 51):
     print(f, "{:.12f}".format(chance(f/100)))

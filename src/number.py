@@ -138,13 +138,11 @@ def factors(n):
 
 
 def combination(n, k):
-    f = math.factorial
-    return f(n) // f(k) // f(n-k)
+    return product(range(n-k+1, n+1)) // product(range(1, k+1))
 
 
 def permutation(n, k):
-    f = math.factorial
-    return f(n) // f(n-k)
+    return product(range(n-k+1, n+1))
 
 
 def take_closest(l, n, bisect=True):

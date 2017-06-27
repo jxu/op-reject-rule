@@ -9,9 +9,7 @@
 # Removing @memoize: 58.4s
 # Pre-calculating ruler_full: 23.4s
 
-
 from number import sieve, ruler
-
 
 def s(p, a):  # s(p^a)
     if a <= p: return a*p
@@ -40,7 +38,6 @@ def S(n):
             for i in range(pp, n + 1, pp):
                 ruler_full[i] += 1
             pp *= p
-
 
         for k in range(p, n+1, p):
             sl[k] = max(sl[k], s(p, ruler_full[k]))

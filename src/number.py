@@ -236,7 +236,7 @@ def highly_composite():
 
 
 def mul_inv(a, b):
-    """Modular multiplicative inverse, ax = 1 mod m. Credit: rosettacode.org"""
+    """Modular multiplicative inverse, a^-1 mod b. Credit: rosettacode.org"""
     b0 = b
     x0, x1 = 0, 1
     if b == 1: return 1

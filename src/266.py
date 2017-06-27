@@ -1,36 +1,21 @@
-# WIP Adaptation of the knapsack problem (DP)
+# 0/1 knapsack problem, solved with "meet-in-the-middle" approach
+# Easiest 65% difficulty ever
 
 from __future__ import division
-from number import sieve, product, memoize
+from number import sieve, product, powerset
+from bisect import bisect_left
 
-primes = sieve(100)
-memo = {}
+primes = sieve(190)
+target = product(primes)**0.5
 
+A = primes[:len(primes)//2]
+B = primes[len(primes)//2:]
+pA = (product(a) for a in powerset(A))
+pB = sorted(product(b) for b in powerset(B))
 
-def max_div(target, max_i):
-    memo_args = (target, max_i)
-    if memo_args in memo:
-        print(memo_args)
-        return memo[memo_args]
-    #if max_i == 0: print(target, psr, max_i)
+PSR = 0
+for pa in pA:
+    i = bisect_left(pB, target/pa)
+    PSR = max(PSR, pB[i-1] * pa)
 
-    if max_i == -1:
-        memo[memo_args] = 1
-        return 1
-
-    if target/primes[max_i] > 1:
-        r = max(max_div(target, max_i-1),
-                   max_div(target/primes[max_i], max_i-1) * primes[max_i])
-    else:
-        r = max_div(target, max_i-1)
-
-    memo[memo_args] = r
-    return r
-
-
-
-
-x = max_div(product(primes)**0.5, len(primes)-1)
-
-print(x, product(primes)**0.5 / x)
-
+print(PSR)

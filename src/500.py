@@ -1,39 +1,25 @@
 # Ref: A037992. For n = p1^a1...p1^ak, d(n) = (1 + a1)...(1 + ak)
 # Write 1 + ai = 2^mi, m1 + m2 + ... + mk = 500500
-# Store all mi as array m. If the answer is smallest num with 2^x divisors, it
-# turns out the array m for 2^x is the array with 2^(x-1) with 1 added to some
-# mi. So we find the mi that increases log(answer) the least.
-# 10 minutes with pypy :(
+# Significantly better algorithm running in one pass
+# (credit: tinnderbox https://projecteuler.net/thread=500#195005)
+# Call P(n) the smallest number with 2^n divisors. To get sum of mi from n-1 to
+# n+1, one mi must be increased. Since ai = 2^mi - 1, ai are for ex. 3, 27, 729.
+# These can be seen as 3, 3*9, 3*9*81. So to increase mi, multiply by last
+# factor squared. Keep potential factors in a min queue.
 
 from number import sieve
-from math import log
+from heapq import heappush, heappop, heapify
 
 LIMIT = 500500
-primes = sieve(10**7)[:LIMIT]
+min_queue = sieve(10**7)[:LIMIT]
+max_prime = min_queue[-1]
+heapify(min_queue)
 
-
-m = [0]*LIMIT
-
+ans = 1
 for i in range(LIMIT):
-    min_to_add = float("inf")
-    best_j = None
+    factor = heappop(min_queue)
+    ans = (ans * factor) % 500500507
+    if factor**2 < max_prime:
+        heappush(min_queue, factor**2)
 
-    for j in range(LIMIT):
-        # Don't increase m[j] if m[j-1] == m[j]
-        if j == 0 or m[j] != m[j-1]:
-            # Test m[j] += 1
-            new_to_add = 2**m[j] * log(primes[j])
-
-            #print(i, j, m, new_to_add, min_to_add)
-            if new_to_add < min_to_add:
-                min_to_add = new_to_add
-                best_j = j
-
-    m[best_j] += 1
-
-
-answer = 1
-for i in range(LIMIT):
-    answer = (answer * pow(primes[i], 2**m[i] - 1, 500500507)) % 500500507
-print(answer)
-
+print(ans)

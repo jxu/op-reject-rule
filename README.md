@@ -11,10 +11,10 @@ Code for an elegant, concise language.*
     265
     317
     461 491
-    501 504 527 545 561 581
+    500 501 504 527 545 561 581
     605
 
-Celebrating ~~125~~ 150 solved!
+Celebrating ~~125~~ ~~150~~ 175 solved!
 
 Some features of number.py:
 

@@ -30,8 +30,7 @@ def draw():
                 j[n] = 'X'
                 s += 1
 
-        print(str(r).ljust(4),
-              str(r+1-s).ljust(4), "".join(j))
+        print(str(r).ljust(4), str(r+1-s).ljust(4), "".join(j))
 
 
 # Actual code starts here

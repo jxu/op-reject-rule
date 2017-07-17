@@ -31,16 +31,19 @@ for word1, word2 in word_pairs:
         for i in range(len(num_assign)):
             num_letters[unique_letters[i]] = num_assign[i]
 
+        if num_letters[word1[0]] == 0: continue
+        if num_letters[word2[0]] == 0: continue
+
         n1 = 0
         for l in word1:
             n1 = 10*n1 + num_letters[l]
 
-        if len(str(n1)) == len(word1) and n1 in squares:
+        if n1 in squares:
             n2 = 0
             for l in word2:
                 n2 = 10*n2 + num_letters[l]
 
-            if len(str(n2)) == len(word2) and n2 in squares:
+            if n2 in squares:
                 print(word1, word2, n1, n2)
                 max_square = max(max_square, n1, n2)
 

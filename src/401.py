@@ -25,6 +25,7 @@ def SIGMA1(n):
     return s
 
 
+# Note: last isqrt step is necessary to work for all values
 def SIGMA2(n):
     isqrt = int(n**0.5)
     s = 0
@@ -37,7 +38,7 @@ def SIGMA2(n):
     for k in range(1, isqrt+1):
         s += k**2 * (n // k)
 
-
     return s % 10**9
+
 
 print(SIGMA2(10**15))

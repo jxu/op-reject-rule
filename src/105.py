@@ -1,4 +1,7 @@
 # Brute force subsets
+# Since removing the union of two sets doesn't change which set sum is greater
+# or which has more elements, we can compare all subsets instead of disjoint
+# ones
 from number import powerset
 
 def is_special(s):

@@ -29,9 +29,9 @@ for a in range(20, 24):
     for b in range(a+1, A_MAX):
         for c in range(b+1, A_MAX):
             for d in range(c+1, A_MAX):
-                for e in range(d+1, A_MAX):
+                for e in range(d+1, A_MAX, a+b+c-d):
                     for f in range(e+1, A_MAX):
-                        # Using e+f+g < a+b+c+d
+                        # e+f+g < a+b+c+d
                         for g in range(f+1, min(A_MAX, a+b+c+d-e-f)):
                             s = [a, b, c, d, e, f, g]
                             if is_special(s):

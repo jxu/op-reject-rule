@@ -8,16 +8,16 @@
 # n^2 = 2 mod 7 => n = 3, 4 mod 7.
 
 # Combining these congruences we get n = 10, 80, 130, 200 mod 210.
-# Python 3: 127s  Pypy 5.1.2: 57s
+# Python 3: 82s  Pypy 5.1.2: 35s
 
 from number import is_prime
 
 def consecutive_prime(n):
-    if any(not is_prime(n**2 + i) for i in (1, 3, 7, 9, 13, 27)):
+    if any(not is_prime(n**2 + i, 10) for i in (1, 3, 7, 9, 13, 27)):
         return False
 
     # No need to consider i if multiple of 5
-    if any(is_prime(n**2 + i) for i in (11, 17, 19, 21, 23)):
+    if any(is_prime(n**2 + i, 10) for i in (11, 17, 19, 21, 23)):
         return False
 
     return True

@@ -6,9 +6,10 @@
 # we must have n^2 = 0 mod 5 => n = 0 mod 5.
 # Similarly since n^2 = 0,1,2,4 mod 7, n^2 = 0,1,4 mod 7 are out.
 # n^2 = 2 mod 7 => n = 3, 4 mod 7.
+# n^2 = 1,3,9 mod 13 => n = 1,3,4,9,10 mod 13
 
 # Combining these congruences we get n = 10, 80, 130, 200 mod 210.
-# Python 3: 82s  Pypy 5.1.2: 35s
+# Python 3: 38s  Pypy 5.1.2: 17s
 
 from number import is_prime
 
@@ -27,6 +28,7 @@ def f(n):
     s = 0
     for m in range(0, n+1, 210):
         for k in (m+10, m+80, m+130, m+200):
+            if k%13 not in (1, 3, 4, 9, 10): continue
             if consecutive_prime(k):
                 print(k)
                 s += k

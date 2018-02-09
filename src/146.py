@@ -18,7 +18,8 @@ def consecutive_prime(n):
         return False
 
     # No need to consider i if multiple of 5
-    if any(is_prime(n**2 + i, 10) for i in (11, 17, 19, 21, 23)):
+    # n^2 = 10 mod 30, so no need to consider i = 11, 17, 23
+    if any(is_prime(n**2 + i, 10) for i in (19, 21)):
         return False
 
     return True

@@ -9,7 +9,7 @@
 # n^2 = 1,3,9 mod 13 => n = 1,3,4,9,10 mod 13
 
 # Combining these congruences we get n = 10, 80, 130, 200 mod 210.
-# Python 3: 38s  Pypy 5.1.2: 17s
+# Python 3: 38s  Pypy 5.1.2: 16s
 
 from number import is_prime
 
@@ -18,8 +18,9 @@ def consecutive_prime(n):
         return False
 
     # No need to consider i if multiple of 5
-    # n^2 = 10 mod 30, so no need to consider i = 11, 17, 23
-    if any(is_prime(n**2 + i, 10) for i in (19, 21)):
+    # n^2 = 10 mod 30, so no need to consider n^2+11, n^2+17, n^2+23
+    # Also n^2+19 = -1 mod 30 which factors
+    if is_prime(n**2 + 21, 10):
         return False
 
     return True

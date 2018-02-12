@@ -4,35 +4,23 @@
 
 #include <stdio.h>
 
-#define TRI_SIZE 500500
 #define ROWS 1000
-
 #define MIN(a,b) (((a)<(b))?(a):(b))
 
-int tri[TRI_SIZE];
 int row_prefix[ROWS][ROWS];
-
-size_t IX(int i, int j)
-{
-    return i*(i+1)/2 + j;
-}
 
 int main()
 {
     int t = 0, min_tri = 1 << 30;
 
-    for (int k = 0; k < TRI_SIZE; k++)
-    {
-        t = (615949*t + 797807) % (1<<20);
-        tri[k] = t - (1<<19);
-    }
-
     for (int i = 0; i < ROWS; i++)
     {
-        row_prefix[i][0] = tri[IX(i,0)];
-        for (int j = 1; j <= i; j++)
+        for (int j = 0; j <= i; j++)
         {
-            row_prefix[i][j] = row_prefix[i][j-1] + tri[IX(i,j)];
+            // Save space by not storing triangle explicitly
+            t = (615949*t + 797807) % (1<<20);
+            row_prefix[i][j] = t - (1<<19);
+            if (j > 0) row_prefix[i][j] += row_prefix[i][j-1];
         }
     }
 

@@ -6,6 +6,5 @@
 Map[Function[x,{x,Total[(p*x)^-2]}],
   Subsets[Range[1,6],{2,6}]]
 
-numPairs=Map[Function[x,{x,Numerator[Total[(p*x)^-2]]}],
-  Subsets[Range[1,10],{2,10}]];
-Select[numPairs,Divisible[#[[2]],7]&]
+pairs = Map[Function[x, {x, Total[(p*x)^-2]}], Subsets[Range[1, 11], {2, 11}]];
+Select[pairs, Divisible[Numerator[Last[#]], 13^2] && 13 Max[First[#]] <= 80 &]

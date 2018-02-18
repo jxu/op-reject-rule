@@ -258,9 +258,9 @@ def powerset(iterable):
     return chain.from_iterable(combinations(s, r) for r in range(len(s) + 1))
 
 
-def custom_powerset(s, min_combo, max_combo):
+def custom_powerset(s, min_size, max_size):
     from itertools import chain, combinations
-    return chain.from_iterable(combinations(s, r) for r in range(min_combo, max_combo+1))
+    return chain.from_iterable(combinations(s, r) for r in range(min_size, max_size+1))
 
 
 def totient_sum(N):

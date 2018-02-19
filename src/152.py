@@ -13,12 +13,14 @@ def max_prime_factor(d):
     for p in reversed(primes):
         if d%p == 0: return p
 
-
 denoms = []
 for d in range(2, D_MAX+1):
+    # Further analysis with powers of primes (credit: lzw75) excludes these
+    # Now runs with PyPy under 1 sec
+    if d in (16, 32, 48, 64, 27, 54, 25, 50, 49): continue
     if max_prime_factor(d) <= 7: denoms.append(d)
 
-denoms.extend([13, 39, 52])
+denoms.extend([13, 39, 52])  # Only set with denom div by 13
 denoms = sorted(set(denoms))
 
 lcm_denom = 1
@@ -45,6 +47,7 @@ def f(target, lo, hi, l):
     if lo > hi or target < 0: return 0
     if numers[hi] > target: return 0
     if tail_sums[lo] < target: return 0
+
 
     s = 0
     for denom in denoms:

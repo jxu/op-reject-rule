@@ -1,7 +1,8 @@
 import numpy as np
 from number import sieve
 
-primes = sieve(1234)
+np.set_printoptions(threshold=np.nan)
+primes = sieve(200)
 
 # naive implementation
 def exponent_array(n):
@@ -11,28 +12,37 @@ def exponent_array(n):
             n //= primes[i]
             arr[i] += 1
 
-        if n == 1: break  # Done factoring
+        if n == 1: return arr  # Done factoring
 
-    if n != 1:
-        print("none")
-        return None  # Too large prime factor
-    return arr
+    return None  # Too large prime factor
 
 
 # Row-reduce binary matrix
 def binary_rr(m):
     rows, cols = m.shape
+    l = 0
     for k in range(min(rows, cols)):
-        # Swap with pivot if diagonal is 0
-        if m[k,k] == 0:
-            for i in range(k+1, rows):
-                if m[i,k] == 1:
-                    m[i], m[k] = m[k].copy(), m[i].copy()  # Swap rows
-                    break
+        if l >= cols: break
+        # Swap with pivot if m[k,l] is 0
+        if m[k,l] == 0:
+            found_pivot = False
+            while not found_pivot:
+                if l >= cols: break
+                for i in range(k+1, rows):
+                    if m[i,l]:
+                        m[[i,k]] = m[[k,i]]  # Swap rows
+                        found_pivot = True
+                        break
+
+                if not found_pivot: l += 1
+
+        if l >= cols: break  # No more rows
 
         # For rows below pivot, subtract row
         for i in range(k+1, rows):
-            if m[i,k]: m[i] ^= m[k]
+            if m[i,l]: m[i] ^= m[k]
+
+        l += 1
 
     return m
 
@@ -42,13 +52,11 @@ def C(a, b):
     for n in range(a, b+1):
         arr = exponent_array(n)
         if not arr is None:
-            m = np.insert(m, 0, arr % 2, axis=0)
+            m = np.insert(m, m.shape[0], arr % 2, axis=0)
 
     print(m.shape)
 
     rr_m = binary_rr(m)
-    #np.set_printoptions(threshold=np.nan)
-    #print(rr_m)
     nullity = int(np.sum(~rr_m.any(axis=1)))  # count 0 rows
     print(nullity)
     return pow(2, nullity, 1000000007) - 1

@@ -312,7 +312,7 @@ def totient_sum(N):
 def totient_range(n):
     """Calculates all totients in a range using a sieve and Euler's product formula for O(n log log n) time.
     Credit: Marcus Stuhr"""
-    tots = [x for x in range(0, n+1)]
+    tots = list(range(n+1))
     for p in range(2, n+1):
         if p == tots[p]:
             k = p

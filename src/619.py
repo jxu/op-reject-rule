@@ -1,8 +1,10 @@
+# To make more efficient
+from __future__ import division
 import numpy as np
 from number import sieve
 
 np.set_printoptions(threshold=np.nan)
-primes = sieve(200)
+primes = sieve(234567)
 
 # naive implementation
 def exponent_array(n):
@@ -14,7 +16,7 @@ def exponent_array(n):
 
         if n == 1: return arr  # Done factoring
 
-    return None  # Too large prime factor
+    return np.full(len(primes), -1) # Too large prime factor
 
 
 # Row-reduce binary matrix
@@ -22,6 +24,7 @@ def binary_rr(m):
     rows, cols = m.shape
     l = 0
     for k in range(min(rows, cols)):
+        print(k)
         if l >= cols: break
         # Swap with pivot if m[k,l] is 0
         if m[k,l] == 0:
@@ -48,12 +51,11 @@ def binary_rr(m):
 
 
 def C(a, b):
-    m = np.zeros([0, len(primes)], dtype=int)
+    m = np.zeros([b-a+1, len(primes)], dtype=np.int8)
     for n in range(a, b+1):
-        arr = exponent_array(n)
-        if not arr is None:
-            m = np.insert(m, m.shape[0], arr % 2, axis=0)
+        m[n-a] = exponent_array(n)
 
+    m = m[m[:,0] != -1] % 2
     print(m.shape)
 
     rr_m = binary_rr(m)
@@ -62,4 +64,4 @@ def C(a, b):
     return pow(2, nullity, 1000000007) - 1
 
 
-print(C(1000, 1234))
+print(C(1000000, 1234567))

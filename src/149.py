@@ -1,3 +1,12 @@
+# I had the pleasure of meeting Jay Kadane himself and asking him about his
+# algorithm. He told me that in the 80s he had a colleague who was working on a
+# problem and came up with an O(n log n) time algorithm but couldn't prove it
+# was optimal. Kadane said "well, I wouldn't do it that way, I'd actually do
+# it this way" and that's how he came up with his namesake linear time
+# algorithm. He said it was more about being at the right place at the right
+# time to have an algorithm, but "I suppose it's the dream of every computer
+# scientist to have an algorithm named after him".
+
 # Maximum subarray problem 4 times, with Kadane's algorithm
 
 def kadane(t, x, y, dx, dy):

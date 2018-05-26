@@ -33,13 +33,19 @@ class IsPrimeTest(unittest.TestCase):
 
 class PhiTest(unittest.TestCase):
     """Checks Euler's totient function against known values"""
-    def test_values(self):
+    def test_phi(self):
         primes = number.sieve(10)
         phi_values = (1, 1, 2, 2, 4, 2, 6, 4, 6, 4)
         for n in range(10):
             self.assertEqual(number.phi(n+1, primes), phi_values[n], msg=n)
 
         self.assertEqual(number.phi(100, primes), 40)
+
+    def test_phi_sum(self):
+        #self.assertEqual(number.totient_sum(10), 32)
+        #self.assertEqual(number.totient_sum(100), 3044)
+        self.assertEqual(number.totient_sum(1000), 304192)
+        self.assertEqual(number.totient_sum(10000), 30397486)
 
 
 class IsSquareTest(unittest.TestCase):

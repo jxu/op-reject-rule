@@ -264,7 +264,8 @@ def custom_powerset(s, min_size, max_size):
 
 
 def totient_sum(N):
-    """Find the sum of phi(n) for 1 to N. O(log n) space, O(n^(3/4)) time
+    """WARNING: BROKEN!
+    Find the sum of phi(n) for 1 to N. O(log n) space, O(n^(3/4)) time
     Credit: daniel.is.fischer"""
     K = int((N/2)**0.5)
     M = N // (2*K+1)
@@ -272,7 +273,7 @@ def totient_sum(N):
     rlarge = [0]*K
 
     def F(n):
-        return (n+1)*n//2
+        return n*(n-1)//2
 
     def R(n):
         switch = int((n/2)**0.5)
@@ -306,7 +307,7 @@ def totient_sum(N):
         R(N // (2*j + 1))
 
     #print(rlarge, rsmall)
-    return rlarge[0]
+    return rlarge[0]+1
 
 
 def totient_range(n):
@@ -489,4 +490,4 @@ def fib_list(n):
     return fib
 
 if __name__ == "__main__":
-    pass
+    print(totient_sum(100))

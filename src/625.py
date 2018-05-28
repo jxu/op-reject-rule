@@ -18,4 +18,4 @@ def G(N):
 
     return s
 
-print(G(10**2) % M)
+print(G(10) % M)

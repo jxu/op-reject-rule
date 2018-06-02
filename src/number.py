@@ -263,7 +263,22 @@ def custom_powerset(s, min_size, max_size):
     return chain.from_iterable(combinations(s, r) for r in range(min_size, max_size+1))
 
 
-def totient_sum(N):
+def memoize(obj):
+    """Decorator that memoizes a function's calls. Credit: Python wiki"""
+    # ignores **kwargs
+    from functools import wraps
+    cache = obj.cache = {}
+
+    @wraps(obj)
+    def memoizer(*args, **kwargs):
+        if args not in cache:
+            cache[args] = obj(*args, **kwargs)
+        return cache[args]
+
+    return memoizer
+
+
+def totient_sum_79(N):
     """
     Find the sum of phi(n) for 1 to N. O(log n) space, O(n^(3/4)) time
     Modified from PE 73 overview. Credit: daniel.is.fischer
@@ -312,7 +327,41 @@ def totient_sum(N):
     for j in range(K-1, -1, -1):
         R(N // (2*j + 1))
 
-    return rlarge[0]+1
+    return rlarge[0] + 1
+
+
+def totient_sum(n):
+    '''Follows the ideas outlined in my writeup plus sieving for about O(n^2/3)
+    https://math.stackexchange.com/a/1740370'''
+    cutoff = int(n**0.66)
+    totient_sum_large = dict()  # Can implement as array for minor speedup
+    totient_range_small = totient_range(cutoff)
+    # Convert totient range to totient sum
+    totient_sum_small = totient_range_small[:]
+    sum_so_far = 0
+    for i in range(len(totient_range_small)):
+        sum_so_far += totient_range_small[i]
+        totient_sum_small[i] = sum_so_far
+
+    def _Phi(n):
+        if n < cutoff:
+            return totient_sum_small[n]
+
+        if n in totient_sum_large:
+            return totient_sum_large[n]
+
+        isqrtn = int(n**0.5)
+        s = n*(n+1)//2
+        for x in range(2, isqrtn+1):
+            s -= _Phi(n // x)
+
+        for y in range(1, isqrtn + (isqrtn != n // isqrtn)):
+            s -= (n//y - n//(y+1)) * _Phi(y)
+
+        totient_sum_large[n] = s
+        return s
+
+    return _Phi(n)
 
 
 def totient_range(n):
@@ -383,21 +432,6 @@ def is_smooth(n, primes):
             n //= p
 
     return n == 1
-
-
-def memoize(obj):
-    """Decorator that memoizes a function's calls. Credit: Python wiki"""
-    # ignores **kwargs
-    from functools import wraps
-    cache = obj.cache = {}
-
-    @wraps(obj)
-    def memoizer(*args, **kwargs):
-        if args not in cache:
-            cache[args] = obj(*args, **kwargs)
-        return cache[args]
-
-    return memoizer
 
 
 def prime_count_sieve(n, primes):
@@ -494,5 +528,7 @@ def fib_list(n):
         fib[i] = fib[i-1] + fib[i-2]
     return fib
 
+
 if __name__ == "__main__":
-    pass
+    totient_sum = timeit(totient_sum)
+    print(totient_sum(10**12))

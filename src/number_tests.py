@@ -41,6 +41,7 @@ class PhiTest(unittest.TestCase):
 
         self.assertEqual(number.phi(100, primes), 40)
 
+    # http://oeis.org/A002088
     def test_phi_sum(self):
         self.assertEqual(number.totient_sum(1), 1)
         self.assertEqual(number.totient_sum(10), 32)

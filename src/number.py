@@ -487,7 +487,6 @@ def prime_count(n):
     Fiddly rounding from danaj (Dana Jacobsen)
     https://programmingpraxis.com/2011/07/22/counting-primes-using-legendres-formula/#comment-5958
     """
-    # TODO: write tests
     # a-th prime for small a (1-indexed)
     global _prime_count_p
     sieve_max = int(n**0.5)+1  # can be optimized

@@ -266,7 +266,9 @@ def custom_powerset(s, min_size, max_size):
 def totient_sum(N):
     """
     Find the sum of phi(n) for 1 to N. O(log n) space, O(n^(3/4)) time
-    Modified from PE 73 overview. Credit: daniel.is.fischer"""
+    Modified from PE 73 overview. Credit: daniel.is.fischer
+    See benchmarks file
+    """
 
     if N < 3:
         return (0, 1, 2)[N]
@@ -493,4 +495,4 @@ def fib_list(n):
     return fib
 
 if __name__ == "__main__":
-    print(totient_sum(100))
+    pass

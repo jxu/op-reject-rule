@@ -330,18 +330,23 @@ def totient_sum_79(N):
     return rlarge[0] + 1
 
 
+# Save calculated values for future use (problem 625)
+totient_sum_large = dict()  # Can implement as array for minor speedup
+totient_sum_small = None
+
 def totient_sum(n):
     '''Follows the ideas outlined in my writeup plus sieving for about O(n^2/3)
     https://math.stackexchange.com/a/1740370'''
     cutoff = int(n**0.66)
-    totient_sum_large = dict()  # Can implement as array for minor speedup
-    totient_range_small = totient_range(cutoff)
-    # Convert totient range to totient sum
-    totient_sum_small = totient_range_small[:]
-    sum_so_far = 0
-    for i in range(len(totient_range_small)):
-        sum_so_far += totient_range_small[i]
-        totient_sum_small[i] = sum_so_far
+    global totient_sum_small
+    if not totient_sum_small:
+        totient_range_small = totient_range(cutoff)
+        # Convert totient range to totient sum
+        totient_sum_small = totient_range_small[:]
+        sum_so_far = 0
+        for i in range(len(totient_range_small)):
+            sum_so_far += totient_range_small[i]
+            totient_sum_small[i] = sum_so_far
 
     def _Phi(n):
         if n < cutoff:
@@ -530,5 +535,4 @@ def fib_list(n):
 
 
 if __name__ == "__main__":
-    totient_sum = timeit(totient_sum)
-    print(totient_sum(10**12))
+    pass

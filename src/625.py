@@ -15,12 +15,13 @@ from number import totient_range, totient_sum, sieve
 
 def G(N):
     s = 0
+    # Largest totient calc first for value re-use (see implementation)
     current_totient_sum = totient_sum(N)
 
     for k in range(1, int(N**0.5)+1):
         next_totient_sum = totient_sum(N//(k+1))
         s += (k*(k+1)//2) * (current_totient_sum - next_totient_sum)
-        if k < 100 or k % 100 == 0: print(s, k)
+        if k % 100 == 0: print(s, k)
         current_totient_sum = next_totient_sum
 
     phi = totient_range(int(N**0.5))

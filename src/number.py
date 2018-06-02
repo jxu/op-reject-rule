@@ -334,12 +334,12 @@ def totient_sum_79(N):
 totient_sum_large = dict()  # Can implement as array for minor speedup
 totient_sum_small = None
 
-def totient_sum(n):
+def totient_sum(n, reuse_calc=False):
     '''Follows the ideas outlined in my writeup plus sieving for about O(n^2/3)
     https://math.stackexchange.com/a/1740370'''
     cutoff = int(n**0.66)
     global totient_sum_small
-    if not totient_sum_small:
+    if not reuse_calc or not totient_sum_small:
         totient_range_small = totient_range(cutoff)
         # Convert totient range to totient sum
         totient_sum_small = totient_range_small[:]

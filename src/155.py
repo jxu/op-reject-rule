@@ -12,14 +12,51 @@
 # Also for summing, V_1 + V_1 + V_1 is covered by V_2 + V_1.
 # Not sure about simplifying series formula.
 
+# Timing: Thinkpad laptop, pypy 5.10.0
+# product_combo: 4m 25s
+''' Work done (starting at i=2)
+1
+3
+11
+28
+92
+241
+731
+1996
+5886
+16062
+47046
+128199
+367782
+1008049
+2854769
+7768320
+21898513
+'''
+
+
 from fractions import Fraction
-from itertools import product, chain
+from itertools import product, chain, combinations_with_replacement
+from collections import Counter
 
 def partitions(n, I=1):  # Credit: skovorodkin
     yield (n,)
     for i in range(I, n//2 + 1):
         for p in partitions(n-i, i):
             yield (i,) + p
+
+
+def product_combo(vals, part):
+    blocks = [vals[ind] for ind in part]
+    return product(*blocks)
+
+def ordered_product_combo(vals, part):
+    cnt = Counter()
+    for ind in part: cnt[ind] += 1
+    blocks = [combinations_with_replacement(vals[i], cnt[i]) for i in cnt]
+    return [list(chain(*combo)) for combo in product(*blocks)]
+
+
 
 
 def D(n):
@@ -30,14 +67,18 @@ def D(n):
         work = 0
         for part in partitions(i):
             if len(part) < 2: continue
-            blocks = list(vals[ind] for ind in part)
-            for combo in product(*blocks):
+            for combo in ordered_product_combo(vals, part):
                 vals[i].add(sum(combo))  # Parallel
                 vals[i].add(1/sum(1/x for x in combo))  # Series
                 work += 1
 
         print(i, work, len(vals[i]))
+        #print(work)
 
     return len(set(chain(*vals)))
 
+
+#vals = [0, (1,), (1, 2, 3)]
+#print(list(ordered_product_combo(vals, (1, 2, 2))))
 print(D(18))
+

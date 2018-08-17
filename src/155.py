@@ -13,26 +13,7 @@
 # Not sure about simplifying series formula.
 
 # Timing: Thinkpad laptop, pypy 5.10.0
-# product_combo: 4m 25s
-''' Work done (starting at i=2)
-1
-3
-11
-28
-92
-241
-731
-1996
-5886
-16062
-47046
-128199
-367782
-1008049
-2854769
-7768320
-21898513
-'''
+# product_combo: 4m 25s, 21898513 work done
 
 
 from fractions import Fraction
@@ -60,11 +41,11 @@ def ordered_product_combo(vals, part):
 
 
 def D(n):
-    vals = [set() for i in range(n+1)]
+    vals = [set() for _ in range(n+1)]
     vals[1].add(Fraction(1))
+    work = 0
 
     for i in range(2, n+1):
-        work = 0
         for part in partitions(i):
             if len(part) < 2: continue
             for combo in ordered_product_combo(vals, part):
@@ -73,12 +54,29 @@ def D(n):
                 work += 1
 
         print(i, work, len(vals[i]))
-        #print(work)
 
     return len(set(chain(*vals)))
 
 
-#vals = [0, (1,), (1, 2, 3)]
-#print(list(ordered_product_combo(vals, (1, 2, 2))))
-print(D(18))
+# It turns out we don't need to partition at all, just use blocks (1, i-1),
+# (2, i-2), ... why this works no idea
+# 2m 58s with same timing method
+def D2(n):
+    vals = [set() for _ in range(n+1)]
+    vals[1].add(Fraction(1))
+    work = 0
+
+    for i in range(2, n+1):
+        for j in range(1, i):
+            for combo in product(vals[j], vals[i-j]):
+                vals[i].add(sum(combo))
+                vals[i].add(1/sum(1/x for x in combo))
+                work += 1
+
+        print(i, work, len(vals[i]))
+
+    return len(set(chain(*vals)))
+
+
+print(D2(18))
 

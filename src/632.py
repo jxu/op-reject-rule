@@ -11,7 +11,7 @@
 # This is the generalized inclusion-exclusion principle and the coefficient for
 # the intersection of m sets is (-1)^(m+k) C(m, k)
 
-from number import sieve, combination
+from number import sieve, combination, product
 
 def C(N):
     sqrt_N = int(N**0.5)
@@ -25,19 +25,14 @@ def C(N):
             if n % p**2 == 0:
                 p_count[n] = None
 
-    result = 1
-    k = 0
-    while True:
-        s = 0
-        for n in range(1, sqrt_N+1):
-            if p_count[n] == None: continue
-            s += ((-1)**(p_count[n]+k)) * combination(p_count[n], k) * (N//n**2)
+    C_k = [0] * (max(p_count)+1)
+    for n in range(1, sqrt_N + 1):
+        if p_count[n] == None: continue
+        for k in range(len(C_k)):
+            C_k[k] += ((-1)**(p_count[n]+k)) * \
+                         combination(p_count[n], k) * (N//n**2)
 
-        if s == 0: break
-        print(k, s)
-        result *= s
-        k += 1
-
-    return result
+    print(C_k)
+    return product(C_k)
 
 print(C(10**16)) % 1000000007

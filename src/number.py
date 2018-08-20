@@ -9,7 +9,7 @@ set_prime_100 = set(prime_100)
 
 
 def sieve(n):
-    """Sieve of Eratosthenes. Returns a list. About O(n)"""
+    """Sieve of Eratosthenes. Returns a list of primes below n. About O(n)"""
     nums = [0] * n
     for i in range(2, int(n**0.5)+1):
         if nums[i] == 0:

@@ -60,7 +60,7 @@ def D(n):
 
 # It turns out we don't need to partition at all, just use blocks (1, i-1),
 # (2, i-2), ... why this works no idea
-# 2m 58s with same timing method
+# 2m 58s with same timing method. 25465598 work done
 def D2(n):
     vals = [set() for _ in range(n+1)]
     vals[1].add(Fraction(1))

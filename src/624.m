@@ -43,9 +43,9 @@ lucasMod[n_, mod_] :=
 
 mod = 1000000009; n = 10^18;
 (* Use formula from p[n] but multiply numerator and denominator by x^-2 = 2^2n
-   to get integer numerator a and denominator b  *)
-a = Mod[fibMod[n - 1, mod]*PowerMod[2, n, mod] +
-    fibMod[2 n - 1, mod] - lucasMod[n, mod]*fibMod[n - 1, mod], mod];
+   to get integer numerator a and denominator b
+   Also, as it turns out F_{2n-1} - L_n F{n-1} = -(-1)^n by prev recurrence *)
+a = Mod[fibMod[n - 1, mod]*PowerMod[2, n, mod] - (-1)^n, mod];
 b = Mod[PowerMod[2, 2 n, mod] -
     PowerMod[2, n, mod]*lucasMod[n, mod] + (-1)^n, mod];
 

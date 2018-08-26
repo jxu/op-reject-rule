@@ -14,7 +14,7 @@ Code for an elegant, concise language.*
     500 501 504 527 545 561 581
     605 624 625
 
-Celebrating ~~125~~ ~~150~~ 175 solved!
+Celebrating ~~125~~ ~~150~~ ~~175~~ 200 solved!
 
 Some features of number.py:
 

@@ -1,17 +1,14 @@
-altTotal[x_] := Total@x[[;; ;; 2]] - Total@x[[2 ;; ;; 2]];
+(* The idea is to use the sum of the product of all 7-tuples of
+   $1/p^2$ for prime $p$.
+   This can be written in terms of $(s), the prime zeta function:
+   P(s) = \sum_p p^(-s)
 
-(*Memoize prime Zeta function *)
-primeZeta[s_] := primeZeta[s] = Total@N[(Prime@Range[10^6])^-s];
+   The polynomials used for inclusion-exclusion correspond to the cyclic index
+   of the symmetric group with order 7, up to sign. http://oeis.org/A181897
+   Not sure why. Then calculate the same for 8 and 9.
+   https://math.stackexchange.com/q/2890574    *)
 
-inex[n_, zeta_: primeZeta] :=
- Module[{productPairs, summands},
-  productPairs = Subsets[Range[n], {2}];
-  summands = Table[
-    conComp = 
-     ConnectedComponents /@ 
-      Map[Join[#, Table[{i, i}, {i, 1, n}]] &, 
-       Subsets[productPairs, {depth}]];
-    Total[Times @@@ Map[zeta[2 Length[#]] &, conComp, {2}]],
-    {depth, 1, Length[productPairs]}];
-  Return[(zeta[2]^n - altTotal[summands])/n!]
-  ]
+primeZeta[n_] := primeZeta[n] = Total[N[Prime@Range[10^5]^-n]];
+f[m_, zeta_] := ((-1)^m)
+  CycleIndexPolynomial[SymmetricGroup[m], -zeta /@ Range[2, 2 m, 2]];
+Total@Table[-(-1)^k Binomial[k, 7]*f[k, primeZeta], {k, 7, 9}]

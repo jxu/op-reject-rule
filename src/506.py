@@ -1,18 +1,18 @@
-seq = (1, 2, 3, 4, 3, 2)
-pos = 0
+prefix = (123432, 234321, 343212, 432123, 321234, 212343)
+seq = (0, 1, 2, 3, 4, 32, 123, 43, 2123, 432, 1234, 32123, 43212, 34321, 23432)
+seq_len = (0, 1, 1, 1, 1, 2, 3, 2, 4, 3, 4, 5, 5, 5, 5)
+pos     = (0, 0, 1, 2, 3, 4, 0, 3, 5, 3, 0, 4, 3, 2, 1)
 
-for i in range(1, 50):
-    digit_sum = 0
-    digit_seq = 0
-    digits = 0
-    old_pos = pos
+M = 123454321
 
-    while digit_sum != i:
-        d = seq[pos]
-        digit_sum += d
-        digit_seq = 10*digit_seq + d
+def sum_pow10(t):
+    # Calculates Sum_[k=0..t] (t-k+1) 10^(6k) mod M
+    # Before mod M this is 1, 1 000002, 1 000002 000003, etc.
+    # Mathematica: (-1999999 + 10^(12 + 6t) - 999999t) / 999998000001
+    return (96017284 * (-1999999 + pow(10, 12+6*t, M) - 999999*t)) % M
 
-        pos = (pos+1) % len(seq)
-        digits += 1
+for i in range(15):
+    x = prefix[pos[i]] * 10**seq_len[i] + seq[i]
+    print(i, x)
 
-    print("{:>2}  {}{:>4}  {}".format(digit_sum, old_pos, digits, digit_seq))
+print(sum_pow10(1))

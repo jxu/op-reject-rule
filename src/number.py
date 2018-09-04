@@ -236,17 +236,17 @@ def highly_composite():
     return hc
 
 
-def mul_inv(a, b):
-    """Modular multiplicative inverse, a^-1 mod b. Credit: rosettacode.org"""
-    b0 = b
+def mul_inv(a, m):
+    """Modular multiplicative inverse, a^-1 mod m. Credit: rosettacode.org"""
+    m0 = m
     x0, x1 = 0, 1
-    if b == 1: return 1
+    if m == 1: return 1
     while a > 1:
-        assert b != 0, "a and b must be coprime"
-        q = a // b
-        a, b = b, a%b
+        assert m != 0, "a and m must be coprime"
+        q = a // m
+        a, m = m, a%m
         x0, x1 = x1 - q * x0, x0
-    if x1 < 0: x1 += b0
+    if x1 < 0: x1 += m0
     return x1
 
 

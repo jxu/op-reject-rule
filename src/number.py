@@ -4,7 +4,8 @@ import math
 import random
 
 
-prime_100 = (2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47, 53, 59, 61, 67, 71, 73, 79, 83, 89, 97)
+prime_100 = (2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47, 53, 59, 61,
+             67, 71, 73, 79, 83, 89, 97)
 set_prime_100 = set(prime_100)
 
 
@@ -25,10 +26,12 @@ def sieve_set(n):
 
 
 def is_prime(n, trials=20):
-    """Returns whether a number is prime or not using Miller-Rabin. Credit: Albert Sweigart
+    """Returns whether a number is prime or not using Miller-Rabin.
+    Credit: Albert Sweigart
     First check divisibility by small primes (below 100).
     Deterministic variant by checking small set of potential witnesses.
-    Smallest number requiring first n prime numbers is A006945."""
+    Smallest number requiring first n prime numbers is A006945.
+    """
     if n < 2: return False
     # Small trial division
     if n in set_prime_100: return True
@@ -81,7 +84,9 @@ def is_prime(n, trials=20):
 
 
 def is_square(n):
-    """Returns if a number is square without floating point math. Credit: Alex Martelli"""
+    """Returns if a number is square without floating point math.
+    Credit: Alex Martelli
+    """
     if n == 1: return True
     x = n // 2
     seen = set([x])
@@ -147,9 +152,12 @@ def permutation(n, k):
 
 
 def take_closest(l, n, bisect=True):
-    """If bisect (binary search): Assumes l is sorted. Returns closest value to n.
-    If two numbers are equally close, return the smallest number. Credit: Lauritz V. Thaulow
-    If not bisect: Use lambda and min to go through list, O(n) time."""
+    """If bisect (binary search): Assumes l is sorted.
+    Returns closest value to n.
+    If two numbers are equally close, return the smallest number.
+    Credit: Lauritz V. Thaulow
+    If not bisect: Use lambda and min to go through list, O(n) time.
+    """
     if bisect:
         from bisect import bisect_left
         pos = bisect_left(l, n)
@@ -182,7 +190,7 @@ def lcm(a, b):
 
 def lcm_n(n):
     """Find lcm of integers 1 to n.
-    Skip calculating lcm for 1 to n/2 since those are covered by the upper half"""
+    Skip calculating for 1 to n/2 since those are covered by the upper half"""
     x = 1
     for i in range(max(n//2, 1), n+1):
         x = lcm(x, i)
@@ -260,7 +268,8 @@ def powerset(iterable):
 
 def custom_powerset(s, min_size, max_size):
     from itertools import chain, combinations
-    return chain.from_iterable(combinations(s, r) for r in range(min_size, max_size+1))
+    return chain.from_iterable(
+        combinations(s, r) for r in range(min_size, max_size+1))
 
 
 def memoize(obj):
@@ -370,8 +379,9 @@ def totient_sum(n, reuse_calc=False):
 
 
 def totient_range(n):
-    """Calculates all totients in a range using a sieve and Euler's product formula for O(n log log n) time.
-    Credit: Marcus Stuhr"""
+    """Calculates all totients in a range using a sieve and Euler's product
+    formula for O(n log log n) time. Credit: Marcus Stuhr
+    """
     tots = list(range(n+1))
     for p in range(2, n+1):
         if p == tots[p]:
@@ -447,9 +457,10 @@ def prime_count_sieve(n, primes):
     return bisect(primes, n)
 
 
-# Global list because python, though supposedly passing by assignment, runs way faster with the globals :/
-# I have yet to figure out passing efficiently (and the whole exercise is largely pointless compared to rewriting in
-# a faster language)
+# Global list because python, though supposedly passing by assignment, runs way
+# faster with the globals :/
+# I have yet to figure out passing efficiently (and the whole exercise is
+# largely pointless compared to rewriting in a faster language)
 _prime_count_p = None
 _prime_count_limit = 10**4
 
@@ -485,7 +496,8 @@ def prime_count(n):
     """Prime-counting function using the Meissel-Lehmer algorithm.
     Algorithm credit: user448810 (programming praxis)
     Fiddly rounding from danaj (Dana Jacobsen)
-    https://programmingpraxis.com/2011/07/22/counting-primes-using-legendres-formula/#comment-5958
+    https://programmingpraxis.com/
+    2011/07/22/counting-primes-using-legendres-formula/#comment-5958
     """
     # a-th prime for small a (1-indexed)
     global _prime_count_p
@@ -526,7 +538,7 @@ def perm_unique_helper(listunique,result_list,d):
 
 
 def fib_list(n):
-    """Returns list of Fibonacci numbers up to F_n, with F[0] = 0 and F[1] = 1"""
+    """Returns list of Fibonacci nums up to F_n, with F[0] = 0 and F[1] = 1"""
     fib = [0, 1] + [0]*(n-1)
     for i in range(2, n+1):
         fib[i] = fib[i-1] + fib[i-2]

@@ -79,5 +79,15 @@ class PrimeCountTest(unittest.TestCase):
             self.assertEqual(number.prime_count(10**i), powers_10[i])
 
 
+class MobiusRangeTest(unittest.TestCase):
+    """Tests the Mobius range function"""
+    def test_mobius(self):
+        small_mus = [0,1,-1,-1,0,-1,1,-1,0,0,1,-1,0,-1,1,1,0,-1,0,-1,
+                     0,1,1,-1,0,0,1,0,0,-1,-1]
+        n = len(small_mus)-1
+        primes = number.sieve(n)
+
+        self.assertEqual(number.mobius_range(n, primes), small_mus)
+
 if __name__ == "__main__":
     unittest.main(verbosity=2)

@@ -377,6 +377,22 @@ def totient_range(n):
     return tots
 
 
+def mobius_range(n, primes):
+    '''Computes Möbius function for 0 to n using sieve approach.
+    Requires primes to contain all primes below n.
+    https://mathoverflow.net/a/200392
+    '''
+    mus = [1] * (n+1)
+    mus[0] = 0
+    for p in primes:
+        for i in range(p, n+1, p):
+            mus[i] *= -1
+        for i in range(p**2, n+1, p**2):
+            mus[i] = 0
+
+    return mus
+
+
 def ruler(n, p):
     """Calculates max integer a such that p^a divides n."""
     a = 0

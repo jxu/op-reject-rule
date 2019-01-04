@@ -85,6 +85,7 @@ def is_prime(n, trials=20):
 
 def is_square(n):
     """Returns if a number is square without floating point math.
+    Also consider gmpy2.is_square()
     Credit: Alex Martelli
     """
     if n == 1: return True
@@ -100,12 +101,6 @@ def is_square(n):
 def is_square_fp(n):
     """Returns if a number is square, avoiding some floating point errors"""
     return int(n**0.5 + 0.5)**2 == n
-
-
-def is_square_gmpy(n):
-    # Better to just import gmpy directly?
-    import gmpy2
-    return gmpy2.is_square(n)
 
 
 def is_close(a, b, tol=1e-9):
@@ -151,29 +146,25 @@ def permutation(n, k):
     return product(range(n-k+1, n+1))
 
 
-def take_closest(l, n, bisect=True):
+def take_closest(l, n):
     """If bisect (binary search): Assumes l is sorted.
     Returns closest value to n.
     If two numbers are equally close, return the smallest number.
     Credit: Lauritz V. Thaulow
     If not bisect: Use lambda and min to go through list, O(n) time.
     """
-    if bisect:
-        from bisect import bisect_left
-        pos = bisect_left(l, n)
-        if pos == 0:
-            return l[0]
-        if pos == len(l):
-            return l[-1]
-        before = l[pos - 1]
-        after = l[pos]
-        if after - n < n - before:
-           return after
-        else:
-           return before
-
+    from bisect import bisect_left
+    pos = bisect_left(l, n)
+    if pos == 0:
+        return l[0]
+    if pos == len(l):
+        return l[-1]
+    before = l[pos - 1]
+    after = l[pos]
+    if after - n < n - before:
+       return after
     else:
-        return min(l, key=lambda x:abs(x-n))
+       return before
 
 
 def gcd(a, b):
@@ -236,14 +227,6 @@ def product(iterable):
     return product
 
 
-def highly_composite():
-    hc = []
-    with open("highly_composite.txt", 'r') as f:
-        for rows in f:
-            hc.append(int(rows.split(' ')[1]))
-    return hc
-
-
 def mul_inv(a, m):
     """Modular multiplicative inverse, a^-1 mod m. Credit: rosettacode.org"""
     m0 = m
@@ -260,7 +243,8 @@ def mul_inv(a, m):
 
 def powerset(iterable):
     """From itertools recipes
-    powerset([1,2,3]) --> () (1,) (2,) (3,) (1,2) (1,3) (2,3) (1,2,3)"""
+    powerset([1,2,3]) --> () (1,) (2,) (3,) (1,2) (1,3) (2,3) (1,2,3)
+    """
     from itertools import chain, combinations
     s = list(iterable)
     return chain.from_iterable(combinations(s, r) for r in range(len(s) + 1))
@@ -394,7 +378,7 @@ def totient_range(n):
 
 
 def ruler(n, p):
-    """Counts max a such that p^a divides n."""
+    """Calculates max integer a such that p^a divides n."""
     a = 0
     while n % p == 0:
         n //= p
@@ -451,7 +435,8 @@ def is_smooth(n, primes):
 
 def prime_count_sieve(n, primes):
     """Poor man's prime-counting function. Requires a sorted list of primes
-    with primes[0] == 2"""
+    with primes[0] == 2
+    """
     assert primes[0] == 2
     from bisect import bisect
     return bisect(primes, n)
@@ -510,14 +495,16 @@ def prime_count(n):
     return _pi(n)
 
 
-class unique_element:
-    def __init__(self,value,occurrences):
-        self.value = value
-        self.occurrences = occurrences
 
 
 def unique_permutations(elements):
     """Like itertools.permutations but without duplicates. Credit: Luka Rahne"""
+
+    class unique_element:
+        def __init__(self, value, occurrences):
+            self.value = value
+            self.occurrences = occurrences
+
     eset=set(elements)
     listunique = [unique_element(i,elements.count(i)) for i in eset]
     u=len(elements)

@@ -12,10 +12,12 @@ class IsPrimeTest(unittest.TestCase):
         self.assertFalse(number.is_prime(0))
         self.assertFalse(number.is_prime(1))
 
-    def test_1000(self):
-        import gmpy2
-        for n in range(2, 1000):
-            self.assertEqual(number.is_prime(n), gmpy2.is_prime(n), msg=n)
+    def test_100(self):
+        primes_100 = {2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47,
+                      53, 59, 61, 67, 71, 73, 79, 83, 89, 97}
+
+        for n in range(2, 100):
+            self.assertEqual(number.is_prime(n), n in primes_100)
 
     def test_strong_pseudoprimes(self):
         """Tests strong pseudoprimes base 2: A001262"""

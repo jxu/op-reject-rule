@@ -1,6 +1,6 @@
 # Commonly used number-related functions
 from __future__ import division
-import math
+import operator
 import random
 
 
@@ -227,6 +227,19 @@ def product(iterable):
     return product
 
 
+def accumulate(iterable, func=operator.add):
+    '''Return running totals, like itertools.accumulate'''
+    it = iter(iterable)
+    try:
+        total = next(it)
+    except StopIteration:
+        return
+    yield total
+    for element in it:
+        total = func(total, element)
+        yield total
+
+
 def mul_inv(a, m):
     """Modular multiplicative inverse, a^-1 mod m. Credit: rosettacode.org"""
     m0 = m
@@ -327,20 +340,25 @@ def totient_sum_79(N):
 # "Public" (no leading underscore) for now
 totient_sum_large = dict()  # Can implement as array for minor speedup
 totient_sum_small = None
+totient_small_cutoff = -1
 
-def totient_sum(n, reuse_calc=False):
+def totient_sum(n):
     '''Follows the ideas outlined in my writeup plus sieving for about O(n^2/3)
-    https://math.stackexchange.com/a/1740370'''
-    cutoff = int(n**0.66)
-    global totient_sum_small
-    if not reuse_calc or not totient_sum_small:
+    Also saves precalculated values in global variables
+    https://math.stackexchange.com/a/1740370
+    '''
+
+    cutoff = int(n**(2/3))
+    global totient_small_cutoff
+
+    if cutoff > totient_small_cutoff:
+        # Recalculate small totient range
         totient_range_small = totient_range(cutoff)
+        totient_small_cutoff = cutoff
+
         # Convert totient range to totient sum
-        totient_sum_small = totient_range_small[:]
-        sum_so_far = 0
-        for i in range(len(totient_range_small)):
-            sum_so_far += totient_range_small[i]
-            totient_sum_small[i] = sum_so_far
+        totient_sum_small = list(accumulate(totient_range_small))
+
 
     def _Phi(n):
         if n < cutoff:

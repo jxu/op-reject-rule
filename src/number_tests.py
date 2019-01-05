@@ -56,6 +56,17 @@ class PhiTest(unittest.TestCase):
         self.assertEqual(number.totient_sum(10000), 30397486)
 
 
+class TotientSumTest(unittest.TestCase):
+    """Test Totient summatory function"""
+    # https://oeis.org/A064018
+    def test_totient_sum(self):
+        powers_10 = [1, 32, 3044, 304192, 30397486, 3039650754, 303963552392,
+                     30396356427242]
+        for i in range(len(powers_10)):
+            self.assertEqual(number.totient_sum(10**i), powers_10[i])
+
+
+
 class IsSquareTest(unittest.TestCase):
     """Checks is_square (non floating point version) against obvious numbers"""
     def test_values(self):

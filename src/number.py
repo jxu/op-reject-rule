@@ -324,6 +324,7 @@ def totient_sum_79(N):
 
 
 # Save calculated values for future use (problem 625)
+# "Public" (no leading underscore) for now
 totient_sum_large = dict()  # Can implement as array for minor speedup
 totient_sum_small = None
 

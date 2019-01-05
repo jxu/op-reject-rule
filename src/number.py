@@ -352,11 +352,12 @@ def totient_sum(n):
     global totient_small_cutoff
 
     if cutoff > totient_small_cutoff:
+        totient_small_cutoff = cutoff
         # Recalculate small totient range
         totient_range_small = totient_range(cutoff)
-        totient_small_cutoff = cutoff
 
         # Convert totient range to totient sum
+        global totient_sum_small
         totient_sum_small = list(accumulate(totient_range_small))
 
 
@@ -381,21 +382,29 @@ def totient_sum(n):
     return _Phi(n)
 
 
+mertens_large = dict()
+mertens_small = None
+mertens_small_cutoff = -1
 
 def mertens(n, primes):
     '''Calculates Mertens function M(n) in a very similar approach to totient
-    sum, but doesn't save any values.
-    primes must contain primes up to cutoff value n^(2/3)
+    sum. primes must contain primes up to cutoff value n^(2/3)
     https://mathoverflow.net/a/320042
     '''
-    mertens_large = dict()
+    assert n >= 1
     cutoff = int(n**(2/3))
+    global mertens_small_cutoff
 
-    mobius_small = mobius_range(cutoff, primes)
-    mertens_small = list(accumulate(mobius_small))
+    if cutoff > mertens_small_cutoff:
+        mertens_small_cutoff = cutoff
+        mobius_small = mobius_range(cutoff, primes)
+        global mertens_small
+        mertens_small = list(accumulate(mobius_small))
+
 
     def M(n):
         if n < cutoff:
+            global mertens_small
             return mertens_small[n]
 
         if n in mertens_large:
@@ -438,6 +447,7 @@ def mobius_range(n, primes):
     mus = [1] * (n+1)
     mus[0] = 0
     for p in primes:
+        if p > n: break
         for i in range(p, n+1, p):
             mus[i] *= -1
         for i in range(p**2, n+1, p**2):
@@ -599,6 +609,29 @@ def fib_list(n):
     for i in range(2, n+1):
         fib[i] = fib[i-1] + fib[i-2]
     return fib
+
+
+def combo_max_product(X, terms, max_product):
+    '''Like itertools.combinations(X, terms) but only picks values whose
+    product is <= max_product.
+    '''
+    assert sorted(X) == X  # To keep track of index
+    result = []
+
+    def f(last_i, terms_so_far, product_):
+        if len(terms_so_far) == terms:
+            result.append(terms_so_far)
+            return
+
+        for i in range(last_i, len(X)):
+            new_product = product_ * X[i]
+            if new_product <= max_product:
+                f(i+1, terms_so_far + [X[i]], new_product)
+            else:  # Product too large already
+                break
+
+    f(0, [], 1)
+    return result
 
 
 if __name__ == "__main__":

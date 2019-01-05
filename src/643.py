@@ -15,8 +15,8 @@
 # Let r be an odd number. Since mu(r) is multiplicative,
 # mu(2r) = -mu(r) and mu(4r) = mu(8r) = ... = 0.
 #
-# So splitting M(n), the standard Mertens function, by even and odd n,
-# we only need to consider odd n and even n not divisible by 4.
+# So splitting M(n) = \sum_{k=1}^n mu(k), the standard Mertens function, by
+# even and odd k, we only need to consider odd k and even k not divisible by 4.
 # This gives the identity M(n) = M*(n) - M*(n/2) or equivalently
 # M*(n) = M(n) + M*(n/2), so with a sublinear algorithm to calculate the
 # Mertens function we have our odd Mertens function too.

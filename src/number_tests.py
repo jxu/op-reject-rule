@@ -102,5 +102,22 @@ class MobiusRangeTest(unittest.TestCase):
 
         self.assertEqual(number.mobius_range(n, primes), small_mus)
 
+
+class MertensTest(unittest.TestCase):
+    def test_small(self):
+        primes = number.sieve(10)
+        mertens_small = (0,1,0,-1,-1,-2,-1,-2,-2,-2,-1,-2,
+                         -2,-3,-2,-1,-1,-2,-2,-3,-3)
+        for i in range(1, len(mertens_small)):
+            self.assertEqual(number.mertens(i, primes), mertens_small[i])
+
+    def test_pow10(self):
+        primes = number.sieve(10**5)
+        powers_10 = (1, -1, 1, 2, -23, -48, 212, 1037)
+        for i in range(1, len(powers_10)):
+            self.assertEqual(number.mertens(10**i, primes), powers_10[i])
+
+
+
 if __name__ == "__main__":
     unittest.main(verbosity=2)

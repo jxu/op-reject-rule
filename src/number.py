@@ -381,6 +381,40 @@ def totient_sum(n):
     return _Phi(n)
 
 
+
+def mertens(n, primes):
+    '''Calculates Mertens function M(n) in a very similar approach to totient
+    sum, but doesn't save any values.
+    primes must contain primes up to cutoff value n^(2/3)
+    https://mathoverflow.net/a/320042
+    '''
+    mertens_large = dict()
+    cutoff = int(n**(2/3))
+
+    mobius_small = mobius_range(cutoff, primes)
+    mertens_small = list(accumulate(mobius_small))
+
+    def M(n):
+        if n < cutoff:
+            return mertens_small[n]
+
+        if n in mertens_large:
+            return mertens_large[n]
+
+        isqrtn = int(n**0.5)
+        s = 1
+        for x in range(2, isqrtn+1):
+            s -= M(n // x)
+
+        for y in range(1, isqrtn + (isqrtn != n // isqrtn)):
+            s -= (n//y - n//(y+1)) * M(y)
+
+        mertens_large[n] = s
+        return s
+
+    return M(n)
+
+
 def totient_range(n):
     """Calculates all totients in a range using a sieve and Euler's product
     formula for O(n log log n) time. Credit: Marcus Stuhr

@@ -9,7 +9,7 @@
 # - \sum_{(p,q,r) \in (O choose 3)} (N//2pqr choose 2) + ...
 #
 # This is exactly
-# f(N) = \sum_{odd n} (N//2n choose 2) \mu(n)$$
+# f(N) = \sum_{odd n} (N//2n choose 2) \mu(n)
 # Let M*(n) be the odd Mertens function, defined by
 # M*(n) = \sum \mu(k) for odd k, 1 <= k <= n.
 # Let r be an odd number. Since mu(r) is multiplicative,
@@ -41,6 +41,7 @@ small_mobius = mobius_range(int(N**0.5), primes)
 
 @memoize
 def odd_mertens(n):
+    # May save computation to use small_mobius to calculate small odd_mertens
     if n < 1: return 0
     return mertens(n, primes) + odd_mertens(n//2)
 

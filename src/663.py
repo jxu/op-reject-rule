@@ -4,8 +4,8 @@
 # For each update of array A, update square-root size segment and
 # associated values:
 # u[si] = segment sum
-# s[si] = max subarray sum using seg start value (or empty)
-# e[si] = max subarray sum using seg end value (or empty)
+# p[si] = max prefix sum
+# s[si] = max suffix sum
 # w[si] = max subarray sum within seg
 
 # then for each step, updating associated seg values is O(sqrt(n)) and
@@ -13,7 +13,7 @@
 
 from math import ceil
 
-def max_start_sum(seg):
+def max_prefix_sum(seg):
     best = s = 0
     for x in seg:
         s += x
@@ -21,8 +21,8 @@ def max_start_sum(seg):
 
     return best
 
-def max_end_sum(seg):
-    return max_start_sum(reversed(seg))
+def max_suffix_sum(seg):
+    return max_prefix_sum(reversed(seg))
 
 def max_subsum(seg):
     # Regular Kadane's algorithm
@@ -33,6 +33,14 @@ def max_subsum(seg):
 
     return best
 
+def update_seg(A, Aj_delta, seglen, si, u, p, s, w):
+    seg = A[si * seglen: (si + 1) * seglen]
+
+    u[si] += Aj_delta
+    p[si] = max_prefix_sum(seg)
+    s[si] = max_suffix_sum(seg)
+    w[si] = max_subsum(seg)
+
 
 def S(n, l_lo, l_hi):
     A = [0] * n
@@ -40,8 +48,8 @@ def S(n, l_lo, l_hi):
     seglen = int(n**0.5)
     nseg = ceil(n / seglen)
     u = [0] * nseg
+    p = [0] * nseg
     s = [0] * nseg
-    e = [0] * nseg
     w = [0] * nseg
 
     # pre-compute Tribonacci numbers
@@ -55,41 +63,32 @@ def S(n, l_lo, l_hi):
     for i in range(1, l_hi+1):
         # perform array update
         j = t[2*i-2] % n
-        A[j] += 2*(t[2*i-1] % n) - n + 1
+        Aj_delta = 2*(t[2*i-1] % n) - n + 1
+        A[j] += Aj_delta
 
         if i <= l_lo: continue
 
         # init seg associated values
         if i == l_lo+1:
             for si in range(nseg):
-                seg = A[si*seglen : (si+1)*seglen]
-
-                u[si] = sum(seg)
-                s[si] = max_start_sum(seg)
-                e[si] = max_end_sum(seg)
-                w[si] = max_subsum(seg)
+                update_seg(A, Aj_delta, seglen, si, u, p, s, w)
 
         si = j // seglen  # segment index
-        seg = A[si*seglen : (si+1)*seglen]
-
-        u[si] = sum(seg)
-        s[si] = max_start_sum(seg)
-        e[si] = max_end_sum(seg)
-        w[si] = max_subsum(seg)
+        update_seg(A, Aj_delta, seglen, si, u, p, s, w)
 
         M = 0
         msum = 0
         # custom Kadane's algorithm for segments
         for k in range(nseg):
             # Either start segment here or continue last segment
-            msum = max(e[k], msum + u[k])
+            msum = max(s[k], msum + u[k])
 
-            msume = msum
-            if k+1 < nseg: msume += s[k+1]
-            M = max(M, msume)
+            msump = msum  # include prefix of next segment
+            if k+1 < nseg: msump += p[k+1]
+            M = max(M, msump)
 
         M = max(M, max(w))
-        #print(M)
+        print(i, M)
         Mtotal += M
 
     return Mtotal

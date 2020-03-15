@@ -16,7 +16,7 @@ Code for an elegant, concise language.*
 
 Celebrating ~~125~~ ~~150~~ ~~175~~ 200 solved!
 
-Some features of number.py:
+**Some features of number.py:**
 
 - Simple Sieve of Eratosthenes
 - Miller-Rabin primality test with potential witnesses
@@ -27,4 +27,9 @@ Some features of number.py:
 int to base conversion, etc.
 
 <sub>*And occasionally C/C++ for speed, Mathematica for math, etc.</sub>
+
+**Todo:**
+
+- 199: x86 ver
+- 663: C sqrt decomposition and also segment tree implementation
 

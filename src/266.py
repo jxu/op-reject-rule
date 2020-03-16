@@ -8,14 +8,14 @@ from bisect import bisect_left
 primes = sieve(190)
 target = product(primes)**0.5
 
+def find_lt(a, x):
+    return a[bisect_left(a, x) - 1]
+
 A = primes[:len(primes)//2]
 B = primes[len(primes)//2:]
 pA = (product(a) for a in powerset(A))
 pB = sorted(product(b) for b in powerset(B))
 
-PSR = 0
-for pa in pA:
-    i = bisect_left(pB, target/pa)
-    PSR = max(PSR, pB[i-1] * pa)
+PSR = max(pa * find_lt(pB, target/pa) for pa in pA)
+print(PSR % 10**16)
 
-print(PSR)

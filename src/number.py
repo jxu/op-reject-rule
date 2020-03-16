@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 # Commonly used number-related functions
 from __future__ import division
 import operator

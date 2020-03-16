@@ -1,5 +1,7 @@
 # The following were intended to test pypy https://stackoverflow.com/q/44811418
+from number import timeit 
 
+@timeit
 def sieve(n):
     """Sieve of Eratosthenes. Returns a list. About O(n)"""
     count = 0
@@ -14,6 +16,7 @@ def sieve(n):
     return [i for i in range(2, n) if nums[i] == 0]
 
 
+@timeit
 def sieve_var(n):
     """Sieve of Eratosthenes. Returns a list. About O(n)"""
     count = 0
@@ -28,7 +31,8 @@ def sieve_var(n):
     return [2] + [i for i in range(3, n, 2) if nums[i] == 0]
 
 
-def sieve_new(n):
+@timeit
+def sieve_slice(n):
     sieve = [True] * n
     for i in range(3,int(n**0.5)+1,2):
         if sieve[i]:
@@ -38,11 +42,6 @@ def sieve_new(n):
 
 
 if __name__ == "__main__":
-    from time import clock
-    s = clock()
     z = sieve(10**8)
-    r = sieve_var(10**8)
+    r = sieve_slice(10**8)
     print(r == z)
-    print(len(r))
-    print(r[:20])
-    print(clock()-s)

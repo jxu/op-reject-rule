@@ -78,19 +78,20 @@ def S(n, l_lo, l_hi):
         M = 0
         msum = 0
         # custom Kadane's algorithm for segments
-        for k in range(nseg):
+        for si in range(nseg):
             # Either start segment here or continue last segment
-            msum = max(s[k], msum + u[k])
-
-            msump = msum  # include prefix of next segment
-            if k+1 < nseg: msump += p[k+1]
+            msum = max(s[si], msum + u[si])
+            # include prefix of next segment
+            msump = msum + (p[si+1] if si+1 < nseg else 0)
             M = max(M, msump)
 
         M = max(M, max(w))
+        #print(u, p, s, w)
         #print(i, M)
         Mtotal += M
 
     return Mtotal
 
 
+#print(S(5, 0, 6))
 print(S(10**7 + 3, 10**7, 10**7 + 200000))

@@ -33,10 +33,10 @@ def max_subsum(seg):
 
     return best
 
-def update_seg(A, Aj_delta, seglen, si, u, p, s, w):
+def update_seg(A, seglen, si, u, p, s, w):
     seg = A[si * seglen: (si + 1) * seglen]
 
-    u[si] += Aj_delta
+    u[si] = sum(seg)
     p[si] = max_prefix_sum(seg)
     s[si] = max_suffix_sum(seg)
     w[si] = max_subsum(seg)
@@ -71,10 +71,10 @@ def S(n, l_lo, l_hi):
         # init seg associated values
         if i == l_lo+1:
             for si in range(nseg):
-                update_seg(A, Aj_delta, seglen, si, u, p, s, w)
+                update_seg(A, seglen, si, u, p, s, w)
 
         si = j // seglen  # segment index
-        update_seg(A, Aj_delta, seglen, si, u, p, s, w)
+        update_seg(A, seglen, si, u, p, s, w)
 
         M = 0
         msum = 0
@@ -88,7 +88,7 @@ def S(n, l_lo, l_hi):
             M = max(M, msump)
 
         M = max(M, max(w))
-        print(i, M)
+        #print(i, M)
         Mtotal += M
 
     return Mtotal

@@ -52,7 +52,7 @@ def S(n, l_lo, l_hi):
     s = [0] * nseg
     w = [0] * nseg
 
-    # pre-compute Tribonacci numbers
+    # pre-compute Tribonacci numbers mod n
     t = [0] * 2*l_hi
     t[2] = 1
     for k in range(3, 2*l_hi):
@@ -62,9 +62,8 @@ def S(n, l_lo, l_hi):
 
     for i in range(1, l_hi+1):
         # perform array update
-        j = t[2*i-2] % n
-        Aj_delta = 2*(t[2*i-1] % n) - n + 1
-        A[j] += Aj_delta
+        j = t[2*i-2]
+        A[j] += 2*t[2*i-1] - n + 1
 
         if i <= l_lo: continue
 

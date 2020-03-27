@@ -244,6 +244,7 @@ def accumulate(iterable, func=operator.add):
 
 def mul_inv(a, m):
     """Modular multiplicative inverse, a^-1 mod m. Credit: rosettacode.org"""
+    a = a % m  # handle negative input
     m0 = m
     x0, x1 = 0, 1
     if m == 1: return 1

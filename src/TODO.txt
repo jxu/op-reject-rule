@@ -1,0 +1,3 @@
+- 199: x86 ver
+- 461: Use numpy arrays for memory efficiency?
+- 663: C sqrt decomposition and also segment tree implementation

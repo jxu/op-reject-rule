@@ -27,9 +27,3 @@ Celebrating ~~125~~ ~~150~~ ~~175~~ 200 solved!
 int to base conversion, etc.
 
 <sub>*And occasionally C/C++ for speed, Mathematica for math, etc.</sub>
-
-**Todo:**
-
-- 199: x86 ver
-- 663: C sqrt decomposition and also segment tree implementation
-

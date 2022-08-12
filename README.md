@@ -14,7 +14,16 @@ Code for an elegant, concise language.*
     500 501 504 527 545 561 581
     605 624 625 643 663
 
-Celebrating ~~125~~ ~~150~~ ~~175~~ 200 solved!
+**Problems Solved Milestones/Levels**
+
+- Level 1 (25): 25 May 2015
+- Level 2 (50): 13 Jun 2015
+- Level 3 (75): 14 Jul 2015
+- Level 4 (100): 23 Aug 2015
+- Level 5 (125): 13 Oct 2015
+- Level 6 (150): 17 Apr 2016
+- Level 7 (175): 28 Jun 2017
+- Level 8 (200): 26 Aug 2018
 
 **Some features of number.py:**
 

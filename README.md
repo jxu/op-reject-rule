@@ -1,8 +1,10 @@
 Python Project Euler
 ====================
-Code for an elegant, concise language.*
+Code for a ~~elegant, concise~~ terrible computational efficiency language.
 
-*Clean Code, and Keep it simple, stupid!*
+<sub>And occasionally C/C++ for speed, Mathematica for math, etc.</sub>
+
+*Clean Code, and Keep It Simple, Stupid!*
 
 **Solution Highlights**
 
@@ -35,4 +37,4 @@ Code for an elegant, concise language.*
 - Others: binary search, Dijkstra's algorithm, modular multiplicative inverse,
 int to base conversion, etc.
 
-<sub>*And occasionally C/C++ for speed, Mathematica for math, etc.</sub>
+

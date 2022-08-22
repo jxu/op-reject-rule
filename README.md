@@ -14,8 +14,16 @@ Some features of number.py
 - Euler's totient function, totient range, totient sum
 - Timeit and memoization wrapper
 - Prime-counting function using Meissel-Lehmer
-- Others: binary search, Dijkstra's algorithm, modular multiplicative inverse,
-int to base conversion, etc.
+- Others: binary search, Dijkstra's algorithm, modular multiplicative inverse, int to base conversion, etc.
+
+Running the Code
+----------------
+The python code is intended to be run with PyPy3 with JIT. 
+Looking at the [PyPy speed benchmarks](https://speed.pypy.org/comparison/) (benchmarks ai, crypto_pyaes, float, go, pidigits), PyPy3 support is mature enough that (at least for numerical tasks) the speed is the same as PyPy2. 
+Therefore, my old code written to be Python 2.7 compatible should be modified for Python 3. 
+
+By convention, other output is allowed, but the final result should be the last line. 
+Use `time` for overall timing and the timing wrapper for code sections.
 
 Problems Solved Milestones/Levels
 ---------------------------------
@@ -34,7 +42,8 @@ Problems Solved Milestones/Levels
 Solution Highlights
 -------------------
 
-- 5, 12, 14, 17, 18, 21, 23, 24, 26, 32, 36, 37, 43, 51, 57, 62, 65, 66, 68, 70, 76, 79, 82, 86, 88, 89, 96
+- 5, 12, 14, 17, 18, 21, 23, 24, 26, 32, 36, 37, 43, 51, 57, 62, 65, 66, 68, 
+70, 76, 79, 82, 86, 88, 89, 96
 - 100, 101, 102, 107, 108, 111, 113, 114, 122, 126, 128, 131, 137, 144, 148, 152, 154, 158, 178, 199
 - 265
 - 317

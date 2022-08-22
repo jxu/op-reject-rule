@@ -13,3 +13,6 @@ CXXFLAGS = -O3 -Wall -Wextra -std=c++17 -pedantic
 % : %.cpp
 	$(CXX) $(CXXFLAGS) -o $@ $<
 
+.PHONY: clean
+clean:
+	find . -type f -executable -delete

@@ -1,5 +1,4 @@
-c Port of C++ code in FORTRAN 77, for fun~
-c Compile with f77 -O3 -o 154 154.f
+C PORT OF C++ CODE IN FORTRAN 77, FOR FUN...
 
       INTEGER FUNCTION FPOW(F, P)
           INTEGER F, P, X

@@ -1,29 +1,29 @@
 def dist(p0, p1):
     return ((p0[0] - p1[0])**2 + (p0[1] - p1[1])**2) ** 0.5
 
+# split points in linear time
 def left_half(Px, Py, L):
     return ([p for p in Px if p[0] < L],
             [p for p in Py if p[0] < L])
 
 def right_half(Px, Py, L):
-    pass
+    return ([p for p in Px if p[0] >= L],
+            [p for p in Py if p[0] >= L])
 
 
 # requires sorted points sorted by x
 # Px, Py: points sorted by x and y
-def closest_pair(Px):
+def closest_pair(Px, Py):
     n = len(Px)
-    if len(Px) < 2: return float("inf")
-    if len(Px) == 2: return dist(Px[0], Px[1])
+    if n < 2: return float("inf")
+    if n == 2: return dist(Px[0], Px[1])
 
-    m = n//2
+    L =  Px[n//2][0]  # midway line
 
-    L =  Px[m][0]  # midway line
-    D = min(closest_pair(Px[:m]),
-            closest_pair(Px[m:]))
+    D = min(closest_pair(*left_half(Px, Py, L)),
+            closest_pair(*right_half(Px, Py, L)))
     #print(L)
-    Pstrip = [p for p in Px if abs(p[0] - L) < D]
-    Sy = sorted(Pstrip, key=lambda p:p[1])
+    Sy = [p for p in Py if abs(p[0] - L) < D]
 
     for i in range(len(Sy)):
         for j in range(1, 16):
@@ -40,9 +40,11 @@ def d(k):
         if n % 2 == 0:
             P.append(s[-2:])
 
+    print(P[:10])
+
     Px = sorted(P, key=lambda p:p[0])
     Py = sorted(P, key=lambda p:p[1])
 
-    return closest_pair(Px)
+    return closest_pair(Px, Py)
 
-print(round(d(14),9))
+print(round(d(2*10**6),9))

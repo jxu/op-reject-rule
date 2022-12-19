@@ -1,4 +1,4 @@
-# Brute-force: check some near points by x-coordinate
+# Lazy method: check some near points by x-coordinate
 # For random-ish distribution of points, closest pair will have close x coord
 B = 10
 

@@ -41,12 +41,11 @@ def closest_pair(Px, Py):
 def d(k):
     # RNG ensures no pair of points have same x or y coord
     # (unless points repeat)
-    s = [290797]
-    P = []
+    s = 290797
+    P = [0]*k
     for n in range(2*k):
-        s.append(s[-1]**2 % 50515093)
-        if n % 2 == 0:
-            P.append(s[-2] + s[-1]*1j)
+        P[n//2] += s * (1j if n%2 else 1)
+        s = pow(s, 2, 50515093)
 
 
     Px = sorted(P, key=lambda p:p.real)

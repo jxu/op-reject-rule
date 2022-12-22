@@ -1,41 +1,13 @@
-# Find repeating decimal digits via long division and checking remainders
+# Determine nth decimal digit directly: from long division,
+# by subtracting out multiples of k, nth (0-index) remainder is
+# 10^n mod k
 
 def d(n, k):
-    rems = []
-    rems_set = set()
-    qs = []
-    rem = 1
-    rep_i = 0
-    while True:
-        d = rem * 10
-        q = d // k
-        #print(d, q, rem, rems, qs)
-
-        if rem in rems_set:
-            rep_i = rems.index(rem)
-            #print(rep_i, rem, rems, qs)
-            break
-
-        rems.append(rem)
-        rems_set.add(rem)
-        qs.append(q)
-        rem = d - k * q
-
-    #print(rep_i, rems, qs)
-    dec_start = qs[:rep_i]
-    repetend = qs[rep_i:]
-
-    #print(dec_start, repetend)
-    if k % 1000 == 1: print(k, len(repetend))
-    #print(k, rep_i)
-    # len(repetend) = A007732
-
-    idx = (n - 1 - rep_i) % len(repetend)
-    return repetend[idx]
-
-#print(d(4,4))
+    rem = pow(10, n-1, k)
+    q = 10 * rem // k
+    return q
 
 def S(n):
     return sum(d(n,k) for k in range(1,n+1))
 
-print(S(10**6))
+print(S(10**7))

@@ -27,8 +27,10 @@ def d(n, k):
 
     #print(dec_start, repetend)
     if k % 1000 == 1: print(k, len(repetend))
+    #print(k, rep_i)
     # len(repetend) = A007732
-    idx = (n - 1 - len(dec_start)) % len(repetend)
+
+    idx = (n - 1 - rep_i) % len(repetend)
     return repetend[idx]
 
 #print(d(4,4))
@@ -36,4 +38,4 @@ def d(n, k):
 def S(n):
     return sum(d(n,k) for k in range(1,n+1))
 
-print(S(10**5))
+print(S(10**6))

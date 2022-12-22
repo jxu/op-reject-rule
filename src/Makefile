@@ -5,7 +5,7 @@ CFLAGS = -O3 -Wall -Wextra -std=c99 -pedantic
 LDLIBS = -lm  # g++ links automatically
 
 CXX = g++
-CXXFLAGS = -O3 -Wall -Wextra -std=c++17 -pedantic
+CXXFLAGS = -O3 -Wall -Wextra -std=c++2a -pedantic
 
 FC = f77
 FFLAGS = -O3 -Wall -Wextra

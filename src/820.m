@@ -1,0 +1,1 @@
+n = 10^7; Sum[Quotient[10*PowerMod[10, n - 1, k], k], {k, 1, n}]

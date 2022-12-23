@@ -129,15 +129,6 @@ def prime_factors(n, primes):
     return factors
 
 
-def factors(n):
-    """Naive implementation."""
-    # To improve: create all factors using prime factorization
-    f = []
-    for i in range(1, int(n**0.5)+1):
-        if n%i == 0:
-            f += [i]
-            if i != n//i: f += [n//i]
-    return f
 
 
 def combination(n, k):

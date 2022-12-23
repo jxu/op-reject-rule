@@ -6,7 +6,16 @@
 # 10000: (1215, 5441890)
 # 100000: (7672, 344017453)
 # 1000000: (51112, 23089470906)
-from number import factors
+
+def factors(n):
+    """Naive implementation."""
+    # To improve: create all factors using prime factorization
+    f = []
+    for i in range(1, int(n**0.5)+1):
+        if n%i == 0:
+            f += [i]
+            if i != n//i: f += [n//i]
+    return f
 
 MAX_PSNUM = 13000
 sorted_divisors = [factors(n) for n in range(MAX_PSNUM)]

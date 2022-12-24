@@ -1,10 +1,9 @@
-# My experiment with unit tests, for functions in number.py that might be
-# updated often.
+"""Unit tests to ensure commonly used number functions are valid."""
 
 import number
 
-
 def test_is_prime_edge_cases():
+    assert not number.is_prime(-2)
     assert not number.is_prime(-1)
     assert not number.is_prime(0)
     assert not number.is_prime(1)

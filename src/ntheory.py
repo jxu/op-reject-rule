@@ -9,7 +9,10 @@ PRIME_100_SET = set(PRIME_100)
 
 
 def sieve(n):
-    """Sieve of Eratosthenes: returns a list of primes below n, about O(n)"""
+    """Sieve of Eratosthenes: returns a list of primes below n.
+
+    About O(n)
+    """
     nums = [0] * n
     for i in range(2, int(n**0.5)+1):
         if nums[i] == 0:
@@ -22,10 +25,10 @@ def sieve(n):
 def is_prime(n, trials=20):
     """Returns whether a number is prime or not using Miller-Rabin.
 
-    Credit: Albert Sweigart
     First check divisibility by small primes (below 100).
     Deterministic variant by checking small set of potential witnesses.
     Smallest number requiring first n prime numbers is A006945.
+    Credit: Albert Sweigart
     """
     if n < 2: return False
     # Small trial division
@@ -95,16 +98,12 @@ def is_square(n):
 
 
 def is_square_fp(n):
-    """Returns if a number is square, avoiding _some_ floating point errors"""
+    """Returns if a number is square, avoiding _some_ floating point errors."""
     return int(n**0.5 + 0.5)**2 == n
 
 
 def prime_factors(n, primes):
-    """Return all prime factors.
-
-    Requires list of primes up to sqrt(n).
-    """
-
+    """Return all prime factors, requiring list of primes up to sqrt(n)."""
     assert (primes[-1] ** 2 >= n)  # Assert big enough prime factors to test
 
     factors = []
@@ -119,20 +118,22 @@ def prime_factors(n, primes):
 
 
 def gcd(a, b):
-    """Euclid's algorithm. Identical to fractions.gcd(a, b)"""
+    """Identical to fractions.gcd(a, b) (Euclid's algorithm)"""
     while b:
         a, b = b, a%b
     return a
 
 
 def lcm(a, b):
-    """Get lcm by reduction of the gcd"""
+    """Find lcm by reduction of the gcd"""
     return a * b // gcd(a, b)
 
 
 def lcm_n(n):
     """Find lcm of integers 1 to n.
-    Skip calculating for 1 to n/2 since those are covered by the upper half"""
+
+    Skip calculating for 1 to n/2 since those are covered by the upper half
+    """
     x = 1
     for i in range(max(n//2, 1), n+1):
         x = lcm(x, i)
@@ -140,7 +141,7 @@ def lcm_n(n):
 
 
 def phi(n, primes):
-    """Euler's product formula."""
+    """Euler's totient function, using his product formula."""
     if n == 0: return 0
     r = n
     for p in primes:
@@ -156,7 +157,10 @@ def phi(n, primes):
 
 
 def mul_inv(a, m):
-    """Modular multiplicative inverse, a^-1 mod m. Credit: rosettacode.org"""
+    """Modular multiplicative inverse: a^-1 mod m.
+
+    Credit: rosettacode.org
+    """
     a = a % m  # handle negative input
     m0 = m
     x0, x1 = 0, 1
@@ -171,8 +175,9 @@ def mul_inv(a, m):
 
 
 def totient_sum_79(N):
-    """
-    Find the sum of phi(n) for 1 to N. O(log n) space, O(n^(3/4)) time
+    """Find the sum of phi(n) for 1 to N.
+
+    O(log n) space, O(n^(3/4)) time
     Modified from PE 73 overview. Credit: daniel.is.fischer
     See benchmarks file
     """
@@ -229,10 +234,11 @@ totient_sum_small = None
 totient_small_cutoff = -1
 
 def totient_sum(n):
-    '''Follows the ideas outlined in my writeup plus sieving for about O(n^2/3)
+    """Follows the ideas outlined in my writeup plus sieving for about O(n^2/3)
+
     Also saves precalculated values in global variables
     https://math.stackexchange.com/a/1740370
-    '''
+    """
 
     cutoff = int(n**(2/3))
     global totient_small_cutoff
@@ -273,10 +279,12 @@ mertens_small = None
 mertens_small_cutoff = -1
 
 def mertens(n, primes):
-    '''Calculates Mertens function M(n) in a very similar approach to totient
-    sum. primes must contain primes up to cutoff value n^(2/3)
+    """Calculates Mertens function M(n).
+
+    Very similar approach to totient sum.
+    `primes` must contain primes up to cutoff value n^(2/3)
     https://mathoverflow.net/a/320042
-    '''
+    """
     assert n >= 1
     cutoff = int(n**(2/3))
     global mertens_small_cutoff
@@ -311,8 +319,10 @@ def mertens(n, primes):
 
 
 def totient_range(n):
-    """Calculates all totients in a range using a sieve and Euler's product
-    formula for O(n log log n) time. Credit: Marcus Stuhr
+    """Calculates all totients in a range.
+
+    Using a sieve and Euler's product formula for O(n log log n) time.
+    Credit: Marcus Stuhr
     """
     tots = list(range(n+1))
     for p in range(2, n+1):
@@ -326,10 +336,11 @@ def totient_range(n):
 
 
 def mobius_range(n, primes):
-    '''Computes Möbius function for 0 to n using sieve approach.
-    Requires primes to contain all primes below n.
+    """Computes Möbius function for 0 to n using sieve approach.
+
+    Requires `primes` to contain all primes below n.
     https://mathoverflow.net/a/200392
-    '''
+    """
     mus = [1] * (n+1)
     mus[0] = 0
     for p in primes:
@@ -380,8 +391,9 @@ def is_smooth(n, primes):
 
 
 def prime_count_sieve(n, primes):
-    """Poor man's prime-counting function. Requires a sorted list of primes
-    with primes[0] == 2
+    """Poor man's prime-counting function.
+
+    Requires a sorted list of primes with primes[0] == 2
     """
     assert primes[0] == 2
     from bisect import bisect
@@ -425,6 +437,7 @@ def _pi(n):
 
 def prime_count(n):
     """Prime-counting function using the Meissel-Lehmer algorithm.
+
     Algorithm credit: user448810 (programming praxis)
     Fiddly rounding from danaj (Dana Jacobsen)
     https://programmingpraxis.com/

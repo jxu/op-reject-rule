@@ -1,14 +1,10 @@
-# -*- coding: utf-8 -*-
-
 # Commonly used number-related functions
-from __future__ import division
 import operator
 import random
 
-
-prime_100 = (2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47, 53, 59, 61,
-             67, 71, 73, 79, 83, 89, 97)
-set_prime_100 = set(prime_100)
+PRIME_100 = (2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47, 53, 59,
+             61, 67, 71, 73, 79, 83, 89, 97)
+PRIME_100_SET = set(PRIME_100)
 
 
 def sieve(n):
@@ -36,8 +32,8 @@ def is_prime(n, trials=20):
     """
     if n < 2: return False
     # Small trial division
-    if n in set_prime_100: return True
-    if any(n % p == 0 for p in prime_100): return False
+    if n in PRIME_100_SET: return True
+    if any(n % p == 0 for p in PRIME_100): return False
 
     s = n - 1
     t = 0

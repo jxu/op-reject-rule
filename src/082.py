@@ -1,45 +1,33 @@
-# Who needs clever row insertion when you have Dijkstra?
+# DP on paths, column by column
+# path[i1,j] is current cell to compute
+# find best path in column of cells of last col path[i0][j-1] plus
+# sum of path[i0,j] to path[i1,j]
+# ex for matrix
+# [[5, 5, 1, 1],
+#  [1, 5, 1, 5],
+#  [1, 1, 1, 5],
+#  [5, 5, 5, 5]]
+# the best path sums are
+# [[5, 10, 5, 6]
+#  [1, 6, 4, 9]
+#  [1, 2, 3, 8]
+#  [5, 7, 8, 13]]
 
-def dijkstra(graph, start):
-    """Dijkstra's algorithm using heaps.
-
-    Test using g = {0:{1:2}, 1:{0:2, 2:6}, 2:{1:6}}
-    Credit: Janne Karila
-    """
-    from heapq import heappush, heappop
-
-    A = [None] * len(graph)
-    queue = [(0, start)]
-    while queue:
-        path_len, v = heappop(queue)
-        if A[v] is None: # v is unvisited
-            A[v] = path_len
-            for w, edge_len in graph[v].items():
-                if A[w] is None:
-                    heappush(queue, (path_len + edge_len, w))
-
-    return A
-
+import csv
+N = 80
 with open("p082_matrix.txt", 'r') as f:
-    matrix = f.read().splitlines()
-    matrix = [list(map(int, row.split(','))) for row in matrix]
+    matrix = [list(map(int, row)) for row in csv.reader(f)]
+path = [[0] * N for _ in range(N)]
 
-def f(i, j):  # flatten
-    return 80*i + j
+for i in range(N): path[i][0] = matrix[i][0]
 
-g = {}
-for i in range(80):
-    for j in range(80):
-        neighbors = {}
-        if i > 0:   neighbors[f(i-1, j)] = matrix[i-1][j]
-        if i < 79:  neighbors[f(i+1, j)] = matrix[i+1][j]
-        if j < 79:  neighbors[f(i, j+1)] = matrix[i][j+1]
+for j in range(1, N):
+    for i1 in range(N):
+        min_col_path = 1e9
+        for i0 in range(N):
+            col_path = path[i0][j-1] + \
+                sum(matrix[i2][j] for i2 in range(min(i0,i1), max(i0,i1)+1))
+            min_col_path = min(min_col_path, col_path)
+        path[i1][j] = min_col_path
 
-        g[f(i, j)] = neighbors
-
-min_path = 10**8
-for start in range(80):
-    d = dijkstra(g, 80*start)
-    min_path = min(matrix[start][0] + min(d[x] for x in range(79, 80*80, 80)), min_path)
-
-print(min_path)
+print(min(path[i][N-1] for i in range(N)))

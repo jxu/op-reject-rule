@@ -8,11 +8,10 @@ PRIME_100_SET = set(PRIME_100)
 
 ########## HELPER FUNCTIONS ##########
 def take_closest(l, n):
-    """If bisect (binary search): Assumes l is sorted.
-    Returns closest value to n.
+    """Returns closest value to n in sorted list l, via binary search.
+
     If two numbers are equally close, return the smallest number.
     Credit: Lauritz V. Thaulow
-    If not bisect: Use lambda and min to go through list, O(n) time.
     """
     from bisect import bisect_left
     pos = bisect_left(l, n)
@@ -30,7 +29,10 @@ def take_closest(l, n):
 
 def dijkstra(graph, start):
     """Dijkstra's algorithm using heaps.
-    Test using g = {0:{1:2}, 1:{0:2, 2:6}, 2:{1:6}}  Credit: Janne Karila"""
+
+    Test using g = {0:{1:2}, 1:{0:2, 2:6}, 2:{1:6}}
+    Credit: Janne Karila
+    """
     from heapq import heappush, heappop
 
     A = [None] * len(graph)
@@ -53,7 +55,7 @@ def product(iterable):
 
 
 def accumulate(iterable, func=operator.add):
-    '''Return running totals, like itertools.accumulate'''
+    """Return running totals, like itertools.accumulate"""
     it = iter(iterable)
     try:
         total = next(it)

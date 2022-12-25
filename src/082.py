@@ -1,6 +1,24 @@
 # Who needs clever row insertion when you have Dijkstra?
 
-from number import dijkstra
+def dijkstra(graph, start):
+    """Dijkstra's algorithm using heaps.
+
+    Test using g = {0:{1:2}, 1:{0:2, 2:6}, 2:{1:6}}
+    Credit: Janne Karila
+    """
+    from heapq import heappush, heappop
+
+    A = [None] * len(graph)
+    queue = [(0, start)]
+    while queue:
+        path_len, v = heappop(queue)
+        if A[v] is None: # v is unvisited
+            A[v] = path_len
+            for w, edge_len in graph[v].items():
+                if A[w] is None:
+                    heappush(queue, (path_len + edge_len, w))
+
+    return A
 
 with open("p082_matrix.txt", 'r') as f:
     matrix = f.read().splitlines()

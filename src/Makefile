@@ -1,7 +1,7 @@
 # Compile C or C++ based on problem number, ex. `make 150`
 
 CC = gcc
-CFLAGS = -O3 -Wall -Wextra -std=c99 -pedantic
+CFLAGS = -O3 -Wall -Wextra -std=c99 -pedantic -Wno-unused-result
 LDLIBS = -lm  # g++ links automatically
 
 CXX = g++

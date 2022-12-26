@@ -1,6 +1,7 @@
 """Unit tests to ensure commonly used number functions are valid."""
-
+import pytest
 import number
+
 
 def test_is_prime_edge_cases():
     assert not number.is_prime(-2)
@@ -95,3 +96,21 @@ def test_mertens_pow10():
     powers_10 = (1, -1, 1, 2, -23, -48, 212, 1037)
     for i in range(1, len(powers_10)):
         assert number.mertens(10**i, primes) == powers_10[i]
+
+def test_factor():
+    from number import factor
+    primes = [2, 3, 5]
+    factorizations = (None, {}, {2:1}, {3:1}, {2:2}, {5:1}, {2:1,3:1}, {7:1},
+                      {2:3}, {3:2},{2:1,5:1})
+
+    with pytest.raises(Exception):
+        factor(0, primes)
+
+    for n in range(1, len(factorizations)):
+        assert factor(n, primes) == factorizations[n]
+
+    assert factor(17, primes) == {17: 1}
+    assert factor(25, primes) == {5: 2}
+
+    with pytest.raises(Exception):
+        factor(30, primes)

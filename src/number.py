@@ -1,6 +1,7 @@
 """Commonly used number-theory and helper functions"""
 import operator
 import random
+from collections import Counter
 
 PRIME_100 = (2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47, 53, 59,
              61, 67, 71, 73, 79, 83, 89, 97)
@@ -239,18 +240,24 @@ def is_square_fp(n):
     return int(n**0.5 + 0.5)**2 == n
 
 
-def prime_factors(n, primes):
-    """Return all prime factors, requiring list of primes up to sqrt(n)."""
-    assert (primes[-1] ** 2 >= n)  # Assert big enough prime factors to test
+def factor(n, primes):
+    """Return all prime factors of n.
 
-    factors = []
+    Output dict of (prime, mult) pairs, requiring list of primes up to sqrt(n)
+    Modeled after sympy.ntheory.factorint, but uses trial division
+    """
+    assert n > 0  # only have positive integer input
+    assert max(primes)**2 >= n  # requires big enough prime factors to test
+
+    factors = Counter()
     for p in primes:
         if p * p > n: break
         while n % p == 0:
             n //= p
-            factors.append(p)
+            factors[p] += 1
 
-    if n > 1: factors += [n]  # Only one prime factor >= sqrt(n)
+    if n > 1: # Only one prime factor >= sqrt(n)
+        factors[n] += 1
     return factors
 
 

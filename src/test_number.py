@@ -2,7 +2,6 @@
 import pytest
 import number
 
-
 def test_is_prime_edge_cases():
     assert not number.is_prime(-2)
     assert not number.is_prime(-1)
@@ -91,11 +90,13 @@ def test_mertens_small():
     for i in range(1, len(mertens_small)):
         assert number.mertens(i, primes) == mertens_small[i]
 
+
 def test_mertens_pow10():
     primes = number.sieve(10**5)
     powers_10 = (1, -1, 1, 2, -23, -48, 212, 1037)
     for i in range(1, len(powers_10)):
         assert number.mertens(10**i, primes) == powers_10[i]
+
 
 def test_factor():
     from number import factor

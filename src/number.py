@@ -1,6 +1,7 @@
 """Commonly used number-theory and helper functions"""
 import operator
 import random
+import itertools
 from collections import Counter
 
 PRIME_100 = (2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47, 53, 59,
@@ -245,6 +246,7 @@ def factor(n, primes):
 
     Output dict of (prime, mult) pairs, requiring list of primes up to sqrt(n)
     Modeled after sympy.ntheory.factorint, but uses trial division
+    CPython/Pypy 3.6+, dict keys (primes) should be ordered
     """
     assert n > 0  # only have positive integer input
 
@@ -258,6 +260,19 @@ def factor(n, primes):
     if n > 1: # Only one prime factor >= sqrt(n)
         factors[n] += 1
     return factors
+
+
+def divisors(prime_powers):
+    """Returns sorted divisors given (ordered) factorization dict."""
+    divs = []
+    exponent_ranges = (range(e+1) for e in prime_powers.values())
+    ps = tuple(prime_powers.keys())
+    for es in itertools.product(*exponent_ranges):
+        d = 1
+        for i in range(len(es)):
+            d *= ps[i] ** es[i]
+        divs.append(d)
+    return divs
 
 
 def gcd(a, b):

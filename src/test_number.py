@@ -112,6 +112,4 @@ def test_factor():
 
     assert factor(17, primes) == {17: 1}
     assert factor(25, primes) == {5: 2}
-
-    with pytest.raises(Exception):
-        factor(30, primes)
+    assert factor(60, primes) == {2:2, 3:1, 5:1}

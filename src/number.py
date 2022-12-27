@@ -247,7 +247,6 @@ def factor(n, primes):
     Modeled after sympy.ntheory.factorint, but uses trial division
     """
     assert n > 0  # only have positive integer input
-    assert max(primes)**2 >= n  # requires big enough prime factors to test
 
     factors = Counter()
     for p in primes:

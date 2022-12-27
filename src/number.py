@@ -236,11 +236,6 @@ def is_square(n):
     return True
 
 
-def is_square_fp(n):
-    """Returns if a number is square, avoiding _some_ floating point errors."""
-    return int(n**0.5 + 0.5)**2 == n
-
-
 def factor(n, primes):
     """Return all prime factors of n.
 

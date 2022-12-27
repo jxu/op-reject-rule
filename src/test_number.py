@@ -116,8 +116,8 @@ def test_factor():
 
 
 def test_divisors():
-    assert divisors({}) == [1]
-    assert divisors({2:1}) == [1, 2]
-    assert divisors({2:2}) == [1, 2, 4]
-    assert divisors({2:1, 3:1}) == [1, 2, 3, 6]
-    assert divisors({2:2, 3:1}) == [1, 2, 3, 4, 6, 12]
+    assert sorted(divisors({})) == [1]
+    assert sorted(divisors({2:1})) == [1, 2]
+    assert sorted(divisors({2:2})) == [1, 2, 4]
+    assert sorted(divisors({2:1, 3:1})) == [1, 2, 3, 6]
+    assert sorted(divisors({2:2, 3:1})) == [1, 2, 3, 4, 6, 12]

@@ -2,6 +2,7 @@
 import operator
 import random
 import itertools
+from functools import reduce
 from collections import Counter
 
 PRIME_100 = (2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47, 53, 59,
@@ -28,11 +29,9 @@ def take_closest(l, n):
     else:
        return before
 
-
+# not to be confused with itertools.product
 def product(iterable):
-    product = 1
-    for i in iterable: product *= i  # No reduce() :(
-    return product
+    return reduce(operator.mul, iterable, 1)
 
 
 def accumulate(iterable, func=operator.add):
@@ -258,19 +257,19 @@ def factor(n, primes):
 
 
 def divisors(prime_powers):
-    """Returns sorted divisors given (ordered) factorization dict.
+    """Returns divisors given (ordered) factorization dict.
 
-    Ex. `divisors({2:2,3:1})` should return [1,2,3,4,6,12]
+    Ex. `divisors({2:2,3:1})` should return [1,2,3,4,6,12] in some order
     """
     divs = []
-    exponent_ranges = (range(e+1) for e in prime_powers.values())
-    ps = tuple(prime_powers.keys())
-    for es in itertools.product(*exponent_ranges):
-        d = 1
-        for i in range(len(es)):
-            d *= ps[i] ** es[i]
-        divs.append(d)
-    return sorted(divs)
+    exp_ranges = []
+    for p, maxe in prime_powers.items():
+        exp_ranges.append([p**e for e in range(maxe+1)])
+
+    for pps in itertools.product(*exp_ranges):
+        divs.append(product(pps))
+
+    return divs
 
 
 def gcd(a, b):
@@ -637,4 +636,4 @@ def permutation(n, k):
 
 
 if __name__ == "__main__":
-    pass
+    print(divisors({}))

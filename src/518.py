@@ -8,22 +8,18 @@ def S(n):
 
     for b in primes:
         b1 = b + 1
-        for a in primes:
-            if a >= b: break
-
-            a1 = a + 1
-            if a1 < b1 ** 2 / n: continue
-
-            if b1 ** 2 % a1 == 0:
-                c1 = (b1 ** 2 // a1)
-                c = c1 - 1
-                if c in sp:
-                    print(a, b, c)
-                    s += a + b + c
-
+        pps = factor(b1**2, primes)
+        divs = divisors(pps)
+        for a1 in divs:
+            c1 = b1**2 // a1
+            a = a1 - 1
+            c = c1 - 1
+            if c1 > b1 and a in sp and c in sp:
+                print(a, b, c)
+                s += a + b + c
 
     return s
 
-print(S(100))
+print(S(10**8))
 
 

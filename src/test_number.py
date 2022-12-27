@@ -113,3 +113,13 @@ def test_factor():
     assert factor(17, primes) == {17: 1}
     assert factor(25, primes) == {5: 2}
     assert factor(60, primes) == {2:2, 3:1, 5:1}
+
+
+def test_divisors():
+    from number import divisors
+
+    assert divisors({}) == [1]
+    assert divisors({2:1}) == [1, 2]
+    assert divisors({2:2}) == [1, 2, 4]
+    assert divisors({2:1, 3:1}) == [1, 2, 3, 6]
+    assert divisors({2:2, 3:1}) == [1, 2, 3, 4, 6, 12]

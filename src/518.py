@@ -8,17 +8,18 @@ def S(n):
 
     for b in primes:
         b1 = b + 1
-        pp = factor(b1, primes)
-        # generate all divisors of b1
-        divs = divisors(pp)
-        print(b1, divs)
-        for a1 in divs:
-            a = a1 - 1
-            c1 = b1**2 // a1
-            c = c1 - 1
-            if b1 < c1 and a in sp and c in sp:
-                print(a, b, c)
-                s += a + b + c
+        for a in primes:
+            if a >= b: break
+
+            a1 = a + 1
+            if a1 < b1 ** 2 / n: continue
+
+            if b1 ** 2 % a1 == 0:
+                c1 = (b1 ** 2 // a1)
+                c = c1 - 1
+                if c in sp:
+                    print(a, b, c)
+                    s += a + b + c
 
 
     return s

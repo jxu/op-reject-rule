@@ -263,7 +263,10 @@ def factor(n, primes):
 
 
 def divisors(prime_powers):
-    """Returns sorted divisors given (ordered) factorization dict."""
+    """Returns sorted divisors given (ordered) factorization dict.
+
+    Ex. `divisors({2:2,3:1})` should return [1,2,3,4,6,12]
+    """
     divs = []
     exponent_ranges = (range(e+1) for e in prime_powers.values())
     ps = tuple(prime_powers.keys())
@@ -272,7 +275,7 @@ def divisors(prime_powers):
         for i in range(len(es)):
             d *= ps[i] ** es[i]
         divs.append(d)
-    return divs
+    return sorted(divs)
 
 
 def gcd(a, b):

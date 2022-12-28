@@ -260,15 +260,9 @@ def divisors(prime_powers):
     return divs
 
 
-def gcd(a, b):
-    """Identical to fractions.gcd(a, b) (Euclid's algorithm)"""
-    while b:
-        a, b = b, a%b
-    return a
-
-
 def lcm(a, b):
-    """Find lcm by reduction of the gcd"""
+    """Find lcm by reduction of the gcd. math.lcm in Python 3.9+"""
+    from math import gcd
     return a * b // gcd(a, b)
 
 

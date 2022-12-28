@@ -50,19 +50,10 @@ def custom_powerset(s, min_size, max_size):
         combinations(s, r) for r in range(min_size, max_size+1))
 
 
-def memoize(obj):
-    """Decorator that memoizes a function's calls. Credit: Python wiki"""
-    # ignores **kwargs
-    from functools import wraps
-    cache = obj.cache = {}
-
-    @wraps(obj)
-    def memoizer(*args, **kwargs):
-        if args not in cache:
-            cache[args] = obj(*args, **kwargs)
-        return cache[args]
-
-    return memoizer
+def memoize(func):
+    """Unbounded cache from functools. @functools.cache in Python 3.9+"""
+    from functools import lru_cache
+    return lru_cache(maxsize=None)(func)
 
 
 def timeit(f):

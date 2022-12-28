@@ -1,3 +1,4 @@
+# brute force after 165 min
 # b'^2 = a' * c'
 from number import sieve, factor, divisors
 

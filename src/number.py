@@ -2,6 +2,7 @@
 import operator
 import random
 import itertools
+from itertools import accumulate
 from functools import reduce
 from collections import Counter
 
@@ -32,19 +33,6 @@ def take_closest(l, n):
 # not to be confused with itertools.product
 def product(iterable):
     return reduce(operator.mul, iterable, 1)
-
-
-def accumulate(iterable, func=operator.add):
-    """Return running totals, like itertools.accumulate"""
-    it = iter(iterable)
-    try:
-        total = next(it)
-    except StopIteration:
-        return
-    yield total
-    for element in it:
-        total = func(total, element)
-        yield total
 
 
 def powerset(iterable):

@@ -266,17 +266,6 @@ def lcm(a, b):
     return a * b // gcd(a, b)
 
 
-def lcm_n(n):
-    """Find lcm of integers 1 to n.
-
-    Skip calculating for 1 to n/2 since those are covered by the upper half
-    """
-    x = 1
-    for i in range(max(n//2, 1), n+1):
-        x = lcm(x, i)
-    return x
-
-
 def phi(n, primes):
     """Euler's totient function, using his product formula."""
     if n == 0: return 0

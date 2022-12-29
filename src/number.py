@@ -201,12 +201,13 @@ def is_prime(n, trials=20):
 def is_square(n):
     """Returns if a number is square without floating point math.
 
-    Also consider gmpy2.is_square()
+    Uses Babylonian / Heron's method, i.e. Newton's method
+    Also consider pre-compute set of squares, or gmpy2.is_square()
     Credit: Alex Martelli
     """
     if n == 1: return True
     x = n // 2
-    seen = set([x])
+    seen = {x}
     while x * x != n:
         x = (x + (n // x)) // 2
         if x in seen: return False

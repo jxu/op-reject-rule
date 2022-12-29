@@ -1,27 +1,35 @@
-# brute force after 165 min
-# b'^2 = a' * c'
+# divisibility method of a from dev_random:
+# let a', b', c' = a+1, b+1, c+1
+# b' = a' j / k, c' = a' j^2 / k^2
+# assuming gcd(j,k) = 1, k^2 divides a'
+# search through divisors of a' for squares
+# benchmark: 55s
 from number import sieve, factor, divisors
+from math import gcd
 
 def S(n):
     s = 0
     primes = sieve(n)
     sp = set(primes)
+    squares = set([k**2 for k in range(1, round(n**0.5)+1)])
 
-    for b in primes:
-        b1 = b + 1
-        pps = factor(b1**2, primes)
-        divs = sorted(divisors(pps))
-        for a1 in reversed(divs):
-            c1 = b1**2 // a1
-            a = a1 - 1
-            c = c1 - 1
-            if c >= n: break
-            if c1 > b1 and a in sp and c in sp:
-                print(a, b, c)
-                s += a + b + c
-
+    for a in primes:
+        a1 = a + 1
+        pp = factor(a1, primes)
+        for k2 in divisors(pp):
+            if k2 in squares:
+                k = round(k2 ** 0.5)
+                for j in range(k+1, n):
+                    if gcd(j, k) != 1: continue
+                    b1 = a1 * j // k
+                    c1 = b1 * j // k
+                    if c1 > n: break
+                    b, c = b1 - 1, c1 - 1
+                    if b in sp and c in sp:
+                        #print(f"{j}/{k}", a, b, c)
+                        s += a + b + c
     return s
 
-print(S(10**6))
+print(S(10**8))
 
 

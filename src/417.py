@@ -15,15 +15,17 @@ def ord10(n):
     return n_order(10, n)
 
 def L(n):
-    if n % 10000 == 0: print(n)
+    if n % 100000 == 0: print(n)
     while n % 2 == 0: n //= 2
     while n % 5 == 0: n //= 5
     if n == 1: return 0
+    return L_(n)
 
+@memoize
+def L_(n):
     o = 1
     for p, e in factor(n, primes).items():
         o = lcm(o, ord10(p**e))
-
     return o
 
-print(sum(L(i) for i in range(1, 10**8)))
+print(sum(L(i) for i in range(1, 10**6)))

@@ -5,6 +5,8 @@
 
 # Benchmark: P51 with sympy n_order and functools memoize, factoring takes 14m
 # Without factoring takes 25m
+# With memo of L_ values takes 10.5m
+
 from number import factor, sieve, lcm, memoize
 from sympy.ntheory import n_order
 
@@ -28,4 +30,4 @@ def L_(n):
         o = lcm(o, ord10(p**e))
     return o
 
-print(sum(L(i) for i in range(1, 10**6)))
+print(sum(L(i) for i in range(1, 10**8)))

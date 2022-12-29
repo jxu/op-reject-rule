@@ -214,21 +214,23 @@ def is_square(n):
     return True
 
 
-def factor(n, primes):
+def factor(n, primes=None):
     """Return all prime factors of n.
 
-    Output dict of (prime, mult) pairs, requiring list of primes up to sqrt(n)
-    Modeled after sympy.ntheory.factorint, but uses trial division
+    Output dict of (prime, mult) pairs using trial division.
+    If `primes` to try is provided, requires list of primes up to sqrt(n)
+    Modeled after sympy.ntheory.factorint
     CPython/Pypy 3.6+, dict keys (primes) should be ordered
     """
     assert n > 0  # only have positive integer input
 
     factors = Counter()
-    for p in primes:
-        if p * p > n: break
-        while n % p == 0:
-            n //= p
-            factors[p] += 1
+    test_divs = primes if primes else range(2, int(n**0.5)+1)
+    for d in test_divs:
+        if d * d > n: break
+        while n % d == 0:
+            n //= d
+            factors[d] += 1
 
     if n > 1: # Only one prime factor >= sqrt(n)
         factors[n] += 1

@@ -8,8 +8,11 @@ from collections import Counter
 
 
 ########## HELPER FUNCTIONS ##########
-# not to be confused with itertools.product
 def product(iterable):
+    """Computes the product of the values in the iterable.
+
+    Not to be confused for importing with itertools.product!
+    """
     return reduce(operator.mul, iterable, 1)
 
 

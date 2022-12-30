@@ -9,7 +9,7 @@ from collections import Counter
 
 ########## HELPER FUNCTIONS ##########
 def product(iterable):
-    """Computes the product of the values in the iterable.
+    """Return the product of the values in the iterable.
 
     Not to be confused for importing with itertools.product!
     """
@@ -17,7 +17,8 @@ def product(iterable):
 
 
 def powerset(iterable):
-    """From itertools recipes
+    """Return the powerset of the iterable. (from itertools recipes)
+
     powerset([1,2,3]) --> () (1,) (2,) (3,) (1,2) (1,3) (2,3) (1,2,3)
     """
     from itertools import chain, combinations
@@ -27,13 +28,19 @@ def powerset(iterable):
 
 
 def memoize(func):
-    """Unbounded cache from functools. @functools.cache in Python 3.9+"""
+    """Decorates func with an unbounded cache (from functools).
+
+    @functools.cache in Python 3.9+
+    """
     from functools import lru_cache
     return lru_cache(maxsize=None)(func)
 
 
 def timeit(f):
-    """Timing decorator for functions. Example usage: sieve = timeit(sieve)"""
+    """Timing decorator for functions.
+
+    Example usage: sieve = timeit(sieve)
+    """
     from time import clock
     def timed(*args, **kwargs):
         time_start = clock()
@@ -53,10 +60,7 @@ def timeit(f):
 
 ########## NUMBER THEORY ##########
 def sieve(n):
-    """Sieve of Eratosthenes: returns a list of primes below n.
-
-    About O(n)
-    """
+    """Sieve of Eratosthenes: returns a list of primes below n."""
     nums = [0] * n
     for i in range(2, int(n**0.5)+1):
         if nums[i] == 0:

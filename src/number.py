@@ -22,13 +22,8 @@ def powerset(iterable):
     """
     from itertools import chain, combinations
     s = list(iterable)
+    # can specify min and max size in range for custom powerset
     return chain.from_iterable(combinations(s, r) for r in range(len(s) + 1))
-
-
-def custom_powerset(s, min_size, max_size):
-    from itertools import chain, combinations
-    return chain.from_iterable(
-        combinations(s, r) for r in range(min_size, max_size+1))
 
 
 def memoize(func):

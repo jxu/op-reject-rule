@@ -136,3 +136,10 @@ def test_divisors():
     assert sorted(divisors({2:2})) == [1, 2, 4]
     assert sorted(divisors({2:1, 3:1})) == [1, 2, 3, 6]
     assert sorted(divisors({2:2, 3:1})) == [1, 2, 3, 4, 6, 12]
+
+def test_sieve():
+    primes_100 = [2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47,
+                  53, 59, 61, 67, 71, 73, 79, 83, 89, 97]
+    assert sieve(5) == [2, 3]
+    assert sieve(100) == primes_100
+    assert len(sieve(10000)) == 1229

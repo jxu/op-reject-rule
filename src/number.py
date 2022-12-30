@@ -60,7 +60,7 @@ def timeit(f):
 
 ########## NUMBER THEORY ##########
 def sieve(n):
-    """Sieve of Eratosthenes: returns a list of primes below n."""
+    """Sieve of Eratosthenes: returns a list of primes strictly below n."""
     nums = [0] * n
     for i in range(2, int(n**0.5)+1):
         if nums[i] == 0:

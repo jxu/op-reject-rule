@@ -61,13 +61,15 @@ def timeit(f):
 ########## NUMBER THEORY ##########
 def sieve(n):
     """Sieve of Eratosthenes: returns a list of primes strictly below n."""
-    nums = [0] * n
-    for i in range(2, int(n**0.5)+1):
-        if nums[i] == 0:
-            for j in range(i*i, n, i):
-                nums[j] = 1
+    assert n > 2
+    nums = [0] * (n//2)  # use half the memory
+    for i in range(3, n, 2):
+        if i * i >= n: break
+        if nums[i//2] == 0:
+            for j in range(i*i, n, 2*i):
+                nums[j//2] = 1
 
-    return [i for i in range(2, n) if nums[i] == 0]
+    return [2] + [i for i in range(3, n, 2) if nums[i//2] == 0]
 
 
 def is_prime(n, trials=20):

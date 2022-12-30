@@ -529,22 +529,12 @@ def fib_list(n):
     return fib
 
 
-def is_close(a, b, tol=1e-9):
-    return abs(a-b) <= tol
-
-
-def is_int(n):
-    return is_close(n, round(n))
-
-
 def combination(n, k):
     return product(range(n-k+1, n+1)) // product(range(1, k+1))
 
 
 def permutation(n, k):
     return product(range(n-k+1, n+1))
-
-
 
 
 if __name__ == "__main__":

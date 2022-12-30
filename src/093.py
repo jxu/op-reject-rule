@@ -1,7 +1,5 @@
 # Kinda brute force, but with RPN at least no need for parentheses
-from __future__ import division
 from itertools import product, permutations
-from number import is_int
 
 def RPN(eq):
     s = []
@@ -34,7 +32,7 @@ def calc(a, b, c, d):
 
             try:
                 r = RPN(eq)
-                if r > 0 and is_int(r):
+                if r > 0 and r == round(r):
                     targets.add(round(r))
             except: pass
 

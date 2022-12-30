@@ -51,8 +51,8 @@ def timeit(f):
         for key in kwargs:
             all_args.append("{}={}".format(key, kwargs[key]))
 
-        print("{}({})   took {:2.4f}s".format(f.__name__, ', '.join(all_args),
-                                              time_end - time_start))
+        print("{}({})\ttook {:2.2f}s".format(f.__name__, ', '.join(all_args),
+                                             time_end - time_start))
         return result
 
     return timed

@@ -81,7 +81,9 @@ def is_prime(n, trials=20):
     PRIME_100 = {2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47, 53,
                  59, 61, 67, 71, 73, 79, 83, 89, 97}
 
-    if n < 2: return False
+    assert n >= 0 and isinstance(n, int)  # don't handle negatives
+    if n < 2: return False  # 0 and 1 considered not prime
+
     # Small trial division
     if n in PRIME_100: return True
     if any(n % p == 0 for p in PRIME_100): return False

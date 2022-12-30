@@ -3,14 +3,14 @@ import pytest
 from number import is_prime, sieve, phi, totient_sum, is_square, prime_count,\
     mobius_range, mertens, factor, divisors
 
-def test_is_prime_edge_cases():
-    assert not is_prime(-2)
-    assert not is_prime(-1)
+
+def test_is_prime_small():
+    with pytest.raises(Exception):
+        is_prime(-1)
+
     assert not is_prime(0)
     assert not is_prime(1)
 
-
-def test_is_prime_100():
     primes_100 = {2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47,
                   53, 59, 61, 67, 71, 73, 79, 83, 89, 97}
 

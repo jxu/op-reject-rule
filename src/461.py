@@ -1,5 +1,25 @@
 # Subset sum problem variation (taken in pairs)
-import math, time, number
+import math
+
+def take_closest(l, n):
+    """Returns closest value to n in sorted list l, via binary search.
+
+    If two numbers are equally close, return the smallest number.
+    Credit: Lauritz V. Thaulow
+    """
+    from bisect import bisect_left
+    pos = bisect_left(l, n)
+    if pos == 0:
+        return l[0]
+    if pos == len(l):
+        return l[-1]
+    before = l[pos - 1]
+    after = l[pos]
+    if after - n < n - before:
+       return after
+    else:
+       return before
+
 
 def g(n):
     pi = math.pi
@@ -15,7 +35,7 @@ def g(n):
     threshold = 0.00001
     best_h = best_c = None
     for h in lo:
-        c = number.take_closest(hi, pi-h)
+        c = take_closest(hi, pi-h)
         if abs(h + c - pi) < threshold:
             threshold = abs(h + c - pi)
             best_h = h
@@ -33,6 +53,4 @@ def g(n):
     return g
 
 
-start = time.process_time()
 print(g(10000))
-print(time.process_time()-start, "s")

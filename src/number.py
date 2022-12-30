@@ -8,25 +8,6 @@ from collections import Counter
 
 
 ########## HELPER FUNCTIONS ##########
-def take_closest(l, n):
-    """Returns closest value to n in sorted list l, via binary search.
-
-    If two numbers are equally close, return the smallest number.
-    Credit: Lauritz V. Thaulow
-    """
-    from bisect import bisect_left
-    pos = bisect_left(l, n)
-    if pos == 0:
-        return l[0]
-    if pos == len(l):
-        return l[-1]
-    before = l[pos - 1]
-    after = l[pos]
-    if after - n < n - before:
-       return after
-    else:
-       return before
-
 # not to be confused with itertools.product
 def product(iterable):
     return reduce(operator.mul, iterable, 1)

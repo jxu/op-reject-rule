@@ -75,33 +75,6 @@ def timeit(f):
     return timed
 
 
-def unique_permutations(elements):
-    """Like itertools.permutations but without duplicates. Credit: Luka Rahne"""
-
-    class unique_element:
-        def __init__(self, value, occurrences):
-            self.value = value
-            self.occurrences = occurrences
-
-    eset=set(elements)
-    listunique = [unique_element(i,elements.count(i)) for i in eset]
-    u=len(elements)
-    return perm_unique_helper(listunique,[0]*u,u-1)
-
-
-def perm_unique_helper(listunique,result_list,d):
-    if d < 0:
-        yield tuple(result_list)
-    else:
-        for i in listunique:
-            if i.occurrences > 0:
-                result_list[d]=i.value
-                i.occurrences-=1
-                for g in  perm_unique_helper(listunique,result_list,d-1):
-                    yield g
-                i.occurrences+=1
-
-
 def combo_max_product(X, terms, max_product):
     '''Like itertools.combinations(X, terms) but only picks values whose
     product is <= max_product.

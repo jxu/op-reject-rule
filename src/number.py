@@ -514,4 +514,4 @@ def permutation(n, k):
 
 
 if __name__ == "__main__":
-    print(divisors({}))
+    pass

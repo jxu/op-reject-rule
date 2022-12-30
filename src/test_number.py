@@ -103,13 +103,13 @@ def test_mertens_pow10():
 def test_factor_primes():
     small_primes = [2, 3, 5]
     factorizations = (None, {}, {2:1}, {3:1}, {2:2}, {5:1}, {2:1,3:1}, {7:1},
-                      {2:3}, {3:2}, {2:1,5:1})
+                      {2:3}, {3:2}, {2:1,5:1}, {11:1}, {2:2,3:1}, {13:1},
+                      {2:1,7:1})
 
     with pytest.raises(Exception):
         factor(0, small_primes)
 
     for n in range(1, len(factorizations)):
-        assert factor(n) == factorizations[n]
         assert factor(n, small_primes) == factorizations[n]
 
     assert factor(17, small_primes) == {17: 1}
@@ -120,7 +120,8 @@ def test_factor_primes():
 
 def test_factor():
     factorizations = (None, {}, {2:1}, {3:1}, {2:2}, {5:1}, {2:1,3:1}, {7:1},
-                      {2:3}, {3:2}, {2:1,5:1})
+                      {2:3}, {3:2}, {2:1,5:1}, {11:1}, {2:2,3:1}, {13:1},
+                      {2:1,7:1})
 
     with pytest.raises(Exception):
         factor(0)

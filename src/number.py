@@ -261,7 +261,10 @@ def lcm(a, b):
 
 
 def phi(n, primes):
-    """Euler's totient function, using his product formula."""
+    """Euler's totient function using the product formula.
+
+    Requires primes up to sqrt(n).
+    """
     if n == 0: return 0
     r = n
     for p in primes:

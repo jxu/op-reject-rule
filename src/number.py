@@ -6,9 +6,6 @@ from itertools import accumulate
 from functools import reduce
 from collections import Counter
 
-PRIME_100 = (2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47, 53, 59,
-             61, 67, 71, 73, 79, 83, 89, 97)
-PRIME_100_SET = set(PRIME_100)
 
 ########## HELPER FUNCTIONS ##########
 def take_closest(l, n):
@@ -75,28 +72,6 @@ def timeit(f):
     return timed
 
 
-def combo_max_product(X, terms, max_product):
-    '''Like itertools.combinations(X, terms) but only picks values whose
-    product is <= max_product.
-    '''
-    assert sorted(X) == X  # To keep track of index
-    result = []
-
-    def f(last_i, terms_so_far, product_):
-        if len(terms_so_far) == terms:
-            result.append(terms_so_far)
-            return
-
-        for i in range(last_i, len(X)):
-            new_product = product_ * X[i]
-            if new_product <= max_product:
-                f(i+1, terms_so_far + [X[i]], new_product)
-            else:  # Product too large already
-                break
-
-    f(0, [], 1)
-    return result
-
 ########## NUMBER THEORY ##########
 def sieve(n):
     """Sieve of Eratosthenes: returns a list of primes below n.
@@ -113,16 +88,19 @@ def sieve(n):
 
 
 def is_prime(n, trials=20):
-    """Returns whether a number is prime or not using Miller-Rabin.
+    """Returns whether a number is prime or not using Miller-Rabin primality.
 
     First check divisibility by small primes (below 100).
     Deterministic variant by checking small set of potential witnesses.
     Smallest number requiring first n prime numbers is A006945.
     Credit: Albert Sweigart
     """
+    PRIME_100 = {2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47, 53,
+                 59, 61, 67, 71, 73, 79, 83, 89, 97}
+
     if n < 2: return False
     # Small trial division
-    if n in PRIME_100_SET: return True
+    if n in PRIME_100: return True
     if any(n % p == 0 for p in PRIME_100): return False
 
     s = n - 1

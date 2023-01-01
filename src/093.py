@@ -1,10 +1,12 @@
-# Kinda brute force, but with RPN at least no need for parentheses
+# use RPN to avoid parentheses
+# any expression tree can map to RPN of
+# perm(a, b, c, d) + perm(3 ops)
 from itertools import product, permutations
 
-def RPN(eq):
+def rpn(expr):
     s = []
-    for t in eq:
-        if type(t) == int:
+    for t in expr:
+        if isinstance(t, int):
             s.append(t)
         else:
             y = s.pop()
@@ -20,27 +22,24 @@ def RPN(eq):
     return s[0]
 
 
-def calc(a, b, c, d):
-    op_sets = product(('+', '-', '*', '/'), repeat=3)
+def longest_consecutive(a, b, c, d):
     targets = set()
-    for op_set in op_sets:
-        t = [a, b, c, d] + list(op_set)
-        for eq in permutations(t):
-            # RPN equation must start with 2 numbers and end with operation
-            if type(eq[0]) != int or type(eq[1]) != int \
-                or type(eq[-1]) != str: continue
 
+    for op_set in product(('+', '-', '*', '/'), repeat=3):
+        for val_set in permutations((a, b, c, d)):
+            expr = val_set + op_set
             try:
-                r = RPN(eq)
-                if r > 0 and r == round(r):
-                    targets.add(round(r))
+                r = rpn(expr)
+                # assume float operation returns exact int
+                if r > 0 and r == int(r):   
+                    targets.add(int(r))
             except: pass
 
-    test = 1
-    while test in targets:
-        test += 1
+    x = 1
+    while x in targets:
+        x += 1
 
-    return test-1
+    return x-1
 
 
 max_n = 1
@@ -50,10 +49,10 @@ for a in range(1, 10):
     for b in range(a+1, 10):
         for c in range(b+1, 10):
             for d in range(c+1, 10):
-                n = calc(a, b, c, d)
-                print(a, b, c, d, n)
+                n = longest_consecutive(a, b, c, d)
+                print(f"{a}{b}{c}{d} {n}")
                 if n > max_n:
                     max_n = n
-                    max_digits = 1000*a + 100*b + 10*c + d
+                    max_digits = f"{a}{b}{c}{d}"
 
 print(max_digits)

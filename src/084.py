@@ -39,11 +39,9 @@ for turn in range(TURNS):
         # make move
         pos = (pos + d) % len(BOARD)
 
-    # G2J square
+    # Handle special squares
     if pos == BOARD.G2J.value:
         pos = BOARD.JAIL.value
-
-
 
     # chance card
     if BOARD(pos).name.startswith("CH"):

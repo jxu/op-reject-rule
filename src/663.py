@@ -12,14 +12,10 @@
 # M(i) is a DP solution similar to standard max subarray sum problem
 
 from math import ceil
+from itertools import accumulate
 
 def max_prefix_sum(seg):
-    best = s = 0
-    for x in seg:
-        s += x
-        best = max(best, s)
-
-    return best
+    return max(accumulate(seg))
 
 def max_suffix_sum(seg):
     return max_prefix_sum(reversed(seg))

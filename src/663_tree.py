@@ -53,7 +53,7 @@ def S(n, l_lo, l_hi):
 
         # init seg associated values
         if i == l_lo+1:
-            for m in range(len(A)):
+            for m in range(n):
                 update_seg(A, m, u, p, s, w)
 
         else:

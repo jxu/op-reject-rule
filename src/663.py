@@ -67,9 +67,9 @@ def S(n, l_lo, l_hi):
         if i == l_lo+1:
             for si in range(nseg):
                 update_seg(A, seglen, si, u, p, s, w)
-
-        si = j // seglen  # segment index
-        update_seg(A, seglen, si, u, p, s, w)
+        else:
+            si = j // seglen  # segment index
+            update_seg(A, seglen, si, u, p, s, w)
 
         M = 0
         msum = 0

@@ -1,6 +1,5 @@
 # Use "segment tree" to store info about segments
 
-
 # For each update of array A, update segments upward in tree:
 # u[si] = segment sum
 # p[si] = max prefix sum
@@ -9,20 +8,33 @@
 
 # then for each step, updating associated segtree is O(log(n))
 
+def update_seg(A, j, u, p, s, w):
+    n = len(A)
+    si = 2 ** (n-1).bit_length() + j
 
-def update_seg(A, seglen, si, u, p, s, w):
-    
+    u[si] = A[j]
+    p[si] = A[j]
+    s[si] = A[j]
+    w[si] = A[j]
+
+    while si > 1:
+        l = 2 * (si//2)
+        r = l + 1
+        u[si//2] = u[l] + u[r]
+        p[si//2] = max(p[l], u[l] + p[r])
+        s[si//2] = max(s[r], s[l] + u[r])
+        w[si//2] = max(w[l], w[r], s[l] + p[r])
+
+        si //= 2
 
 
 def S(n, l_lo, l_hi):
     A = [0] * n
 
-    seglen = int(n**0.5)
-    nseg = ceil(n / seglen)
-    u = [0] * nseg
-    p = [0] * nseg
-    s = [0] * nseg
-    w = [0] * nseg
+    u = [0] * 4*n
+    p = [0] * 4*n
+    s = [0] * 4*n
+    w = [0] * 4*n
 
     # pre-compute Tribonacci numbers mod n
     t = [0] * 2*l_hi
@@ -41,25 +53,13 @@ def S(n, l_lo, l_hi):
 
         # init seg associated values
         if i == l_lo+1:
-            for si in range(nseg):
-                update_seg(A, seglen, si, u, p, s, w)
+            for m in range(len(A)):
+                update_seg(A, m, u, p, s, w)
 
-        si = j // seglen  # segment index
-        update_seg(A, seglen, si, u, p, s, w)
+        else:
+            update_seg(A, j, u, p, s, w)
 
-        M = 0
-        msum = 0
-        # custom Kadane's algorithm for segments
-        for si in range(nseg):
-            # Either start segment here or continue last segment
-            msum = max(s[si], msum + u[si])
-            # include prefix of next segment
-            msump = msum + (p[si+1] if si+1 < nseg else 0)
-            M = max(M, msump)
-
-        M = max(M, max(w))
-        #print(u, p, s, w)
-        #print(i, M)
+        M = w[1]
         Mtotal += M
 
     return Mtotal

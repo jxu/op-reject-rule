@@ -1,56 +1,41 @@
-# Subset sum problem variation (taken in pairs)
-from math import pi, log, exp
-
-def take_closest(l, n):
-    """Returns closest value to n in sorted list l, via binary search.
-
-    If two numbers are equally close, return the smallest number.
-    Credit: Lauritz V. Thaulow
-    """
-    from bisect import bisect_left
-    pos = bisect_left(l, n)
-    if pos == 0:
-        return l[0]
-    if pos == len(l):
-        return l[-1]
-    before = l[pos - 1]
-    after = l[pos]
-    if after - n < n - before:
-       return after
-    else:
-       return before
-
+# Subset sum problem variation
+# linear 2-sum on all pairs f_n(a) + f_n(b), f_n(c) + f_n(d)
+from math import pi, log, exp, isclose
 
 def g(n):
     k_max = int(n * log(pi+1))  # all fn(k) non-negative
-    print(k_max)
     fn = [exp(k/n) - 1 for k in range(k_max)]
+    print(k_max)
 
-    half = [fn[a] + fn[b] for a in range(k_max) for b in range(a, k_max)]
+    # python tuples take a lot of memory, so just store pair sum and
+    # recover a, b afterwards
+    pairs = sorted([fn[a] + fn[b] for a in range(k_max)
+                   for b in range(a, k_max)])
+    print(len(pairs))
+    best_error = 1e-7
+    best_ab = best_cd = None
+    i, j = 0, len(pairs)-1
+    while i <= j:
+        error = pairs[i] + pairs[j] - pi
 
-    half.sort()
-    # Pair sum must have 1 value in lo and 1 value in hi
-    lo, hi = half[:len(half)//2], half[len(half)//2:]
+        if abs(error) < best_error:
+            best_error = abs(error)
+            best_ab, best_cd = pairs[i], pairs[j]
+            print(pairs[i], pairs[j], error)
 
-    threshold = 0.1
-    best_h = best_c = None
-    for h in lo:
-        c = take_closest(hi, pi-h)
-        if abs(h + c - pi) < threshold:
-            threshold = abs(h + c - pi)
-            best_h = h
-            best_c = c
-            print(h, c, threshold)
+        if error > 0: j -= 1
+        else: i += 1
 
-    # Memory hack (for 32-bit python, search for a, b, c, d from half)
-    g = 0
+    s = 0
+    # recover a, b, c, d
     for a in range(k_max):
         for b in range(a, k_max):
-            if fn[a] + fn[b] == best_h or fn[a] + fn[b] == best_c:
-                print(a, b, end=' ')
-                g += a*a + b*b  # Add either half
+            fnab = fn[a] + fn[b]
+            # handles c, d symmetrically
+            if isclose(fnab, best_ab) or isclose(fnab, best_cd):
+                print(a, b)
+                s += a**2 + b**2
 
-    return g
-
+    return s
 
 print(g(10000))

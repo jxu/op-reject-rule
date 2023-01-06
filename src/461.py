@@ -9,8 +9,15 @@ def g(n):
 
     # python tuples take a lot of memory, so just store pair sum and
     # recover a, b afterwards
-    pairs = sorted([fn[a] + fn[b] for a in range(k_max)
-                   for b in range(a, k_max)])
+    # tested: half the time in pypy is spent generating pairs,
+    # creating numpy arrays in cpython or pypy is slower
+    pairs = []
+    for a in range(k_max):
+        for b in range(a, k_max):
+            if fn[a] + fn[b] > pi: break
+            pairs.append(fn[a] + fn[b])
+
+    pairs.sort()
     print(len(pairs))
     best_error = 1e-7
     best_ab = best_cd = None

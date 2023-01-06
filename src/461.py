@@ -1,5 +1,5 @@
 # Subset sum problem variation (taken in pairs)
-import math
+from math import pi, log, exp
 
 def take_closest(l, n):
     """Returns closest value to n in sorted list l, via binary search.
@@ -22,17 +22,17 @@ def take_closest(l, n):
 
 
 def g(n):
-    pi = math.pi
-    k_max = int(n * math.log(pi))  # All other f(k) = 0
-    fxn = [math.e**(x/n)-1 for x in range(k_max)]
+    k_max = int(n * log(pi+1))  # all fn(k) non-negative
+    print(k_max)
+    fn = [exp(k/n) - 1 for k in range(k_max)]
 
-    half = [fxn[a] + fxn[b] for a in range(k_max) for b in range(a, k_max)]
+    half = [fn[a] + fn[b] for a in range(k_max) for b in range(a, k_max)]
 
     half.sort()
     # Pair sum must have 1 value in lo and 1 value in hi
     lo, hi = half[:len(half)//2], half[len(half)//2:]
 
-    threshold = 0.00001
+    threshold = 0.1
     best_h = best_c = None
     for h in lo:
         c = take_closest(hi, pi-h)
@@ -46,7 +46,7 @@ def g(n):
     g = 0
     for a in range(k_max):
         for b in range(a, k_max):
-            if fxn[a] + fxn[b] == best_h or fxn[a] + fxn[b] == best_c:
+            if fn[a] + fn[b] == best_h or fn[a] + fn[b] == best_c:
                 print(a, b, end=' ')
                 g += a*a + b*b  # Add either half
 

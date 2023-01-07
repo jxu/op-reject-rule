@@ -13,7 +13,7 @@
     #define K_MAX   14210 // int(N * log(M_PI + 1))
 #endif
 
-#define N_PAIRS ((K_MAX)*(K_MAX+1)/2)
+#define PAIRS_MAX ((K_MAX)*(K_MAX+1)/2)
 
 typedef struct 
 {
@@ -23,7 +23,7 @@ typedef struct
 } ab_pair;
 
 double fn[K_MAX];
-ab_pair pairs[N_PAIRS]; 
+ab_pair pairs[PAIRS_MAX]; 
 
 int compare(const void* x1, const void* x2)
 {
@@ -37,23 +37,25 @@ int main()
     for (int k = 0; k < K_MAX; ++k)
         fn[k] = exp((double)k/N) - 1;
 
-    int i = 0;
+    int n_pairs = 0;
     for (int a = 0; a < K_MAX; ++a)
     {
         for (int b = a; b < K_MAX; ++b)
-        { 
-            pairs[i].val = fn[a] + fn[b];
-            pairs[i].a = a;
-            pairs[i].b = b;
-            ++i;
+        {
+            if (fn[a] + fn[b] > M_PI) break;
+            pairs[n_pairs].val = fn[a] + fn[b];
+            pairs[n_pairs].a = a;
+            pairs[n_pairs].b = b;
+            ++n_pairs;
         }
     }
 
-    qsort(pairs, N_PAIRS, sizeof(ab_pair), compare);
+    printf("%d pairs\n", n_pairs);
+    qsort(pairs, n_pairs, sizeof(ab_pair), compare);
 
     double best_error = 1e-7;
     int best_g;
-    i = 0; int j = N_PAIRS-1;
+    int i = 0, j = n_pairs-1;
 
     while (i <= j)
     {

@@ -420,6 +420,7 @@ def int_to_base(n, b):
 
 def is_smooth(n, primes):
     """Test if n has only factors in primes"""
+    assert n >= 2
     for p in primes:
         while n % p == 0:
             n //= p

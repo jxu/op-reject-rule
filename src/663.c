@@ -7,19 +7,19 @@
 
 /* SEGLEN = floor(sqrt(N)), NSEG = ceil(N / SEGLEN) */
 
-/*
-#define N      5
-#define L_LO   0
-#define L_HI   6
-#define SEGLEN 2
-#define NSEG   3
-*/
-
-#define N      10000003
-#define L_LO   10000000
-#define L_HI   10200000
-#define SEGLEN 3162
-#define NSEG   3163
+#ifdef DEBUG
+    #define N      5
+    #define L_LO   0
+    #define L_HI   6
+    #define SEGLEN 2
+    #define NSEG   3
+#else
+    #define N      10000003
+    #define L_LO   10000000
+    #define L_HI   10200000
+    #define SEGLEN 3162
+    #define NSEG   3163
+#endif
 
 long long u[NSEG], p[NSEG], s[NSEG], w[NSEG];
 int A[N], t[2*L_HI];

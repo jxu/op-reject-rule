@@ -7,17 +7,17 @@
 
 /* last row of tree ARR_START = 2 ** floor(log2(n)) */
 
-/*
-#define N         5
-#define L_LO      0
-#define L_HI      6
-#define ARR_START 8
-*/
-
-#define N         10000003
-#define L_LO      10000000
-#define L_HI      10200000
-#define ARR_START (1 << 23)
+#ifdef DEBUG
+    #define N         5
+    #define L_LO      0
+    #define L_HI      6
+    #define ARR_START 8
+#else
+    #define N         10000003
+    #define L_LO      10000000
+    #define L_HI      10200000
+    #define ARR_START (1 << 23)
+#endif
 
 long long u[4*N], p[4*N], s[4*N], w[4*N];
 int A[N], t[2*L_HI];

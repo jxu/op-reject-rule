@@ -397,6 +397,7 @@ def mobius_range(n, primes):
 
 def ruler(n, p):
     """Calculates max integer a such that p^a divides n."""
+    assert n > 0
     a = 0
     while n % p == 0:
         n //= p

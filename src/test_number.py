@@ -154,3 +154,8 @@ def test_mul_inv():
         assert mul_inv(a, 7) == (None, 1, 4, 5, 2, 3, 6)[a]
 
     assert mul_inv(-1, 7) == -1 % 7
+
+
+def test_ruler():
+    for n in range(1, 11):
+        assert ruler(n, 2) == [None,0,1,0,2,0,1,0,3,0,1][n]

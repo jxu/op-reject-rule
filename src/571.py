@@ -1,5 +1,11 @@
-from number import pandigital
+from number import int_to_base
 from itertools import permutations
+
+def pandigital(n, b):
+    """Checks if n contains all digits from 0 to b-1"""
+    digit_list = int_to_base(n, b)
+    return set(digit_list) == set(range(b))
+
 
 def n_super_pandigital(b):
     l = []

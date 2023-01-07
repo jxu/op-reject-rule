@@ -418,12 +418,6 @@ def int_to_base(n, b):
     return digits[::-1]
 
 
-def pandigital(n, b):
-    """Checks if n contains all digits from 0 to b-1"""
-    digit_list = int_to_base(n, b)
-    return set(digit_list) == set(range(b))
-
-
 def is_smooth(n, primes):
     """Test if n has only factors in primes"""
     for p in primes:

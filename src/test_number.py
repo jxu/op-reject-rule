@@ -93,10 +93,10 @@ def test_mobius_range():
 
 def test_mertens_small():
     primes = sieve(10)
-    mertens_small = (0,1,0,-1,-1,-2,-1,-2,-2,-2,-1,-2,
-                     -2,-3,-2,-1,-1,-2,-2,-3,-3)
-    for i in range(1, len(mertens_small)):
-        assert mertens(i, primes) == mertens_small[i]
+    mertens_small_ = (0,1,0,-1,-1,-2,-1,-2,-2,-2,-1,-2,
+                      -2,-3,-2,-1,-1,-2,-2,-3,-3)
+    for i in range(1, len(mertens_small_)):
+        assert mertens(i, primes) == mertens_small_[i]
 
 
 def test_mertens_pow10():

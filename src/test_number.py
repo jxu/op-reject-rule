@@ -107,7 +107,7 @@ def test_mertens_pow10():
         assert mertens(10**i, primes) == powers_10[i]
 
 
-def test_factor_primes():
+def test_factor_with_primes():
     small_primes = [2, 3, 5]
     factorizations = (None, {}, {2:1}, {3:1}, {2:2}, {5:1}, {2:1,3:1}, {7:1},
                       {2:3}, {3:2}, {2:1,5:1}, {11:1}, {2:2,3:1}, {13:1},

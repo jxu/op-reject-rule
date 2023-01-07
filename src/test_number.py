@@ -1,7 +1,7 @@
 """Unit tests to ensure commonly used number functions are valid."""
 import pytest
 from number import is_prime, sieve, phi, totient_sum, is_square, prime_count,\
-    mobius_range, mertens, factor, divisors
+    mobius_range, mertens, factor, divisors, isqrt
 
 
 def test_is_prime_small():
@@ -63,6 +63,14 @@ def test_is_square():
     assert not is_square(120)
     assert is_square(121)
     assert is_square(12345678987654321234567 ** 2)
+    assert not is_square(12345678987654321234567 ** 2 - 1)
+
+
+def test_isqrt():
+    isqrts = (0,1,1,1,2,2,2,2,2,3,3,3,3,3,3,3,4,4)
+
+    for i in range(len(isqrts)):
+        assert isqrt(i) == isqrts[i]
 
 
 def test_prime_count():

@@ -140,17 +140,48 @@ def is_square(n):
     """Returns if a number is square without floating point math.
 
     Uses Babylonian / Heron's method, i.e. Newton's method
+    Credit: Alex Martelli https://stackoverflow.com/a/2489519
+
     Also consider pre-compute set of squares, or gmpy2.is_square()
-    Credit: Alex Martelli
+    Python 3.8+ has math.isqrt
     """
-    if n == 1: return True
-    x = n // 2
-    seen = {x}
-    while x * x != n:
-        x = (x + (n // x)) // 2
-        if x in seen: return False
-        seen.add(x)
-    return True
+    try:
+        from math import isqrt
+        return n == isqrt(n)**2
+    except:
+        if n == 1: return True
+        x = n // 2
+        seen = {x}
+        while x * x != n:
+            x = (x + (n // x)) // 2
+            if x in seen: return False
+            seen.add(x)
+        return True
+
+
+def isqrt(n):
+    """Return the integer part of the square root of the input.
+
+    Credit: Python mathmodule.c
+    """
+    try:
+        from math import isqrt
+        return isqrt(n)
+    except:
+        n = operator.index(n)
+        if n < 0:
+            raise ValueError("isqrt() argument must be nonnegative")
+        if n == 0:
+            return 0
+        c = (n.bit_length() - 1) // 2
+        a = 1
+        d = 0
+        for s in reversed(range(c.bit_length())):
+            # Loop invariant: (a-1)**2 < (n >> 2*(c - d)) < (a+1)**2
+            e = d
+            d = c >> s
+            a = (a << d - e - 1) + (n >> 2*c - e - d + 1) // a
+        return a - (a*a > n)
 
 
 def factor(n, primes=None):

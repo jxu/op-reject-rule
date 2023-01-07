@@ -1,7 +1,6 @@
 """Unit tests to ensure commonly used number functions are valid."""
 import pytest
-from number import is_prime, sieve, phi, totient_sum, is_square, prime_count,\
-    mobius_range, mertens, factor, divisors, isqrt, powerset
+from number import *
 
 def test_is_prime_small():
     with pytest.raises(Exception):
@@ -144,6 +143,7 @@ def test_divisors():
     assert sorted(divisors({2:1, 3:1})) == [1, 2, 3, 6]
     assert sorted(divisors({2:2, 3:1})) == [1, 2, 3, 4, 6, 12]
 
+
 def test_sieve():
     primes_100 = [2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47,
                   53, 59, 61, 67, 71, 73, 79, 83, 89, 97]
@@ -151,6 +151,17 @@ def test_sieve():
     assert sieve(100) == primes_100
     assert len(sieve(10000)) == 1229
 
+
 def test_powerset():
     assert tuple(powerset([1,2,3])) == \
            ((), (1,), (2,), (3,), (1, 2), (1, 3), (2, 3), (1, 2, 3))
+
+
+def test_mul_inv():
+    with pytest.raises(Exception):
+        mul_inv(7, 7)
+
+    for a in range(1, 7):
+        assert mul_inv(a, 7) == (None, 1, 4, 5, 2, 3, 6)[a]
+
+    assert mul_inv(-1, 7) == -1 % 7

@@ -252,8 +252,11 @@ def mul_inv(a, m):
     """Modular multiplicative inverse: a^-1 mod m.
 
     Credit: rosettacode.org
+    See also mul inv for range in linear time
+    https://cp-algorithms.com/algebra/module-inverse.html#mod-inv-all-num
     """
     a = a % m  # handle negative input
+    assert a != 0, "inverse of 0"
     m0 = m
     x0, x1 = 0, 1
     if m == 1: return 1

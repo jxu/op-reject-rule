@@ -171,3 +171,17 @@ def test_is_smooth():
         assert is_smooth(n, small_primes) == \
                (None, None, True, True, True, False,
                 True, False, True, True, False)[n]
+
+
+def test_fib_list():
+    assert fib_list(5) == [0, 1, 1, 2, 3, 5]
+
+
+def test_combination():
+    for i in range(5):
+        assert combination(4, i) == (1, 4, 6, 4, 1)[i]
+
+
+def test_permutation():
+    for i in range(5):
+        assert permutation(4, i) == (1, 4, 12, 24, 24)[i]

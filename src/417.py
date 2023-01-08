@@ -13,14 +13,8 @@ from sympy.ntheory import n_order
 primes = sieve(10**4)
 
 @memoize
-def ord10(p, e):
-    if e == 1: return n_order(10, p)
-    else:
-        if pow(10, ord10(p, e-1), p**e) == 1:
-            return ord10(p, e-1)
-        else:
-            return p * ord10(p, e-1)
-
+def ord10(n):
+    return n_order(10, n)
 
 def L(n):
     if n % 100000 == 0: print(n)
@@ -33,7 +27,7 @@ def L(n):
 def L_(n):
     o = 1
     for p, e in factor(n, primes).items():
-        o = lcm(o, ord10(p, e))
+        o = lcm(o, ord10(p**e))
     return o
 
 print(sum(L(i) for i in range(1, 10**8)))

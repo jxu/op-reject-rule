@@ -72,6 +72,24 @@ def sieve(n):
     return [2] + [i for i in range(3, n+1, 2) if nums[i//2] == 0]
 
 
+def linear_sieve(n):
+    """Linear sieve which computes factorization of 2 through n (incl)"""
+    lp = [0] * (n+1)
+    pr = []
+    for i in range(2, n+1):
+        if lp[i] == 0:
+            lp[i] = i
+            pr.append(i)
+
+        for j in range(len(pr)):
+            x = i * pr[j]
+            if x > n: break
+            lp[x] = pr[j]
+            if pr[j] == lp[i]: break
+
+    return lp
+
+
 def is_prime(n, trials=20):
     """Returns whether a number is prime or not using Miller-Rabin primality.
 

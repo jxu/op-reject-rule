@@ -190,3 +190,7 @@ def test_combination():
 def test_permutation():
     for i in range(5):
         assert permutation(4, i) == (1, 4, 12, 24, 24)[i]
+
+
+def test_linear_sieve():
+    assert linear_sieve(11) == [0, 0, 2, 3, 2, 5, 2, 7, 2, 3, 2, 11]

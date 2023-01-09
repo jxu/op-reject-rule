@@ -387,10 +387,8 @@ def totient_range(n):
     tots = list(range(n+1))
     for p in range(2, n+1):
         if p == tots[p]:
-            k = p
-            while k <= n:
+            for k in range(p, n+1, p):
                 tots[k] -= tots[k] // p
-                k += p
 
     return tots
 

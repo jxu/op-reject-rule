@@ -48,6 +48,10 @@ def test_phi():
     assert phi(100, primes) == 40
 
 
+def test_totient_range():
+    assert totient_range(10) == [0, 1, 1, 2, 2, 4, 2, 6, 4, 6, 4]
+
+
 def test_totient_sum():
     powers_10 = [1, 32, 3044, 304192, 30397486, 3039650754, 303963552392,
                  30396356427242]

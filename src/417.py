@@ -9,22 +9,16 @@
 # 3.5m using all factorizations provided by linear sieve instead of
 # sympy's n_order
 
-from number import lcm, memoize, linear_sieve, totient_range, divisors
-from collections import Counter
+from number import lcm, memoize, linear_sieve, totient_range, divisors, \
+    factors_from_linear_sieve
 
 lp = linear_sieve(10**8)
 tots = totient_range(10**8)
 
-def pp_from_lp(lp, n):
-    pp = Counter()
-    while n > 1:
-        pp[lp[n]] += 1
-        n //= lp[n]
-    return pp
-
 @memoize
 def ord10(n):
-    pp = pp_from_lp(lp, tots[n])
+    pp = factors_from_linear_sieve(lp, tots[n])
+    # order divides phi(n). maybe make into function in number.py
     for d in sorted(divisors(pp)):
         if pow(10, d, n) == 1:
             return d
@@ -40,7 +34,7 @@ def L(n):
 @memoize
 def L_(n):
     o = 1
-    for p, e in pp_from_lp(lp, n).items():
+    for p, e in factors_from_linear_sieve(lp, n).items():
         o = lcm(o, ord10(p**e))
     return o
 

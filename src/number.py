@@ -73,7 +73,10 @@ def sieve(n):
 
 
 def linear_sieve(n):
-    """Linear sieve which computes factorization of 2 through n (incl)"""
+    """Linear sieve which computes factorization of 2 through n (incl).
+
+    Credit: Paul Pritchard
+    """
     lp = [0] * (n+1)
     pr = []
     for i in range(2, n+1):
@@ -88,6 +91,18 @@ def linear_sieve(n):
             if pr[j] == lp[i]: break
 
     return lp
+
+
+def factors_from_linear_sieve(lp, n):
+    """Factorizes n given least primes array from linear_sieve.
+
+    Factorization given in prime powers form like factorize
+    """
+    pp = Counter()
+    while n > 1:
+        pp[lp[n]] += 1
+        n //= lp[n]
+    return pp
 
 
 def is_prime(n, trials=20):
@@ -205,7 +220,7 @@ def isqrt(n):
 def factor(n, primes=None):
     """Return all prime factors of n.
 
-    Output dict of (prime, mult) pairs using trial division.
+    Output dict of prime:exponent pairs using trial division.
     If `primes` to try is provided, requires list of primes up to sqrt(n)
     Modeled after sympy.ntheory.factorint
     CPython/Pypy 3.6+, dict keys (primes) should be ordered

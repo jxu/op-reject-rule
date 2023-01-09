@@ -198,3 +198,9 @@ def test_permutation():
 
 def test_linear_sieve():
     assert linear_sieve(11) == [0, 0, 2, 3, 2, 5, 2, 7, 2, 3, 2, 11]
+
+
+def test_factors_from_linear_sieve():
+    lp = linear_sieve(10)
+    for n in range(1, 11):
+        assert factors_from_linear_sieve(lp, n) == factor(n)

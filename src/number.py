@@ -533,6 +533,7 @@ def fib_list(n):
 
 
 def combination(n, k):
+    #assert n >= 0 and k >= 0
     return product(range(n-k+1, n+1)) // product(range(1, k+1))
 
 

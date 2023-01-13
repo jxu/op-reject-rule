@@ -1,6 +1,6 @@
-from number import sieve, combination
+from number import sieve, comb
 
-primes = sieve(int(combination(50, 25)**0.5)) # Max prime
+primes = sieve(int(comb(50, 25) ** 0.5)) # Max prime
 prime_squares = [p**2 for p in primes]
 square_free = set()
 steps = 0
@@ -15,7 +15,7 @@ def is_square_free(c):
 
 for n in range(0, 51):
     for k in range(0, n//2 + 1):
-        c = combination(n, k)
+        c = comb(n, k)
         if is_square_free(c): square_free.add(c)
 
 print("Steps:", steps)

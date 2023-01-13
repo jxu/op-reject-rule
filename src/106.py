@@ -50,13 +50,13 @@ def count_test(n):
 # The number of strings guaranteeing inequality is C_k * (n choose 2k)
 # The total number of subset pairs is (n choose k)*(n-k choose k)/2
 # Expression can be simplified further
-from number import combination
+from number import comb
 
 def count_test2(n):
     s = 0
     for k in range(2, n//2 + 1):
-        certain_strings = combination(n, 2*k) * combination(2*k, k) // (k+1)
-        subset_pairs = combination(n, k) * combination(n-k, k) // 2
+        certain_strings = comb(n, 2 * k) * comb(2 * k, k) // (k + 1)
+        subset_pairs = comb(n, k) * comb(n - k, k) // 2
         s += subset_pairs - certain_strings
 
     return s

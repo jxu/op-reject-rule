@@ -536,13 +536,22 @@ def fib_list(n):
     return fib
 
 
-def combination(n, k):
-    #assert n >= 0 and k >= 0
-    return prod(range(n - k + 1, n + 1)) // prod(range(1, k + 1))
+def comb(n, k):
+    try:
+        return math.comb(n, k)
+    except:
+        if n < 0 or k < 0:
+            raise ValueError
+        return prod(range(n - k + 1, n + 1)) // prod(range(1, k + 1))
 
 
-def permutation(n, k):
-    return prod(range(n - k + 1, n + 1))
+def perm(n, k):
+    try:
+        return math.perm(n, k)
+    except:
+        if n < 0 or k < 0:
+            raise ValueError
+        return prod(range(n - k + 1, n + 1))
 
 
 if __name__ == "__main__":

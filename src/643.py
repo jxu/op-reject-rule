@@ -33,7 +33,7 @@
 # The inefficiency with this solution is computing M*(n) recursively.
 
 from __future__ import division
-from number import sieve, combination, mobius_range, mertens, memoize
+from number import sieve, comb, mobius_range, mertens, memoize
 N = 10**11
 
 primes = sieve(10**8)
@@ -49,12 +49,12 @@ def odd_mertens(n):
 result = 0
 last_binom = 0
 for k in range(1, int(N**0.5), 2):
-    result += combination(N // (2*k), 2) * small_mobius[k]
+    result += comb(N // (2 * k), 2) * small_mobius[k]
     last_binom = N // (2*k)
 
 for j in range(1, last_binom):
     mu_sum = odd_mertens(N//(2*j)) - odd_mertens(N//(2*(j+1)))
-    result += combination(j, 2) * mu_sum
+    result += comb(j, 2) * mu_sum
 
 print(result)
 print(result % 1000000007)

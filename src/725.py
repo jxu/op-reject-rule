@@ -10,7 +10,7 @@
 # Adding up these numbers digit by digit is the same as multiplying the digit
 # avg by 111... (= (10^n-1)/9)
 
-from number import combination as comb
+from number import comb
 M = 10**16
 def S(n):
     s = 0

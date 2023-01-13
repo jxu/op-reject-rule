@@ -20,10 +20,10 @@ print(final)
 
 
 # Alternate solution (thread 113 #1)
-from number import combination
+from number import comb
 count = 0
 for i in range(1, 101):
-    count += combination(8+i, i)  # Increase the digit (no leading 0)
-    count += combination(9+i, i)  # Decrease the digit
+    count += comb(8 + i, i)  # Increase the digit (no leading 0)
+    count += comb(9 + i, i)  # Decrease the digit
     count -= 10  # Keep digit same
 print(count)

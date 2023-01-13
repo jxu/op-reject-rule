@@ -1,12 +1,12 @@
-from number import combination, memoize
+from number import comb, memoize
 
-combination = memoize(combination)
+combination = memoize(comb)
 
 def chance(f):
     c = 0
     for heads in range(1001):
         if (1+2*f)**heads * (1-f)**(1000-heads) >= 10**9:
-            c += combination(1000, heads) / (2**1000)
+            c += comb(1000, heads) / (2 ** 1000)
 
     return c
 

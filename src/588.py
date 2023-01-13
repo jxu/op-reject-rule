@@ -1,6 +1,6 @@
 # A247649. Solution using a genralization of the Run Length Transform,
 # N. J. A. Sloane, On the Number of ON Cells in Cellular Automata, arXiv:1503.01168
-from number import product
+from number import prod
 
 def create_tri(n):
     # Calculate using generalized Pascal's identity
@@ -20,6 +20,6 @@ def a(n):
     s = [int(d, 2) for d in bin(n)[2:].split("00") if d != '' and d != '0']
     print(s)
 
-    return product(create_tri(m) for m in s)
+    return prod(create_tri(m) for m in s)
 
 print(sum((a(10**k) for k in range(1, 19))))

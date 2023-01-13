@@ -1,5 +1,6 @@
 """Commonly used number-theory and helper functions"""
 import operator
+import math
 import random
 import itertools
 from itertools import accumulate
@@ -8,12 +9,15 @@ from collections import Counter
 
 
 ########## HELPER FUNCTIONS ##########
-def product(iterable):
+def prod(iterable):
     """Return the product of the values in the iterable.
 
-    Not to be confused for importing with itertools.product!
+    Not to be confused with itertools.product!
     """
-    return reduce(operator.mul, iterable, 1)
+    try:
+        return math.prod(iterable)
+    except:
+        return reduce(operator.mul, iterable, 1)
 
 
 def powerset(iterable):
@@ -251,7 +255,7 @@ def divisors(prime_powers):
         exp_ranges.append([p**e for e in range(maxe+1)])
 
     for pps in itertools.product(*exp_ranges):
-        divs.append(product(pps))
+        divs.append(prod(pps))
 
     return divs
 
@@ -534,11 +538,11 @@ def fib_list(n):
 
 def combination(n, k):
     #assert n >= 0 and k >= 0
-    return product(range(n-k+1, n+1)) // product(range(1, k+1))
+    return prod(range(n - k + 1, n + 1)) // prod(range(1, k + 1))
 
 
 def permutation(n, k):
-    return product(range(n-k+1, n+1))
+    return prod(range(n - k + 1, n + 1))
 
 
 if __name__ == "__main__":

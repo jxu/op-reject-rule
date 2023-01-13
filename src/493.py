@@ -2,7 +2,7 @@
 # Much simpler solution from Tepsi: Let p = probability of color being in draw
 # p = 1 - (60 choose 20)/(70 choose 20). Then total expected is 7p
 
-from number import combination, product
+from number import combination, prod
 from math import factorial
 
 combos = []
@@ -26,9 +26,9 @@ for combo in combos:
     colors_to_use = combination(7, combo_colors)
     # 2. Uniquely assign these colors to the number of balls in combo
     dist = factorial(combo_colors) // \
-           product(factorial(combo.count(color)) for color in set(combo))
+           prod(factorial(combo.count(color)) for color in set(combo))
     # 3. For each number, pick individual balls of a color to be used
-    balls_colors = product(combination(10, color) for color in combo)
+    balls_colors = prod(combination(10, color) for color in combo)
 
     s += balls_colors * dist  * colors_to_use * combo_colors
 

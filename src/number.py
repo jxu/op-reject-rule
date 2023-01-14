@@ -63,6 +63,14 @@ def timeit(f):
 
 
 ########## NUMBER THEORY ##########
+def gcd(a, b):
+    """Uses math.gcd instead.
+
+    Python 3.9 has support for arbitrary number of arguments.
+    """
+    return math.gcd(a, b)
+
+
 def sieve(n):
     """Sieve of Eratosthenes: returns a list of primes <= n."""
     assert n > 2

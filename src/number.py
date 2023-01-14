@@ -71,6 +71,18 @@ def gcd(a, b):
     return math.gcd(a, b)
 
 
+def extended_euclidean(a, b):
+    """Returns g, x, y for which a*x + b*y = g = gcd(a,b).
+
+    Credit: e-maxx.ru (Ivanov Maxim)
+    """
+    if b == 0:
+        return a, 1, 0
+    d, x1, y1 = extended_euclidean(b, a % b)
+    x, y = y1, x1 - y1 * (a // b)
+    return d, x, y
+
+
 def sieve(n):
     """Sieve of Eratosthenes: returns a list of primes <= n."""
     assert n > 2

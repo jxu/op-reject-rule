@@ -1,7 +1,10 @@
 # Finding largest squareroot of 1 mod n, != -1 mod n
 # By Chinese Remainder Theorem, x^2 = 1 mod n can be determined uniquely by
 # x^2 = 1 mod p1^e1, = 1 mod p2^e2, ...
-# For odd p, it can be shown the only sols for x^2 = 1 mod p^e are +-1
+# For odd p, it can be shown the only sols for x^2 = 1 mod p^e are +-1:
+# p^e | (x+1)(x-1) => p | (x+1)(x-1)
+# Since p is odd, p divides exactly one of (x+1), (x-1)
+# All copies of p in p^e divide one of (x+1), (x-1)
 # For p = 2, the squareroots for e >= 3 are +-1 and 2^(e-1) +- 1
 # https://math.stackexchange.com/q/2693243
 # So try all combinations of squareroots for prime powers and combine with CRT

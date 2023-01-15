@@ -209,3 +209,8 @@ def test_factors_from_linear_sieve():
 def test_extended_euclidean():
     assert extended_euclidean(0, 1) == (1, 0, 1)
     assert extended_euclidean(85, 15) == (5, -1, 6)
+
+
+def test_crt():
+    assert crt((2, 3), (3, 5)) == (8, 15)
+    assert crt((2, 3, 2), (3, 5, 7)) == (23, 105)

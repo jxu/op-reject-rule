@@ -86,18 +86,19 @@ def extended_euclidean(a, b):
 def crt(rs, mods):
     """Chinese Remainder Theorem for x = r[i] mod m[i]
 
-    Solve for x = r mod m1*m2*...
+    Returns solution (r, m) of x = r mod m, with m = m1*m2*...
     Exact solution from Wikipedia
     """
     assert len(rs) == len(mods)
     r0, m0 = rs[0], mods[0]
+
     for i in range(1, len(mods)):
         r1, m1 = rs[i], mods[i]
         g, n0, n1 = extended_euclidean(m0, m1)
-        x = (r0*n1*m1 + r1*n0*m0) % (m0*m1)
-        r0, m0 = x, m0*m1
+        r0 = (r0*n1*m1 + r1*n0*m0) % (m0*m1)
+        m0 *= m1
 
-    return r0, m0
+    return r0 % m0, m0
 
 
 def sieve(n):

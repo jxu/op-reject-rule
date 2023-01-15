@@ -19,17 +19,17 @@ def crt_recursive(rs, mods):
     Exact solution from Wikipedia
     """
     print(rs, mods)
-    r0, m0 = rs[0], mods[0]
+    r0, m0 = rs[-1], mods[-1]
     if len(rs) == 1:
         return r0 % m0, m0
 
-    r1, m1 = rs[1], mods[1]
+    r1, m1 = rs[-2], mods[-2]
     g, n0, n1 = extended_euclidean(m0, m1)
     r = (r0*n1*m1 + r1*n0*m0) % (m0*m1)
     m = m0 * m1
 
-    rs = [r] + rs[2:]  # ugly list slicing
-    mods = [m] + mods[2:]
+    rs = rs[:-2] + [r]  # ugly list slicing
+    mods = mods[:-2] + [m]
     return crt_recursive(rs, mods)
 
 assert crt_recursive([2, 3], [3, 5]) == (8, 15)

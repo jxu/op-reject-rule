@@ -2,10 +2,10 @@
 # Window can be converted to colsum string like 0112 0112 ...
 # For each k-length segment, there are equal num of 2s as 0s
 # Let i be num of 0 cols.
-# Placing 0, 1, 2 has (k choose i) * (k-i choose i) combinations.
+# Placing 0, 1, 2 has (k choose k-2i,i,i) (multinomial) combinations.
 # There is one way to make matrix col with colsum 0 or 2, but 2 ways for 1
 # For n/k segments, there are (2^(k-2i))^(n/k) ways to have 1-cols
-# Final formula: sum_{i=0..k/2} (k C i) (k-i C i) 2^((k-2i)*n/k)
+# Final formula: sum_{i=0..k/2} (k C k-2i,i,i) 2^((k-2i)*n/k)
 
 from number import mod_inv_range
 M = 1000000007
@@ -21,13 +21,11 @@ for i in range(1, len(fact)):
     inv_fact[i] = (inv_fact[i-1] * inv[i]) % M
 
 
-def comb_mod(n, k):
-    return fact[n] * inv_fact[k] % M * inv_fact[n - k] % M
-
 def A(k, n):
     s = 0
     for i in range(0, k//2+1):
-        t = comb_mod(k, i) * comb_mod(k-i, i) % M * pow(2, (k-2*i)*(n//k), M)
+        t = fact[k] * inv_fact[k-2*i] % M * \
+            (inv_fact[i]**2 % M) % M * pow(2, (k-2*i)*(n//k), M)
         s = (s + t) % M
 
     return s

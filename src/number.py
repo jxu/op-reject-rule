@@ -344,7 +344,16 @@ def mod_inv(a, m):
     return x1
 
 
+def mod_inv_range(p):
+    """Computes modular inverse in range [1, p-1] in O(p) time
 
+    Credit: cp-algorithms, e-maxx.ru
+    """
+    inv = [None] * p
+    inv[1] = 1
+    for i in range(2, p):
+        inv[i] = (-(p//i) * inv[p%i]) % p
+    return inv
 
 
 # Save calculated values for future use (problem 625)

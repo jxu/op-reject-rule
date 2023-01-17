@@ -155,7 +155,7 @@ def test_powerset():
            ((), (1,), (2,), (3,), (1, 2), (1, 3), (2, 3), (1, 2, 3))
 
 
-def test_mul_inv():
+def test_mod_inv():
     with pytest.raises(Exception):
         mod_inv(7, 7)
 
@@ -214,3 +214,7 @@ def test_extended_euclidean():
 def test_crt():
     assert crt((2, 3), (3, 5)) == (8, 15)
     assert crt((2, 3, 2), (3, 5, 7)) == (23, 105)
+
+
+def test_mod_inv_range():
+    assert mod_inv_range(5) == [None, 1, 3, 2, 4]

@@ -323,7 +323,7 @@ def phi(n, primes):
     return r
 
 
-def mul_inv(a, m):
+def mod_inv(a, m):
     """Modular multiplicative inverse: a^-1 mod m.
 
     Credit: rosettacode.org
@@ -342,6 +342,9 @@ def mul_inv(a, m):
         x0, x1 = x1 - q * x0, x0
     if x1 < 0: x1 += m0
     return x1
+
+
+
 
 
 # Save calculated values for future use (problem 625)

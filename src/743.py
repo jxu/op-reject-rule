@@ -7,7 +7,7 @@
 # For n/k segments, there are (2^(k-2i))^(n/k) ways to have 1-cols
 # Final formula: sum_{i=0..k/2} (k C i) (k-i C i) 2^((k-2i)*n/k)
 
-from number import mul_inv
+from number import mod_inv
 M = 1000000007
 
 # precompute factorial mod M
@@ -16,7 +16,7 @@ for i in range(1, 10**8 + 1):
     fact[i] = (fact[i-1] * i) % M
 
 def comb_mod(n, k):
-    return (fact[n] * mul_inv(fact[k] * fact[n-k] % M, M)) % M
+    return (fact[n] * mod_inv(fact[k] * fact[n - k] % M, M)) % M
 
 def A(k, n):
     s = 0

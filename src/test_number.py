@@ -157,12 +157,12 @@ def test_powerset():
 
 def test_mul_inv():
     with pytest.raises(Exception):
-        mul_inv(7, 7)
+        mod_inv(7, 7)
 
     for a in range(1, 7):
-        assert mul_inv(a, 7) == (None, 1, 4, 5, 2, 3, 6)[a]
+        assert mod_inv(a, 7) == (None, 1, 4, 5, 2, 3, 6)[a]
 
-    assert mul_inv(-1, 7) == -1 % 7
+    assert mod_inv(-1, 7) == -1 % 7
 
 
 def test_ruler():

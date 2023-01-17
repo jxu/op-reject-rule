@@ -8,7 +8,7 @@
 
 # k^0 + ... + k^n = (k^(n+1) - 1) / (k - 1) if k != 1, n + 1 otherwise
 
-from number import mul_inv
+from number import mod_inv
 MOD = 1000000007
 
 def I(l, n):
@@ -17,9 +17,9 @@ def I(l, n):
 
     for k in range(l):
         z = n+1 if k == 1 else \
-            ((pow(k, n+1, MOD) - 1) * mul_inv(k-1, MOD)) % MOD
+            ((pow(k, n+1, MOD) - 1) * mod_inv(k - 1, MOD)) % MOD
         s = (s + (-1)**(l-k+1) * binom * z) % MOD
-        binom = (binom * (l-k) * mul_inv(k+1, MOD)) % MOD
+        binom = (binom * (l-k) * mod_inv(k + 1, MOD)) % MOD
 
     return s
 

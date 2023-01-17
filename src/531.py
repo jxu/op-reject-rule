@@ -1,6 +1,6 @@
 # Use chinese remainder theorem multiple times for non-coprime moduli
 
-from number import mul_inv, phi
+from number import mod_inv, phi
 
 
 def g(a, n, b, m):

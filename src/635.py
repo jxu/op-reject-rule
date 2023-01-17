@@ -8,7 +8,7 @@
 #   Python 3.6: 5m 59s, PyPy 5.10.0: 13.5s
 
 
-from number import sieve, mul_inv
+from number import sieve, mod_inv
 M = 1000000009
 L = 10**8
 sp = set(sieve(L))
@@ -36,7 +36,7 @@ class ModFraction:
         return ModFraction(new_num, new_den, self.mod)
 
     def calc(self):
-        return (self.num * mul_inv(self.den, self.mod)) % self.mod
+        return (self.num * mod_inv(self.den, self.mod)) % self.mod
 
 
 A2 = ModFraction(-2, 1, M)  # adjust for A2(2) = 2 instead of 4

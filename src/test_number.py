@@ -162,7 +162,7 @@ def test_mod_inv():
     for a in range(1, 7):
         assert mod_inv(a, 7) == (None, 1, 4, 5, 2, 3, 6)[a]
 
-    assert mod_inv(-1, 7) == -1 % 7
+    assert mod_inv(-1, 7) == 6
 
 
 def test_ruler():

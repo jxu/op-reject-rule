@@ -326,22 +326,12 @@ def phi(n, primes):
 def mod_inv(a, m):
     """Modular multiplicative inverse: a^-1 mod m.
 
-    Credit: rosettacode.org
-    See also mul inv for range in linear time
-    https://cp-algorithms.com/algebra/module-inverse.html#mod-inv-all-num
+    Based on extended Euclidean algorithm
     """
-    a = a % m  # handle negative input
-    assert a != 0, "inverse of 0"
-    m0 = m
-    x0, x1 = 0, 1
-    if m == 1: return 1
-    while a > 1:
-        assert m != 0, "a and m must be coprime"
-        q = a // m
-        a, m = m, a%m
-        x0, x1 = x1 - q * x0, x0
-    if x1 < 0: x1 += m0
-    return x1
+    g, x, y = extended_euclidean(a, m)
+    if g != 1:
+        raise ValueError("No modular inverse")
+    return x % m
 
 
 def mod_inv_range(p, end=None):

@@ -1,4 +1,5 @@
-# digits(x xp y) = digits(x) + digits(y) - 1
+# xor product is polynomial multiplication in binary field GF(2)
+# deg(f * g) = deg(f) + deg(g)
 # Use sieve of Eratosthenes, but stop searching j once xor product is >= 2*n
 # since i xp j will have too many digits
 

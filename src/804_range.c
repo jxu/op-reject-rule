@@ -7,11 +7,11 @@
 #include <stdbool.h>
 #include <stdio.h>
 
-#define N 10
+#define N 1e16
+#define ll long long
 
-bool in_ellipse(long long x, long long y)
+bool in_ellipse(ll x, ll y)
 {
-    printf("%lld %lld\n", x, x*x + x*y + 41*y*y);
     return x*x + x*y + 41*y*y <= N;
 }
 
@@ -20,18 +20,57 @@ bool in_ellipse(long long x, long long y)
  * Requires passed in [xl, xr] to overlap with returned new range,
  * that is at least one new endpoint is within old range
  */
-long long adjust_range(long long *xl, long long *xr, long long y)
+ll adjust_range(ll *xl, ll *xr, ll y)
 {
-    while (in_ellipse(*xr, y)) {
-        ++*xr;
+    if (in_ellipse(*xr, y)) 
+    {
+        while (in_ellipse(*xr, y)) 
+            ++*xr;
+        --*xr;
+    } else
+    {
+        while (!in_ellipse(*xr, y))
+        {
+            --*xr;
+            if (*xr < *xl) return 0;
+        }
     }
-    --*xr; 
-    return *xr;
+
+    if (in_ellipse(*xl, y))
+    {
+        while (in_ellipse(*xl, y))
+            --*xl;
+        ++*xl;
+    } else
+    {
+        while (!in_ellipse(*xl, y))
+            ++*xl;
+    }
+
+    //printf("%lld %lld\n", *xl, *xr);
+    return *xr - *xl + 1;
 }
 
 int main() 
 {
-    long long xl = 0, xr = 0;
-    printf("%lld\n", adjust_range(&xl, &xr, 0));
+    ll s = -1;
+    ll xl = 0, xr = 0, y = 0, m;
+    while ((m = adjust_range(&xl, &xr, y)))
+    {
+        //printf("%lld %lld %lld %lld\n", xl, xr, y, m);
+        s += m;
+        ++y;
+    }
+    y = -1; xl = 0; xr = 0; 
+
+    while ((m = adjust_range(&xl, &xr, y)))
+    {
+        //printf("%lld %lld %lld %lld\n", xl, xr, y, m);
+        s += m;
+        --y;
+ 
+    }
+
+    printf("%lld\n", s);
     return 0;
 }

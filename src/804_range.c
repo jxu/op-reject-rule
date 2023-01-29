@@ -22,53 +22,40 @@ bool in_ellipse(ll x, ll y)
  */
 ll adjust_range(ll *xl, ll *xr, ll y)
 {
-    if (in_ellipse(*xr, y)) 
+    while (in_ellipse(*xr, y)) 
+        ++*xr;
+    --*xr;
+    
+    while (!in_ellipse(*xr, y))
     {
-        while (in_ellipse(*xr, y)) 
-            ++*xr;
         --*xr;
-    } else
-    {
-        while (!in_ellipse(*xr, y))
-        {
-            --*xr;
-            if (*xr < *xl) return 0;
-        }
+        if (*xr < *xl) return 0;
     }
 
-    if (in_ellipse(*xl, y))
-    {
-        while (in_ellipse(*xl, y))
-            --*xl;
+    while (in_ellipse(*xl, y))
+        --*xl;
+    ++*xl;
+    
+    while (!in_ellipse(*xl, y))
         ++*xl;
-    } else
-    {
-        while (!in_ellipse(*xl, y))
-            ++*xl;
-    }
 
-    //printf("%lld %lld\n", *xl, *xr);
     return *xr - *xl + 1;
 }
 
 int main() 
 {
-    ll s = -1;
-    ll xl = 0, xr = 0, y = 0, m;
+    ll s = -1, xl = 0, xr = 0, y = 0, m;
     while ((m = adjust_range(&xl, &xr, y)))
     {
-        //printf("%lld %lld %lld %lld\n", xl, xr, y, m);
-        s += m;
+        s += m; 
         ++y;
     }
+    
     y = -1; xl = 0; xr = 0; 
-
     while ((m = adjust_range(&xl, &xr, y)))
     {
-        //printf("%lld %lld %lld %lld\n", xl, xr, y, m);
         s += m;
         --y;
- 
     }
 
     printf("%lld\n", s);

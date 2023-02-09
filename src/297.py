@@ -1,22 +1,14 @@
+# A007895: z(n)
+# A179180: Z(n) but 1-indexed
+
 from number import fib_list, memoize
-
-
-N = 10**17
-fib = [x for x in fib_list(100) if x < N]
-n = len(fib) - 1  # F_n < N
-Zf = [0] * (n+1)
-
-
-for i in range(1, n):
-    Zf[i+1] = fib[i-1] + Zf[i] + Zf[i-1]
+from bisect import bisect_left
+fib = fib_list(90)
 
 @memoize
-def sumZ(N):
+def Z(N):
     if N < 2: return 0
-    i = 0
-    while i < len(fib) and fib[i] < N:
-        i += 1
-    i -= 1
-    return N - fib[i] + sumZ(N - fib[i]) + sumZ(fib[i])
+    i = bisect_left(fib, N) - 1
+    return N - fib[i] + Z(N - fib[i]) + Z(fib[i])
 
-print(sumZ(N))
+print(Z(10**17))

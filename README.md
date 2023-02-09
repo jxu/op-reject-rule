@@ -38,7 +38,7 @@ Problems Solved Milestones/Levels
 | 6     | 150      | 2016-04-17 |
 | 7     | 175      | 2017-06-28 |
 | 8     | 200      | 2018-08-26 |
-
+| 9     | 225      | 2023-02-08 |
 
 Solution Highlights
 -------------------

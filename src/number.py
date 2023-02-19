@@ -45,11 +45,11 @@ def timeit(f):
 
     Example usage: sieve = timeit(sieve)
     """
-    from time import clock
+    from time import time
     def timed(*args, **kwargs):
-        time_start = clock()
+        time_start = time()
         result = f(*args, **kwargs)
-        time_end = clock()
+        time_end = time()
 
         all_args = list(map(str, args))
         for key in kwargs:

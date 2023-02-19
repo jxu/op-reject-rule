@@ -1,5 +1,6 @@
 # The following were intended to test pypy https://stackoverflow.com/q/44811418
-from number import timeit 
+from number import timeit
+from sys import getsizeof
 
 @timeit
 def sieve(n):
@@ -11,6 +12,17 @@ def sieve(n):
                 nums[j] = 1
 
     return [i for i in range(2, n) if nums[i] == 0]
+
+@timeit
+def sieve_bool(n):
+    nums = [False] * n
+    for i in range(2, n):
+        if i * i >= n: break
+        if not nums[i]:
+            for j in range(i*i, n, i):
+                nums[j] = True
+
+    return [i for i in range(2, n) if not nums[i]]
 
 
 @timeit
@@ -38,5 +50,5 @@ def sieve_slice(n):
 
 if __name__ == "__main__":
     p = sieve(10**8)
-    q = sieve_odd(10**8)
+    q = sieve_bool(10**8)
     assert p == q

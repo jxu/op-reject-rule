@@ -10,16 +10,15 @@
 # etc. up to j near sqrt(N).
 # Then calculate phi directly for phi(1) to phi(sqrt(N))
 
-from __future__ import division
-from number import totient_range, totient_sum, sieve
+from number import totient_range, totient_sum
 
 def G(N):
     s = 0
     # Largest totient calc first for value re-use (see implementation)
-    current_totient_sum = totient_sum(N, reuse_calc=True)
+    current_totient_sum = totient_sum(N)
 
     for k in range(1, int(N**0.5)+1):
-        next_totient_sum = totient_sum(N//(k+1), reuse_calc=True)
+        next_totient_sum = totient_sum(N//(k+1))
         s += (k*(k+1)//2) * (current_totient_sum - next_totient_sum)
         if k % 100 == 0: print(s, k)
         current_totient_sum = next_totient_sum

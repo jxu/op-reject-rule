@@ -25,26 +25,31 @@ def S(n):
     seg_start = row_start(n-2)
     seg_end = row_end(n+2)
     print("segment", seg_start, seg_end)
-    seg = [False] * (seg_end - seg_start + 1)
+    seg = [0] * (seg_end - seg_start + 1)
     for p in primes:
         # assumes p[0]**2 < seg_start
         for i in range(p*ceil(seg_start/p), seg_end+1, p):
-            seg[i-seg_start] = True
+            seg[i-seg_start] = 1
 
     seg_primes = set()
-    seg_triplets = [False] * len(seg)
+    seg_triplets = [0] * len(seg)
 
     for i in range(seg_start, seg_end+1):
         if not seg[i-seg_start]:
             seg_primes.add(i)
 
-    for r in range(n-1, n+2):
-        for i in range(row_start(r), row_end(r)+1):
-            if i not in seg_primes: continue
-            prime_nbors = [j for j in neighbors(i,r) if j in seg_primes]
-            if len(prime_nbors) >= 3:
-                for pn in prime_nbors:
-                    seg_triplets[pn - seg_start] = True
+    for p in seg_primes:
+        rows = [n-1, n, n+1]
+        r = None
+        for row in rows:
+            if row_start(row) <= p <= row_end(row):
+                r = row
+        if r is None: continue
+
+        prime_nbors = [j for j in neighbors(p,r) if j in seg_primes]
+        if len(prime_nbors) >= 3:
+            for pn in prime_nbors:
+                seg_triplets[pn - seg_start] = True
 
     s = 0
     for i in range(row_start(n), row_end(n)+1):

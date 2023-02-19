@@ -1,10 +1,9 @@
 # The following were intended to test pypy https://stackoverflow.com/q/44811418
 from number import timeit
-from sys import getsizeof
 
 @timeit
 def sieve(n):
-    nums = [0] * n
+    nums = bytearray(n)
     for i in range(2, n):
         if i * i >= n: break
         if nums[i] == 0:
@@ -28,7 +27,7 @@ def sieve_bool(n):
 @timeit
 def sieve_odd(n):
     assert n > 2
-    nums = [0] * (n//2)  # use half the memory
+    nums = bytearray(n//2)  # use half the memory
     for i in range(3, n, 2):
         if i * i >= n: break
         if nums[i//2] == 0:
@@ -50,5 +49,5 @@ def sieve_slice(n):
 
 if __name__ == "__main__":
     p = sieve(10**8)
-    q = sieve_bool(10**8)
+    q = sieve_odd(10**8)
     assert p == q

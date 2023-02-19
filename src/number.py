@@ -102,9 +102,12 @@ def crt(rs, mods):
 
 
 def sieve(n):
-    """Sieve of Eratosthenes: returns a list of primes <= n."""
+    """Sieve of Eratosthenes: returns a list of primes <= n.
+
+    Only sieves by odd numbers to fit more into cache.
+    """
     assert n > 2
-    nums = [0] * ((n+1)//2)  # use half the memory for better cache perf
+    nums = bytearray((n+1)//2)
     for i in range(3, n+1, 2):
         if i * i > n: break
         if nums[i//2] == 0:

@@ -7,10 +7,11 @@ def partition(x, l = (), r = ()):
     yield from partition(x[1:], (x[0],) + l, r)
     yield from partition(x[1:], l, (x[0],) + r)
 
-@memoize  # try to save redundant computation
+
+@memoize
 def op_tree(nums):
-    if len(nums) == 1: return [nums[0]]
-    res = []
+    if len(nums) == 1: return {nums[0]}
+    res = set()
     # partition nums into non-empty l and r parts
     for l, r in partition(nums):
         if not l or not r: continue
@@ -19,9 +20,10 @@ def op_tree(nums):
                 for op in (add, sub, mul, div):
                     #print(op, l, lx, r, rx)
                     if op == div:
-                        if rx != 0 and lx % rx == 0: res.append(op(lx, rx))
+                        if rx != 0 and lx % rx == 0:
+                            res.add(op(lx, rx))
                     else:
-                        res.append(op(lx, rx))
+                        res.add(op(lx, rx))
 
     return res
 

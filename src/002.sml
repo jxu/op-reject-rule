@@ -6,5 +6,5 @@ fun fib 1 = 1
 fun f n = 
   if fib n > 4000000 then 0
   else (if fib n mod 2 = 0 then fib n else 0) + (f (n+1))
-;
-f 1 
+
+val res = f 1 

@@ -6,18 +6,19 @@
 # Benchmark: P51 with sympy n_order and functools memoize, factoring takes 14m
 # Without factoring takes 25m
 # With memo of L_ values takes 10.5m
-# 3.5m using all factorizations provided by linear sieve instead of
+# 2.5m using all factorizations provided by linear sieve instead of
 # sympy's n_order
 
-from number import lcm, memoize, linear_sieve, totient_range, divisors, \
+from number import lcm, memoize, linear_sieve, divisors, \
     factors_from_linear_sieve
 
 lp = linear_sieve(10**8)
-tots = totient_range(10**8)
 
 @memoize
-def ord10(n):
-    pp = factors_from_linear_sieve(lp, tots[n])
+def ord10(p, e):
+    n = p**e
+    tot = p**(e-1) * (p-1)
+    pp = factors_from_linear_sieve(lp, tot)
     # order divides phi(n). maybe make into function in number.py
     for d in sorted(divisors(pp)):
         if pow(10, d, n) == 1:
@@ -35,7 +36,7 @@ def L(n):
 def L_(n):
     o = 1
     for p, e in factors_from_linear_sieve(lp, n).items():
-        o = lcm(o, ord10(p**e))
+        o = lcm(o, ord10(p, e))
     return o
 
 

@@ -7,8 +7,8 @@
 # Benchmark: P51 with sympy n_order and functools memoize, factoring takes 14m
 # Without factoring takes 25m
 # With memo of L_ values takes 10.5m
-# 2.5m using all factorizations provided by linear sieve instead of
-# sympy's n_order
+# 2.5m using all factorizations provided by linear sieve instead of n_order
+# 2m with optimizations to lcm and ord10 calc
 
 from number import memoize, linear_sieve, divisors, \
     factors_from_linear_sieve
@@ -17,16 +17,17 @@ from math import lcm
 lp = linear_sieve(10**8)
 
 @memoize
-def ord10(p, e):
-    if e == 1:
+def ord10(n):
+    p = lp[n]
+    if p == n:  # prime
         pp = factors_from_linear_sieve(lp, p-1)
         for d in sorted(divisors(pp)):
             if pow(10, d, p) == 1:
                 return d
         raise ValueError
 
-    le = ord10(p, e-1)
-    return le if pow(10, le, p**e) == 1 else p * le
+    le = ord10(n // p)
+    return le if pow(10, le, n) == 1 else p * le
 
 def L(n):
     if n % 100000 == 0: print(n)
@@ -40,13 +41,14 @@ def L_(n):
     if n == 1: return 1
     m = n
     p = lp[n]
+    pp = 1
     #print(n, p)
-    e = 0
+
     while m % p == 0:
         m //= p
-        e += 1
+        pp *= p
 
-    return lcm(L_(m), ord10(p, e))
+    return lcm(L_(m), ord10(pp))
 
 
 print(sum(L(i) for i in range(1, 10**8)))

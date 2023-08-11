@@ -10,13 +10,15 @@
 # 2.5m using all factorizations provided by linear sieve instead of n_order
 # 2m with optimizations to lcm and ord10 calc
 # 1.5m replacing memoize with DP array
+# 30s with sympy's order algorithm
+# 25s with mul order algorithm from Bach & Shallit
+#   https://rosettacode.org/wiki/Multiplicative_order
 
-from number import linear_sieve, divisors, factors_from_linear_sieve
+from number import linear_sieve, factors_from_linear_sieve
 from math import lcm
 
 lp = linear_sieve(10**8)
 L = [0] * (10**8 + 1)
-
 
 for n in range(2, 10**8 + 1):  # DP
     m = n
@@ -38,17 +40,23 @@ for n in range(2, 10**8 + 1):  # DP
 
     if n == pp:  # n prime power, so actually calculate order
         if n == p:
-            pp = factors_from_linear_sieve(lp, p - 1)
-            for d in sorted(divisors(pp)):
-                #print(n, d)
-                if pow(10, d, p) == 1:
-                    L[n] = d
-                    break
+            tot = p-1  # order of Z/(p)
+            factors = factors_from_linear_sieve(lp, tot)
+            order = 1  # order of 10
+            for qi, ei in factors.items():
+                yi = tot // (qi ** ei)
+                xi = pow(10, yi, p)
+                while xi != 1:
+                    xi = pow(xi, qi, p)
+                    order *= qi
+
+            L[n] = order
+
         else:
             le = L[n // p]
             L[n] = le if pow(10, le, n) == 1 else p * le
     else:
         L[n] = lcm(L[m], L[pp])
 
-#print(L[:20])
+print(L[:20])
 print(sum(L))

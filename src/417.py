@@ -1,4 +1,4 @@
-# By long division, period of 1/n is just mult order of 10 mod n
+# By long division, period of 1/n is just mult order of 10 mod n. A051626
 # Factors of 2 and 5 can be divided out without affecting period
 # For a,b coprime, order 10 mod ab = lcm(order 10 mod a, order 10 mod b)
 # by CRT. So we can factor n into prime powers and take the LCM of orders
@@ -9,48 +9,46 @@
 # With memo of L_ values takes 10.5m
 # 2.5m using all factorizations provided by linear sieve instead of n_order
 # 2m with optimizations to lcm and ord10 calc
+# 1.5m replacing memoize with DP array
 
-from number import memoize, linear_sieve, divisors, \
-    factors_from_linear_sieve
+from number import linear_sieve, divisors, factors_from_linear_sieve
 from math import lcm
 
 lp = linear_sieve(10**8)
+L = [0] * (10**8 + 1)
 
-@memoize
-def ord10(n):
-    p = lp[n]
-    if p == n:  # prime
-        pp = factors_from_linear_sieve(lp, p-1)
-        for d in sorted(divisors(pp)):
-            if pow(10, d, p) == 1:
-                return d
-        raise ValueError
 
-    le = ord10(n // p)
-    return le if pow(10, le, n) == 1 else p * le
-
-def L(n):
-    if n % 100000 == 0: print(n)
-    while n % 2 == 0: n //= 2
-    while n % 5 == 0: n //= 5
-    if n == 1: return 0
-    return L_(n)
-
-@memoize
-def L_(n):
-    if n == 1: return 1
+for n in range(2, 10**8 + 1):  # DP
     m = n
+    if n % 100000 == 0: print(n)
+    # try to factor out 2 and 5
+    while m % 2 == 0: m //= 2
+    while m % 5 == 0: m //= 5
+    if m < n:
+        L[n] = L[m]
+        continue
+
+    # factor out smallest prime power
     p = lp[n]
-    pp = 1
-    #print(n, p)
+    m, pp = n, 1
 
     while m % p == 0:
         m //= p
         pp *= p
 
-    return lcm(L_(m), ord10(pp))
+    if n == pp:  # n prime power, so actually calculate order
+        if n == p:
+            pp = factors_from_linear_sieve(lp, p - 1)
+            for d in sorted(divisors(pp)):
+                #print(n, d)
+                if pow(10, d, p) == 1:
+                    L[n] = d
+                    break
+        else:
+            le = L[n // p]
+            L[n] = le if pow(10, le, n) == 1 else p * le
+    else:
+        L[n] = lcm(L[m], L[pp])
 
-
-print(sum(L(i) for i in range(1, 10**8)))
-print(ord10.cache_info())
-print(L_.cache_info())
+#print(L[:20])
+print(sum(L))

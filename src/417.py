@@ -12,24 +12,13 @@
 # 1.5m replacing memoize with DP array
 # 30s with sympy's order algorithm
 # 25s with mul order algorithm from Bach & Shallit
-#   https://rosettacode.org/wiki/Multiplicative_order
+
 
 from number import linear_sieve, linear_sieve_factors
 from math import lcm
 
 lp = linear_sieve(10**8)
 L = [0] * (10**8 + 1)
-
-def mul_order(a, n, phi_n=None, factors_phi=None):
-    order = 1
-    for qi, ei in factors_phi.items():
-        yi = phi_n // (qi ** ei)
-        xi = pow(a, yi, n)
-        while xi != 1:
-            xi = pow(xi, qi, n)
-            order *= qi
-
-    return order
 
 for n in range(2, 10**8 + 1):  # DP
     m = n

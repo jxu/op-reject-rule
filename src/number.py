@@ -106,7 +106,7 @@ def sieve(n):
 
     Only sieves by odd numbers to fit more into cache.
     """
-    assert n > 2
+    if n < 2: return []
     nums = bytearray((n+1)//2)
     for i in range(3, n+1, 2):
         if i * i > n: break
@@ -273,8 +273,9 @@ def factor(n, primes=None):
     assert n > 0  # only have positive integer input
 
     factors = Counter()
-    test_divs = primes if primes else range(2, int(n**0.5)+1)
-    for d in test_divs:
+    if primes is None:
+        primes = sieve(int(n**0.5)+1)
+    for d in primes:
         if d * d > n: break
         while n % d == 0:
             n //= d
@@ -324,6 +325,33 @@ def phi(n, primes):
     if n > 1: r -= r // n  # If n had prime factor > sqrt(n)
 
     return r
+
+
+def mul_order(a, n, phi_n=None, factors_phi=None):
+    """Compute the multiplicative order of a mod n.
+
+    Algorithm from Bach & Shallit, Algorithmic Number Theory
+    https://rosettacode.org/wiki/Multiplicative_order
+    For phi(n) = q1^e1 ... qk^ek, let yi = phi(n) without qi factors,
+    xi = a^yi mod n, then raise to qi power mod n until xi = 1, then the min
+    necessary qi's have been factored into order.
+
+    :param a: element
+    :param n: mod
+    :param phi_n: phi(n), the order of group (Z/nZ)*, if available
+    :param factors_phi: factorization of phi(n), if available
+    :return: ord_n(a)
+    """
+
+    order = 1
+    for qi, ei in factors_phi.items():
+        yi = phi_n // (qi ** ei)
+        xi = pow(a, yi, n)
+        while xi != 1:
+            xi = pow(xi, qi, n)
+            order *= qi
+
+    return order
 
 
 def mod_inv(a, m):

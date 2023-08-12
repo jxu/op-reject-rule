@@ -11,10 +11,9 @@
 # 2m with optimizations to lcm and ord10 calc
 # 1.5m replacing memoize with DP array
 # 30s with sympy's order algorithm
-# 25s with mul order algorithm from Bach & Shallit
+# 25s with mul order algorithm implemented in number.py
 
-
-from number import linear_sieve, linear_sieve_factors
+from number import linear_sieve, linear_sieve_factors, mul_order
 from math import lcm
 
 lp = linear_sieve(10**8)

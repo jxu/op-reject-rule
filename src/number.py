@@ -333,12 +333,19 @@ def mul_order(a, n, phi_n=None, factors_phi=None):
     xi = a^yi mod n, then raise to qi power mod n until xi = 1, then the min
     necessary qi's have been factored into order.
 
-    :param a: element
-    :param n: mod
-    :param phi_n: phi(n), the order of group (Z/nZ)*, if available
+    :param a: element of (Z/nZ)*, coprime to n
+    :param n: modulus
+    :param phi_n: the order of group (Z/nZ)*, if available
     :param factors_phi: factorization of phi(n), if available
     :return: ord_n(a)
     """
+    if gcd(a, n) != 1:
+        raise ValueError
+
+    if phi_n is None:
+        phi_n = phi(n)
+    if factors_phi is None:
+        factors_phi = factor(phi_n)
 
     order = 1
     for qi, ei in factors_phi.items():

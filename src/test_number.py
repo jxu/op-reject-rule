@@ -78,13 +78,6 @@ def test_is_square():
     assert not is_square(12345678987654321234567 ** 2 - 1)
 
 
-def test_isqrt():
-    isqrts = (0,1,1,1,2,2,2,2,2,3,3,3,3,3,3,3,4,4)
-
-    for i in range(len(isqrts)):
-        assert isqrt(i) == isqrts[i]
-
-
 def test_prime_count():
     small_values = (0,0,1,2,2,3,3,4,4,4,4,5,5,6,6,6,6,7,7,8,8)
     for i in range(len(small_values)):

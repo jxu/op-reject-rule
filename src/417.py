@@ -14,11 +14,22 @@
 # 25s with mul order algorithm from Bach & Shallit
 #   https://rosettacode.org/wiki/Multiplicative_order
 
-from number import linear_sieve, factors_from_linear_sieve
+from number import linear_sieve, linear_sieve_factors
 from math import lcm
 
 lp = linear_sieve(10**8)
 L = [0] * (10**8 + 1)
+
+def mul_order(a, n, phi_n=None, factors_phi=None):
+    order = 1
+    for qi, ei in factors_phi.items():
+        yi = phi_n // (qi ** ei)
+        xi = pow(a, yi, n)
+        while xi != 1:
+            xi = pow(xi, qi, n)
+            order *= qi
+
+    return order
 
 for n in range(2, 10**8 + 1):  # DP
     m = n
@@ -40,23 +51,12 @@ for n in range(2, 10**8 + 1):  # DP
 
     if n == pp:  # n prime power, so actually calculate order
         if n == p:
-            tot = p-1  # order of Z/(p)
-            factors = factors_from_linear_sieve(lp, tot)
-            order = 1  # order of 10
-            for qi, ei in factors.items():
-                yi = tot // (qi ** ei)
-                xi = pow(10, yi, p)
-                while xi != 1:
-                    xi = pow(xi, qi, p)
-                    order *= qi
-
-            L[n] = order
+            L[n] = mul_order(10, p, p - 1, linear_sieve_factors(lp, p - 1))
 
         else:
             le = L[n // p]
             L[n] = le if pow(10, le, n) == 1 else p * le
     else:
-        L[n] = lcm(L[m], L[pp])
+        L[n] = lcm(L[m], L[pp])  # CRT
 
-print(L[:20])
 print(sum(L))

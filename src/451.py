@@ -10,13 +10,13 @@
 # So try all combinations of squareroots for prime powers and combine with CRT
 # (I(n) given by A284254)
 
-from number import linear_sieve, factors_from_linear_sieve, crt
+from number import linear_sieve, linear_sieve_factors, crt
 from itertools import product
 
 lp = linear_sieve(2 * 10**7)
 
 def I(n):
-    pp = factors_from_linear_sieve(lp, n)
+    pp = linear_sieve_factors(lp, n)
     rs_list = []
     ms = [p**e for p,e in pp.items()]
     for p, e in pp.items():

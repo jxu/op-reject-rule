@@ -138,7 +138,7 @@ def linear_sieve(n):
     return lp
 
 
-def factors_from_linear_sieve(lp, n):
+def linear_sieve_factors(lp, n):
     """Factorizes n given least primes array from linear_sieve.
 
     Factorization given in prime powers form like factorize

@@ -203,7 +203,7 @@ def test_linear_sieve():
 def test_factors_from_linear_sieve():
     lp = linear_sieve(10)
     for n in range(1, 11):
-        assert factors_from_linear_sieve(lp, n) == factor(n)
+        assert linear_sieve_factors(lp, n) == factor(n)
 
 
 def test_extended_euclidean():

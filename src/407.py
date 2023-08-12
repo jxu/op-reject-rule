@@ -1,13 +1,13 @@
 # Almost identical to Problem 451
 # Don't need to consider p = 2 case separately
 
-from number import linear_sieve, factors_from_linear_sieve, crt
+from number import linear_sieve, linear_sieve_factors, crt
 from itertools import product
 
 lp = linear_sieve(10**7)
 
 def M(n):
-    pp = factors_from_linear_sieve(lp, n)
+    pp = linear_sieve_factors(lp, n)
     ms = [p**e for p,e in pp.items()]
     rs_list = [(0,1)] * len(pp)
 

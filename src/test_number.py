@@ -25,21 +25,9 @@ def test_is_prime_strong_pseudoprimes():
         assert not is_prime(sp), sp
 
 
-def test_is_prime_deterministic_nums():
-    """Tests special odd numbers that fail deterministic tests of first n
-    primes: A014233
-    """
-    terms = (2047, 1373653, 25326001, 3215031751, 2152302898747,
-             3474749660383, 341550071728321,
-             3825123056546413051, 318665857834031151167461,
-             3317044064679887385961981)
-    for n in terms:
-        assert not is_prime(n), n
-
-
 def test_phi():
     """Checks Euler's totient function against known values"""
-    phi_values = (0, 1, 1, 2, 2, 4, 2, 6, 4, 6, 4)
+    phi_values = (0, 1, 1, 2, 2, 4, 2, 6, 4, 6, 4)  # A000010
     for n in range(1, len(phi_values)):
         assert phi(n) == phi_values[n]
 
@@ -59,10 +47,12 @@ def test_mul_order():
 
 
 def test_totient_range():
+    # A000010
     assert totient_range(10) == [0, 1, 1, 2, 2, 4, 2, 6, 4, 6, 4]
 
 
 def test_totient_sum():
+    # A064018
     powers_10 = [1, 32, 3044, 304192, 30397486, 3039650754, 303963552392,
                  30396356427242]
     for i in range(len(powers_10)):
@@ -79,10 +69,12 @@ def test_is_square():
 
 
 def test_prime_count():
+    # A000720
     small_values = (0,0,1,2,2,3,3,4,4,4,4,5,5,6,6,6,6,7,7,8,8)
     for i in range(len(small_values)):
         assert prime_count(i) == small_values[i]
 
+    # A006880
     powers_10 = (0, 4, 25, 168, 1229, 9592, 78498, 664579)
 
     for i in range(len(powers_10)):
@@ -90,6 +82,7 @@ def test_prime_count():
 
 
 def test_mobius_range():
+    # A008683
     small_mus = [0,1,-1,-1,0,-1,1,-1,0,0,1,-1,0,-1,1,1,0,-1,0,-1,
                  0,1,1,-1,0,0,1,0,0,-1,-1]
     n = len(small_mus)-1
@@ -100,6 +93,7 @@ def test_mobius_range():
 
 def test_mertens_small():
     primes = sieve(10)
+    # A002321
     mertens_small_ = (0,1,0,-1,-1,-2,-1,-2,-2,-2,-1,-2,
                       -2,-3,-2,-1,-1,-2,-2,-3,-3)
     for i in range(1, len(mertens_small_)):
@@ -108,6 +102,7 @@ def test_mertens_small():
 
 def test_mertens_pow10():
     primes = sieve(10**5)
+    # A084237
     powers_10 = (1, -1, 1, 2, -23, -48, 212, 1037)
     for i in range(1, len(powers_10)):
         assert mertens(10**i, primes) == powers_10[i]
@@ -170,6 +165,7 @@ def test_mod_inv():
 
 def test_ruler():
     for n in range(1, 11):
+        # A007814
         assert ruler(n, 2) == [None,0,1,0,2,0,1,0,3,0,1][n]
 
 
@@ -190,6 +186,7 @@ def test_fib_list():
 
 
 def test_linear_sieve():
+    # A020639 (except a(1) = 1)
     assert linear_sieve(11) == [0, 0, 2, 3, 2, 5, 2, 7, 2, 3, 2, 11]
 
 

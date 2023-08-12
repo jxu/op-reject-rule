@@ -39,13 +39,11 @@ def test_is_prime_deterministic_nums():
 
 def test_phi():
     """Checks Euler's totient function against known values"""
-    small_primes = (2, 3)
-    primes = sieve(10)
-    phi_values = (1, 1, 2, 2, 4, 2, 6, 4, 6, 4)
-    for n in range(10):
-        assert phi(n+1, small_primes) == phi_values[n]
+    phi_values = (0, 1, 1, 2, 2, 4, 2, 6, 4, 6, 4)
+    for n in range(1, len(phi_values)):
+        assert phi(n) == phi_values[n]
 
-    assert phi(100, primes) == 40
+    assert phi(100) == 40
 
 
 def test_totient_range():

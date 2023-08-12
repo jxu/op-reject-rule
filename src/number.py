@@ -308,22 +308,19 @@ def lcm(a, b):
     return a * b // gcd(a, b)
 
 
-def phi(n, primes):
-    """Euler's totient function using the product formula.
+def phi(n, factors=None):
+    """Euler's totient function, using the product formula.
 
-    Requires primes up to sqrt(n).
+    :param n: n
+    :param factors: if provided, should be prime powers dict
+    :return: phi(n)
     """
     if n == 0: return 0
+    if factors is None:
+        factors = factor(n)
     r = n
-    for p in primes:
-        if p*p > n: break
-        if n % p == 0:
-            while n % p == 0:
-                n //= p
-            r -= r//p  # r *= (1 - 1/p)
-
-    if n > 1: r -= r // n  # If n had prime factor > sqrt(n)
-
+    for p, e in factors.items():
+        r -= r//p
     return r
 
 

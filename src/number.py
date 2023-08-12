@@ -14,10 +14,7 @@ def prod(iterable):
 
     Not to be confused with itertools.product!
     """
-    try:
-        return math.prod(iterable)
-    except:
-        return reduce(operator.mul, iterable, 1)
+    return math.prod(iterable)
 
 
 def powerset(iterable):
@@ -613,21 +610,7 @@ def fib_list(n):
 
 
 def comb(n, k):
-    try:
-        return math.comb(n, k)
-    except:
-        if n < 0 or k < 0:
-            raise ValueError
-        return prod(range(n - k + 1, n + 1)) // prod(range(1, k + 1))
-
-
-def perm(n, k):
-    try:
-        return math.perm(n, k)
-    except:
-        if n < 0 or k < 0:
-            raise ValueError
-        return prod(range(n - k + 1, n + 1))
+    return math.comb(n, k)
 
 
 if __name__ == "__main__":

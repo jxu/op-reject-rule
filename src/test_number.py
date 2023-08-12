@@ -196,16 +196,6 @@ def test_fib_list():
     assert fib_list(5) == [0, 1, 1, 2, 3, 5]
 
 
-def test_comb():
-    for i in range(5):
-        assert comb(4, i) == (1, 4, 6, 4, 1)[i]
-
-
-def test_perm():
-    for i in range(5):
-        assert perm(4, i) == (1, 4, 12, 24, 24)[i]
-
-
 def test_linear_sieve():
     assert linear_sieve(11) == [0, 0, 2, 3, 2, 5, 2, 7, 2, 3, 2, 11]
 

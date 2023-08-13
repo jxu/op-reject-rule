@@ -2,7 +2,17 @@
 # Factors of 2 and 5 can be divided out without affecting period
 # For a,b coprime, order 10 mod ab = lcm(order 10 mod a, order 10 mod b)
 # by CRT. So we can factor n into prime powers and take the LCM of orders
-# TODO: explain L(p^k) optimization
+
+# Also, L(p^k) = L(p^(k-1)) or p*L(p^(k-1))
+# Proof: 10^L(p^k) = 1 mod p^k => 10^L(p^k) = 1 mod p^(k-1)
+# so L(p^(k-1)) | L(p^k)
+# On the other hand,
+# 10^L(p^(k-1)) = 1 mod p^(k-1) => 10^L(p^(k-1)) = 1 + C p^(k-1) mod p^k
+# => (10^L(p^(k-1)))^p = (1 + C p^(k-1))^p = 1 mod p^k
+# by binomial theorem, all terms other than 1^p are divisible by p^k.
+# Therefore L(p^k) | p*L(p^(k-1))
+# The two results together L(p^(k-1)) | L(p^k) | p*L(p^(k-1)) give the result.
+# https://math.stackexchange.com/a/4751948
 
 # Benchmark: P51 with sympy n_order and functools memoize, factoring takes 14m
 # Without factoring takes 25m

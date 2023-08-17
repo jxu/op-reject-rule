@@ -4,15 +4,20 @@ primes = sieve(2 * 10**7)  # q log(2) + 2 log(q) <= logn
 
 def C(logn):
     s = 0
-    for i in range(len(primes)):
-        p = primes[i]
-        print(p)
-        # could also use binary search on q
-        for j in range(i+1, len(primes)):
+    # two pointer method. could also binary search q
+    i, j = 0, len(primes) - 1
+    while i < j:
+        p, q = primes[i], primes[j]
+        while q*log(p) + p*log(q) > logn:
+            j -= 1
+            # can't have j < i here because we would've encountered it
+            # when p, q = primes[j], primes[i] (?)
             q = primes[j]
-            if q*log(p) + p*log(q) > logn: break
-            #print(p, q, q*log(p) + p*log(q))
-            s += 1
+
+        s += j - i
+        print(p, q)
+        i += 1
     return s
+
 
 print(C(800800*log(800800)))

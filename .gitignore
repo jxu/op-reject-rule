@@ -104,3 +104,4 @@ src/.idea
 *.o
 *.exe
 .idea/
+*.nb

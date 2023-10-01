@@ -231,7 +231,7 @@ def factor(n, primes=None):
 
     factors = Counter()
     if primes is None:
-        primes = sieve(int(n**0.5)+1)
+        primes = range(2, int(n**0.5)+1)  # TODO: not actually primes
     for d in primes:
         if d * d > n: break
         while n % d == 0:
@@ -243,18 +243,21 @@ def factor(n, primes=None):
     return factors
 
 
-def divisors(prime_powers):
+def divisors(prime_powers, proper=False):
     """Returns divisors given (ordered) factorization dict.
 
     Ex. `divisors({2:2,3:1})` should return [1,2,3,4,6,12] in some order
     """
     divs = []
     exp_ranges = []
+    n = 1
     for p, maxe in prime_powers.items():
         exp_ranges.append([p**e for e in range(maxe+1)])
+        n *= p**maxe
 
     for pps in itertools.product(*exp_ranges):
-        divs.append(prod(pps))
+        if not proper or prod(pps) != n:
+            divs.append(prod(pps))
 
     return divs
 
@@ -563,7 +566,7 @@ def prime_count(n):
 
 
 def fib_list(n):
-    """Returns list of Fibonacci nums up to F_n, with F[0] = 0 and F[1] = 1"""
+    """Returns list of Fibonacci numbers up to F_n (with F_0 = 0)"""
     assert n >= 1
     fib = [0, 1] + [0]*(n-1)
     for i in range(2, n+1):

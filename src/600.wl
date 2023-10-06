@@ -14,88 +14,111 @@
 (*With Burnside's Lemma*)
 
 
+(* ::Section:: *)
+(*Hexagons without considering congruence (identity action)*)
+
+
 (* ::Text:: *)
-(*First, calculate total hexagons without congruence.  *)
+(*Case t > 0: a = d + t, e = b + t, c = f + t*)
+(*a + b + c + d + e + f = 2b + 2d + 2f + 3t <= N (all integers > 0)*)
+(*2b' + 2d' + 2f' + 3t' + s = N - 9 (all integers >= 0)*)
+(*GF: x^9 / ((1-x^2)^3 (1-x^3) (1-x)) *)
+(**)
+(*Case t < 0: symmetric *)
+(**)
+(*Case t = 0: a = d, b = e, c = f*)
+(*2a + 2b + 2c <= N (all integers > 0)*)
+(*2a' + 2b' + 2c' + s = N - 6 (all integers >= 0)*)
+(*GF: x^6 / ((1-x^2)^3(1-x))*)
+(**)
+(*Final GF = (x^6 + x^9) / ((1-x^2)^3 (1-x^3) (1-x)) *)
 
 
 (* ::Input:: *)
-(*s1=Series[x^9/((1-x^2)^3(1-x^3)(1-x)),{x,0,20}]*)
+(*n=55106;*)
+(*ri=Simplify[SeriesCoefficient[(x^6+x^9)/((1-x^2)^3(1-x^3)(1-x)),{x,0,m}]/.m->n]*)
+
+
+(* ::Section:: *)
+(*\[PlusMinus]60\[Degree] rotation*)
+
+
+(* ::Text:: *)
+(*a = b = c = d = e = f*)
+(*Count n // 6*)
 
 
 (* ::Input:: *)
-(*s0=Series[x^6/((1-x^2)^3(1-x)),{x,0,20}]*)
+(*r60=Floor[n/6]*)
+
+
+(* ::Section:: *)
+(*\[PlusMinus]120\[Degree] rotation*)
+
+
+(* ::Text:: *)
+(*a = c = e, b = d = f*)
+(*Count solutions to 3 a + 3 b <= N (ints > 0), equiv. solutions to a + b + s = N//3 + 1 with stars-and-bars *)
 
 
 (* ::Input:: *)
-(*2*s1+s0 (*total hexagons without congruence*)*)
+(*r120=Binomial[Floor[n/3],2]*)
+
+
+(* ::Section:: *)
+(*180\[Degree] rotation*)
+
+
+(* ::Text:: *)
+(*a = d, b = e, c = f*)
+(*Count solutions to 2a + 2b + 2c <= N, equiv a + b + c + s = N//2 + 1 *)
 
 
 (* ::Input:: *)
-(*Expand[(1-x^2)^3(1-x^3)(1-x),x]*)
+(*r180=Binomial[Floor[n/2],3]*)
+
+
+(* ::Section:: *)
+(*Reflection through vertex*)
+
+
+(* ::Text:: *)
+(*a = b = d = e, c = f*)
+(*Positive solutions to 4a + 2b <= N, equiv nonnegative solutions 4a' + 2c' + s = N-6*)
+(*GF: x^6 / ((1-x^4)(1-x^2)(1-x))*)
 
 
 (* ::Input:: *)
-(*Rest[-CoefficientList[(1-x^2)^3(1-x^3)(1-x),x]]*)
+(*sv=Simplify[SeriesCoefficient[x^6/((1-x^4)(1-x^2)(1-x)),{x,0,m}]/.m->n]*)
+
+
+(* ::Section:: *)
+(*Reflection through side*)
+
+
+(* ::Text:: *)
+(*c = e, b = f, a+b = d+e (redundant a+f = c+d)*)
+(**)
+(*Case t > 0: a = d + t, e = c = b+t*)
+(*Positive solutions to 2d + 4b + 3t <= N*)
+(*Nonnegative solutions to 2d' + 4b' + 3t' + s = N-9*)
+(*GF: x^9 / ((1-x)(1-x^2)(1-x^3)(1-x^4)) *)
+(**)
+(*Case t = 0: a = d, e = b = c = f. Same GF as reflection thru vertex*)
+(**)
+(*Final GF: (x^6 + x^9) / ((1-x)(1-x^2)(1-x^3)(1-x^4)) *)
 
 
 (* ::Input:: *)
-(*LinearRecurrence[Rest@-CoefficientList[(1-x^2)^3(1-x^3)(1-x),x],{0,0,0,0,0,1,1,4,6,12},{1,55106}]*)
+(*ss=Simplify[SeriesCoefficient[(x^6+x^9)/((1-x)(1-x^2)(1-x^3)(1-x^4)),{x,0,m}]/.m->n]*)
+
+
+(* ::Section:: *)
+(*The magic formula*)
 
 
 (* ::Input:: *)
-(*Expand[(1-x^2)^3(1-x),x]*)
-
-
-(* ::Input:: *)
-(*LinearRecurrence[Rest@-CoefficientList[(1-x^2)^3(1-x),x],{0,0,0,0,0,0,1,1},{1,55106}]*)
-
-
-(* ::Input:: *)
-(*Series[(x^6+x^9)/((1-x^2)^3(1-x^3)(1-x)),{x,0,20}]*)
-
-
-(* ::Input:: *)
-(*m=32012843503342576*)
-
-
-(* ::Input:: *)
-(*n=55106*)
-
-
-(* ::Input:: *)
-(*Binomial[6,3]*)
-
-
-(* ::Input:: *)
-(*(30+2*2+2*6+20+3*12+3*6)/12*)
-
-
-(* ::Input:: *)
-(*Series[(x^6+x^9)/((1-x)(1-x^2)(1-x^3)(1-x^4)),{x,0,20}]*)
-
-
-(* ::Input:: *)
-(*SeriesCoefficient[(x^6+x^9)/((1-x)(1-x^2)(1-x^3)(1-x^4)),{x,0,50000}]*)
-
-
-(* ::Input:: *)
-(*LinearRecurrence[Rest@-CoefficientList[(1-x)(1-x^2)(1-x^3)(1-x^4),x],{0,0,0,0,0,1,1,2,4,6},{1,55106}]*)
-
-
-(* ::Input:: *)
-(*Series[x^6/((1-x^4)(1-x^2)(1-x)),{x,0,20}]*)
-
-
-(* ::Input:: *)
-(*LinearRecurrence[Rest@-CoefficientList[(1-x^4)(1-x^2)(1-x),x],{0,0,0,0,0,1,1,2,2},{1,55106}]*)
-
-
-(* ::Input:: *)
-(*m=30;n=12*)
-
-
-(* ::Input:: *)
-(*(m+2Floor[n/6]+2Binomial[Floor[n/3],2]+Binomial[Floor[n/2],3]+3*2323833765120+3*189778176)/12*)
+(*(ri+2r60+2r120+r180+3ss+3sv)/12*)
 
 
 (* ::Chapter:: *)
@@ -113,6 +136,14 @@
 
 
 (* ::Input:: *)
+(*Simplify[SeriesCoefficient[x^6/((1-x)(1-x^2)(1-x^3)(1-x^4)(1-x^6)),{x,0,m}]/.m->n]*)
+
+
+(* ::Text:: *)
+(*How to evaluate as linear recurrence:*)
+
+
+(* ::Input:: *)
 (*cl=CoefficientList[(1-x)(1-x^2)(1-x^3)(1-x^4)(1-x^6),x]*)
 
 
@@ -125,4 +156,8 @@
 
 
 (* ::InheritFromParent:: *)
+(**)
+
+
+(* ::Input:: *)
 (*Last[%]*)

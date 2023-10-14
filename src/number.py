@@ -58,6 +58,19 @@ def timeit(f):
 
     return timed
 
+# TODO: document
+def ternary_search(f, l, r):
+    for i in range(100):
+        m1 = l + (r-l) // 3
+        m2 = r - (r-l) // 3
+        #print(l, m1, m2, r)
+
+        if f(m1) < f(m2):
+            r = m2
+        else:
+            l = m1
+    return (l + r) // 2
+
 
 ########## NUMBER THEORY ##########
 def gcd(a, b):

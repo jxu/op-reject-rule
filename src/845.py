@@ -28,8 +28,8 @@ def q(n, s):
     nd = len(digits)-1
     old_s = s
     r = 0
-    for i in range(len(digits)):
-        d = digits[i]
+    for j in range(len(digits)):
+        d = digits[j]
         for i in range(d):
             r += c(s-i, nd)
             #print(d, i, s-i, nd, c(s-i, nd))

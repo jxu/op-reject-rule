@@ -10,29 +10,26 @@ def c(s, d):
     return sum(c(s-i, d-1) for i in range(10))
 
 @cache
-def D(s,d):
-    """Sum of integers with d digits and s digit-sum"""
-    if s <= 0: return 0
-    if d == 0: return 0
-    assert d >= 0
-    return sum(i * c(s-i, d-1) * 10**(d-1) + D(s-i, d-1) for i in range(10))
-
 def q(n, s):
     """Sum of values <= n with digit sum s."""
+    if n < 0: return 0
     ns = sum(int(c) for c in str(n))  # n digit-sum
     w = 0  # wildcard spaces
     r = 0
     if ns == s: r += n  # consider original n
 
     # go digit-by-digit left (original code went right)
+    # e.g. for n = 123, consider 123,
+    # 122, 121, 120, 11x, 10x, 0xx
     while n:
-        last_digit = n % 10
-        for i in range(last_digit):
+        for i in range(n % 10):
             n -= 1
             ns -= 1
-            # add wildcard sum + contribution from rest of digits
-            r += (n) * 10**w * c(s-ns, w) + D(s-ns, w)
-            #print(n, n * 10**w, s-ns, w, c(ns,w))
+            # idea from jakob223: recurse using q instead of
+            # D(s,d) = q(10**d - 1, s)
+            # e.g. for 12**, add sum of 2-digits with digit-sum s,
+            # plus 1200 * how many 2-digits with digit-sum s
+            r += n * 10**w * c(s-ns, w) + q(10**w - 1, s-ns)
 
         n //= 10
         w += 1

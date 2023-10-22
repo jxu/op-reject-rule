@@ -28,3 +28,21 @@ def ternary_search(f, l, r):
         else:
             l = m1
     return (l + r) // 2
+
+from functools import cache
+
+@cache
+def c(s, d):
+    """Count integers with d digits and s digit-sum"""
+    if s < 0: return 0
+    assert d >= 0
+    if d == 0: return int(s == 0)
+    return sum(c(s-i, d-1) for i in range(10))
+
+@cache
+def D(s,d):
+    """Sum of integers with d digits and s digit-sum"""
+    if s <= 0: return 0
+    if d == 0: return 0
+    assert d >= 0
+    return sum(i * c(s-i, d-1) * 10**(d-1) + D(s-i, d-1) for i in range(10))

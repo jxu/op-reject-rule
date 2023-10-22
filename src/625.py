@@ -9,8 +9,55 @@
 # for j in (N//3, N//2]: sum (2*3)/2 (Phi(N//2) - Phi(N//3))
 # etc. up to j near sqrt(N).
 # Then calculate phi directly for phi(1) to phi(sqrt(N))
+from itertools import accumulate
 
-from number import totient_range, totient_sum
+from number import totient_range
+
+# Save calculated values for future use (problem 625)
+# "Public" (no leading underscore) for now
+totient_sum_large = dict()  # Can implement as array for minor speedup
+totient_sum_small = None
+totient_small_cutoff = -1
+
+def totient_sum(n):
+    """Follows the ideas outlined in my writeup plus sieving for about O(n^2/3)
+
+    Also saves precalculated values in global variables
+    https://math.stackexchange.com/a/1740370
+    """
+
+    cutoff = int(n**(2/3))
+    global totient_small_cutoff
+
+    if cutoff > totient_small_cutoff:
+        totient_small_cutoff = cutoff
+        # Recalculate small totient range
+        totient_range_small = totient_range(cutoff)
+
+        # Convert totient range to totient sum
+        global totient_sum_small
+        totient_sum_small = list(accumulate(totient_range_small))
+
+
+    def _Phi(n):
+        if n < cutoff:
+            return totient_sum_small[n]
+
+        if n in totient_sum_large:
+            return totient_sum_large[n]
+
+        isqrtn = int(n**0.5)
+        s = n*(n+1)//2
+        for x in range(2, isqrtn+1):
+            s -= _Phi(n // x)
+
+        for y in range(1, isqrtn + (isqrtn != n // isqrtn)):
+            s -= (n//y - n//(y+1)) * _Phi(y)
+
+        totient_sum_large[n] = s
+        return s
+
+    return _Phi(n)
 
 def G(N):
     s = 0
@@ -30,5 +77,12 @@ def G(N):
         s += (N//j)*(N//j + 1) * phi[j] // 2
 
     return s
+
+def test_totient_sum():
+    # A064018
+    powers_10 = [1, 32, 3044, 304192, 30397486, 3039650754, 303963552392,
+                 30396356427242]
+    for i in range(len(powers_10)):
+        assert totient_sum(10**i) == powers_10[i]
 
 print(G(10**11) % 998244353)

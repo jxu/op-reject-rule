@@ -51,14 +51,6 @@ def test_totient_range():
     assert totient_range(10) == [0, 1, 1, 2, 2, 4, 2, 6, 4, 6, 4]
 
 
-def test_totient_sum():
-    # A064018
-    powers_10 = [1, 32, 3044, 304192, 30397486, 3039650754, 303963552392,
-                 30396356427242]
-    for i in range(len(powers_10)):
-        assert totient_sum(10**i) == powers_10[i]
-
-
 def test_is_square():
     assert is_square(1)
     assert not is_square(2)
@@ -79,33 +71,6 @@ def test_prime_count():
 
     for i in range(len(powers_10)):
         assert prime_count(10**i) == powers_10[i]
-
-
-def test_mobius_range():
-    # A008683
-    small_mus = [0,1,-1,-1,0,-1,1,-1,0,0,1,-1,0,-1,1,1,0,-1,0,-1,
-                 0,1,1,-1,0,0,1,0,0,-1,-1]
-    n = len(small_mus)-1
-    primes = sieve(n)
-
-    assert mobius_range(n, primes) == small_mus
-
-
-def test_mertens_small():
-    primes = sieve(10)
-    # A002321
-    mertens_small_ = (0,1,0,-1,-1,-2,-1,-2,-2,-2,-1,-2,
-                      -2,-3,-2,-1,-1,-2,-2,-3,-3)
-    for i in range(1, len(mertens_small_)):
-        assert mertens(i, primes) == mertens_small_[i]
-
-
-def test_mertens_pow10():
-    primes = sieve(10**5)
-    # A084237
-    powers_10 = (1, -1, 1, 2, -23, -48, 212, 1037)
-    for i in range(1, len(powers_10)):
-        assert mertens(10**i, primes) == powers_10[i]
 
 
 def test_factor():

@@ -12,7 +12,7 @@ from collections import Counter
 def prod(iterable):
     """Return the product of the values in the iterable.
 
-    Not to be confused with itertools.product!
+    Python 3.8+ Not to be confused with itertools.product!
     """
     return math.prod(iterable)
 
@@ -57,19 +57,6 @@ def timeit(f):
         return result
 
     return timed
-
-# TODO: document
-def ternary_search(f, l, r):
-    for i in range(100):
-        m1 = l + (r-l) // 3
-        m2 = r - (r-l) // 3
-        #print(l, m1, m2, r)
-
-        if f(m1) < f(m2):
-            r = m2
-        else:
-            l = m1
-    return (l + r) // 2
 
 
 ########## NUMBER THEORY ##########
@@ -357,97 +344,6 @@ def mod_inv_range(p, end=None):
     return inv
 
 
-# Save calculated values for future use (problem 625)
-# "Public" (no leading underscore) for now
-totient_sum_large = dict()  # Can implement as array for minor speedup
-totient_sum_small = None
-totient_small_cutoff = -1
-
-def totient_sum(n):
-    """Follows the ideas outlined in my writeup plus sieving for about O(n^2/3)
-
-    Also saves precalculated values in global variables
-    https://math.stackexchange.com/a/1740370
-    """
-
-    cutoff = int(n**(2/3))
-    global totient_small_cutoff
-
-    if cutoff > totient_small_cutoff:
-        totient_small_cutoff = cutoff
-        # Recalculate small totient range
-        totient_range_small = totient_range(cutoff)
-
-        # Convert totient range to totient sum
-        global totient_sum_small
-        totient_sum_small = list(accumulate(totient_range_small))
-
-
-    def _Phi(n):
-        if n < cutoff:
-            return totient_sum_small[n]
-
-        if n in totient_sum_large:
-            return totient_sum_large[n]
-
-        isqrtn = int(n**0.5)
-        s = n*(n+1)//2
-        for x in range(2, isqrtn+1):
-            s -= _Phi(n // x)
-
-        for y in range(1, isqrtn + (isqrtn != n // isqrtn)):
-            s -= (n//y - n//(y+1)) * _Phi(y)
-
-        totient_sum_large[n] = s
-        return s
-
-    return _Phi(n)
-
-
-mertens_large = dict()
-mertens_small = None
-mertens_small_cutoff = -1
-
-def mertens(n, primes):
-    """Calculates Mertens function M(n).
-
-    Very similar approach to totient sum.
-    `primes` must contain primes up to cutoff value n^(2/3)
-    https://mathoverflow.net/a/320042
-    """
-    assert n >= 1
-    cutoff = int(n**(2/3))
-    global mertens_small_cutoff
-
-    if cutoff > mertens_small_cutoff:
-        mertens_small_cutoff = cutoff
-        mobius_small = mobius_range(cutoff, primes)
-        global mertens_small
-        mertens_small = list(accumulate(mobius_small))
-
-
-    def M(n):
-        if n < cutoff:
-            global mertens_small
-            return mertens_small[n]
-
-        if n in mertens_large:
-            return mertens_large[n]
-
-        isqrtn = int(n**0.5)
-        s = 1
-        for x in range(2, isqrtn+1):
-            s -= M(n // x)
-
-        for y in range(1, isqrtn + (isqrtn != n // isqrtn)):
-            s -= (n//y - n//(y+1)) * M(y)
-
-        mertens_large[n] = s
-        return s
-
-    return M(n)
-
-
 def totient_range(n):
     """Calculates all totients in a range.
 
@@ -461,25 +357,6 @@ def totient_range(n):
                 tots[k] -= tots[k] // p
 
     return tots
-
-
-def mobius_range(n, primes):
-    """Computes Möbius function for 0 to n using sieve approach.
-
-    Requires `primes` to contain all primes below n.
-    https://mathoverflow.net/a/200392
-    """
-    mus = [1] * (n+1)
-    mus[0] = 0
-    for p in primes:
-        if p > n: break
-        for i in range(p, n+1, p):
-            mus[i] *= -1
-        for i in range(p**2, n+1, p**2):
-            mus[i] = 0
-
-    return mus
-
 
 def ruler(n, p):
     """Calculates max integer a such that p^a divides n."""
@@ -513,7 +390,7 @@ def is_smooth(n, primes):
 
     return n == 1
 
-
+# TODO: clean up prime counting function
 def prime_count_sieve(n, primes):
     """Poor man's prime-counting function.
 

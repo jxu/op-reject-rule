@@ -33,11 +33,103 @@
 # The inefficiency with this solution is computing M*(n) recursively.
 
 from __future__ import division
-from number import sieve, comb, mobius_range, mertens, memoize
+
+from itertools import accumulate
+
+from number import sieve, comb, memoize
+
+def mobius_range(n, primes):
+    """Computes Möbius function for 0 to n using sieve approach.
+
+    Requires `primes` to contain all primes below n.
+    https://mathoverflow.net/a/200392
+    """
+    mus = [1] * (n+1)
+    mus[0] = 0
+    for p in primes:
+        if p > n: break
+        for i in range(p, n+1, p):
+            mus[i] *= -1
+        for i in range(p**2, n+1, p**2):
+            mus[i] = 0
+
+    return mus
+
+mertens_large = dict()
+mertens_small = None
+mertens_small_cutoff = -1
+
+def mertens(n, primes):
+    """Calculates Mertens function M(n), aka Möbius summatory function
+
+    Very similar approach to totient sum.
+    `primes` must contain primes up to cutoff value n^(2/3)
+    https://mathoverflow.net/a/320042
+    """
+    assert n >= 1
+    cutoff = int(n**(2/3))
+    global mertens_small_cutoff
+
+    if cutoff > mertens_small_cutoff:
+        mertens_small_cutoff = cutoff
+        mobius_small = mobius_range(cutoff, primes)
+        global mertens_small
+        mertens_small = list(accumulate(mobius_small))
+
+
+    def M(n):
+        if n < cutoff:
+            global mertens_small
+            return mertens_small[n]
+
+        if n in mertens_large:
+            return mertens_large[n]
+
+        isqrtn = int(n**0.5)
+        s = 1
+        for x in range(2, isqrtn+1):
+            s -= M(n // x)
+
+        for y in range(1, isqrtn + (isqrtn != n // isqrtn)):
+            s -= (n//y - n//(y+1)) * M(y)
+
+        mertens_large[n] = s
+        return s
+
+    return M(n)
+
 N = 10**11
 
 primes = sieve(10**8)
 small_mobius = mobius_range(int(N**0.5), primes)
+
+
+
+def test_mobius_range():
+    # A008683
+    small_mus = [0,1,-1,-1,0,-1,1,-1,0,0,1,-1,0,-1,1,1,0,-1,0,-1,
+                 0,1,1,-1,0,0,1,0,0,-1,-1]
+    n = len(small_mus)-1
+    primes = sieve(n)
+
+    assert mobius_range(n, primes) == small_mus
+
+def test_mertens_pow10():
+    primes = sieve(10 ** 5)
+    # A084237
+    powers_10 = (1, -1, 1, 2, -23, -48, 212, 1037)
+    for i in range(1, len(powers_10)):
+        assert mertens(10 ** i, primes) == powers_10[i]
+
+
+
+def test_mertens_small():
+    primes = sieve(10)
+    # A002321
+    mertens_small_ = (0,1,0,-1,-1,-2,-1,-2,-2,-2,-1,-2,
+                      -2,-3,-2,-1,-1,-2,-2,-3,-3)
+    for i in range(1, len(mertens_small_)):
+        assert mertens(i, primes) == mertens_small_[i]
 
 @memoize
 def odd_mertens(n):

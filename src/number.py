@@ -467,6 +467,17 @@ def fib_list(n):
 def comb(n, k):
     return math.comb(n, k)
 
+### ALGORITHM
+
+def binary_search(f, l, r):
+    """Return L s.t. f(L)=0, f(L+1)=f(R)=1, if it exists"""
+    while r - l > 1:
+        m = (l + r) // 2
+        if f(m): r = m
+        else: l = m
+
+    return l
+
 
 if __name__ == "__main__":
     pass

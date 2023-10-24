@@ -13,7 +13,7 @@ def c(s, d):
 def q(n, s):
     """Sum of values <= n with digit sum s."""
     if n < 0: return 0
-    ns = sum(int(c) for c in str(n))  # n digit-sum
+    ns = sum(int(d) for d in str(n))  # n digit-sum
     w = 0  # wildcard spaces
     r = 0
     if ns == s: r += n  # consider original n

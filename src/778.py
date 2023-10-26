@@ -1,5 +1,13 @@
 mod = 1000000009
 
+def digit_mul(a, b):
+    """Multiply counts of digits"""
+    c = [0] * 10
+    for i in range(10):
+        for j in range(10):
+            c[(i*j)%10] = (c[(i*j)%10] + a[i] * b[j]) % mod
+    return c
+
 def F(R, M):
     total = 0
     # calculate each digit place's contribution separately
@@ -13,14 +21,12 @@ def F(R, M):
 
         c = c1[:]  # result digit counter (for this digit place)
 
-        for r in range(1, R):  # can be log(R) with binary exponentiation
-            nc = [0] * 10  # temp counter for c
-            for i in range(10):
-                for j in range(10):
-                    # update counter with how many of each digit occurs in
-                    # result after a round of multiplication
-                    nc[(i*j)%10] = (nc[(i*j)%10] + c[i] * c1[j]) % mod
-            c = nc[:]
+        r = R-1
+        while r:  # c^r binary exponentiation for fun
+            if r & 1:
+                c = digit_mul(c, c1)
+            c1 = digit_mul(c1, c1)
+            r >>= 1
 
         # the final answer is just the sum of the answers for each place
         for i in range(10):

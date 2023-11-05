@@ -45,18 +45,13 @@ ll adjust_range(ll *xl, ll *xr, ll y)
 int main() 
 {
     ll s = -1, xl = 0, xr = 0, y = 0, m;
-    while ((m = adjust_range(&xl, &xr, y)))
-    {
-        s += m; 
-        ++y;
-    }
-    
-    y = -1; xl = 0; xr = 0; 
-    while ((m = adjust_range(&xl, &xr, y)))
-    {
+    /* complex for loop instead of while */
+    for (; (m = adjust_range(&xl, &xr, y)) > 0; ++y)
         s += m;
-        --y;
-    }
+   
+    y = -1; xl = 0; xr = 0; 
+    for (; (m = adjust_range(&xl, &xr, y)) > 0; --y)
+        s += m;
 
     printf("%lld\n", s);
     return 0;

@@ -467,6 +467,19 @@ def fib_list(n):
 def comb(n, k):
     return math.comb(n, k)
 
+def comb_mod(n, k, m):
+    assert n >= 0
+    num, den = 1, 1
+    for i in range(n-k+1, n+1):
+        num = (num * i) % m
+    for i in range(1, k+1):
+        den = (den * i) % m
+
+    return (num * mod_inv(den, m)) % m
+
+
+
+
 ### ALGORITHM
 
 def binary_search(f, l, r):

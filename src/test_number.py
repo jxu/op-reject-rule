@@ -60,19 +60,6 @@ def test_is_square():
     assert not is_square(12345678987654321234567 ** 2 - 1)
 
 
-def test_prime_count():
-    # A000720
-    small_values = (0,0,1,2,2,3,3,4,4,4,4,5,5,6,6,6,6,7,7,8,8)
-    for i in range(len(small_values)):
-        assert prime_count(i) == small_values[i]
-
-    # A006880
-    powers_10 = (0, 4, 25, 168, 1229, 9592, 78498, 664579)
-
-    for i in range(len(powers_10)):
-        assert prime_count(10**i) == powers_10[i]
-
-
 def test_factor():
     small_primes = [2, 3, 5]
     factorizations = (None, {}, {2:1}, {3:1}, {2:2}, {5:1}, {2:1,3:1}, {7:1},

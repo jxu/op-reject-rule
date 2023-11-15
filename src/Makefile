@@ -22,4 +22,4 @@ FFLAGS = -O3 -Wall -Wextra
 
 .PHONY: clean
 clean:
-	find . -type f -executable -delete
+	find . -type f -executable -not -name '*.sh' -delete

@@ -1,17 +1,9 @@
 
 def R(n):
     e = [0] * n
-
     for t in range(50):
         for i in range(1, n):
-            best_x = 1e9
-            for a in range(3):
-                for b in range(3):
-                    if a == b == 0: continue
-                    y = i * 5**a * 6**b
-                    z = (y % n) / y * e[y % n] + a + b
-                    best_x = min(best_x, z)
-            e[i] = best_x
+            e[i] = 1 + min(5*i%n/(5*i) * e[5*i%n], 6*i%n/(6*i) * e[6*i%n])
     return e[1]
 
 def S(n):

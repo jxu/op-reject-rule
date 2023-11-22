@@ -1,6 +1,6 @@
 from number import prod
 
-# important to not get bogged down in math.factorial calls
+# important to not repeatedly do math.factorial calls
 FACT = (1, 1, 2, 6, 24, 120, 720, 5040, 40320, 362880, 3628800, 39916800,
         479001600)
 
@@ -18,13 +18,13 @@ def make_hists(N, min_d=0, depth=0):
     return new_hists
 
 
-def S(N):
-    s = 0
-    for hist in make_hists(N):
-        c = (FACT[N] // prod(FACT[hist[i]] for i in range(10)) *
-             (N - hist[0]) // N)
-        s += c * (c-1) // 2
+def T(N, hist):
+    c = (FACT[N] // prod(FACT[hist[i]] for i in range(10)) *
+         (N - hist[0]) // N)
+    return c * (c-1) // 2
 
-    return s
+
+def S(N):
+    return sum(T(N, hist) for hist in make_hists(N))
 
 print(S(12))

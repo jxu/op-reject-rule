@@ -1,3 +1,9 @@
+# Basic idea: for permutations of digits, e.g. 9 perms [2023, 2032, ...]
+# Sum over perms T(p) = 8+7+...+1+0 = 9*(9-1)/2
+# Then for each multiset/histogram [c0 0s, ..., c9 9s]
+# There are multinomial (N choose c0,...,c9) permutations
+# exclude c0 / N perms start with leading 0
+
 from math import prod
 
 # important to not repeatedly do math.factorial calls

@@ -1,4 +1,5 @@
 # simple DP and multinomial coefficient, with 1/10 strings having leading zero
+
 from math import prod
 
 FACT = (1, 1, 2, 6, 24, 120, 720, 5040, 40320, 362880, 3628800, 39916800,

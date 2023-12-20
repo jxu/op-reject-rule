@@ -61,22 +61,21 @@ def test_is_square():
 
 
 def test_factor():
-    small_primes = [2, 3, 5]
     factorizations = (None, {}, {2:1}, {3:1}, {2:2}, {5:1}, {2:1,3:1}, {7:1},
                       {2:3}, {3:2}, {2:1,5:1}, {11:1}, {2:2,3:1}, {13:1},
                       {2:1,7:1})
 
-    with pytest.raises(Exception):
-        factor(0, small_primes)
+    with pytest.raises(ValueError):
+        factor(0)
 
     for n in range(1, len(factorizations)):
-        assert factor(n, small_primes) == factorizations[n]
         assert factor(n) == factorizations[n]
 
-    assert factor(17, small_primes) == {17: 1}
-    assert factor(25, small_primes) == {5: 2}
-    assert factor(60, small_primes) == {2:2, 3:1, 5:1}
-    assert factor(61, small_primes) == {61: 1}
+    assert factor(17) == {17: 1}
+    assert factor(25) == {5: 2}
+    assert factor(60) == {2:2, 3:1, 5:1}
+    assert factor(61) == {61: 1}
+    assert factor(103*107) == {103: 1, 107:1}
 
 
 def test_divisors():

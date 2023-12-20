@@ -7,6 +7,9 @@ from itertools import accumulate
 from functools import reduce
 from collections import Counter
 
+PRIME_100 = (2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47, 53,
+             59, 61, 67, 71, 73, 79, 83, 89, 97)
+
 
 ########## HELPER FUNCTIONS ##########
 def prod(iterable):
@@ -155,8 +158,6 @@ def is_prime(n, trials=20):
     Smallest number requiring first n prime numbers is A006945.
     Credit: Albert Sweigart
     """
-    PRIME_100 = {2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47, 53,
-                 59, 61, 67, 71, 73, 79, 83, 89, 97}
 
     assert n >= 0 and isinstance(n, int)  # don't handle negatives
     if n < 2: return False  # 0 and 1 considered not prime
@@ -219,20 +220,18 @@ def is_square(n):
     return n == math.isqrt(n)**2
 
 
-def factor(n, primes=None):
+def factor(n):
     """Return all prime factors of n.
 
     Output dict of prime:exponent pairs using trial division.
-    If `primes` to try is provided, requires list of primes up to sqrt(n)
     Modeled after sympy.ntheory.factorint
     CPython/Pypy 3.6+, dict keys (primes) should be ordered
     """
-    assert n > 0  # only have positive integer input
+    if n <= 0:
+        raise ValueError
 
     factors = Counter()
-    if primes is None:
-        primes = range(2, int(n**0.5)+1)  # TODO: not actually primes
-    for d in primes:
+    for d in PRIME_100 + tuple(range(101, int(n**0.5)+1, 2)):
         if d * d > n: break
         while n % d == 0:
             n //= d

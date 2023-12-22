@@ -107,14 +107,13 @@ def sieve(n):
     Only sieves by odd numbers to fit more into cache.
     """
     if n < 2: return []
-    nums = bytearray((n+1)//2)
-    for i in range(3, n+1, 2):
-        if i * i > n: break
-        if nums[i//2] == 0:
+    comp = bytearray((n+1)//2)
+    for i in range(3, int((n+1)**0.5)+1, 2):
+        if comp[i//2] == 0:
             for j in range(i*i, n+1, 2*i):
-                nums[j//2] = 1
+                comp[j//2] = 1
 
-    return [2] + [i for i in range(3, n+1, 2) if nums[i//2] == 0]
+    return [2] + [i for i in range(3, n+1, 2) if comp[i//2] == 0]
 
 
 def linear_sieve(n):

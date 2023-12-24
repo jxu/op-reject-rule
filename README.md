@@ -18,8 +18,8 @@ Some features of number.py
 
 Running the Code
 ----------------
-The python code is intended to be run with PyPy3 with JIT. 
-Looking at the [PyPy speed benchmarks](https://speed.pypy.org/comparison/) (benchmarks ai, crypto_pyaes, float, go, pidigits), PyPy3 support is mature enough that (at least for numerical tasks) the speed is the same as PyPy2. 
+The python code is intended to be run with PyPy3.9+.
+Looking at the [PyPy speed benchmarks](https://speed.pypy.org/comparison/) (benchmarks ai, crypto_pyaes, float, go, pidigits), PyPy3 support is mature enough that the speed is the same as PyPy2. 
 Therefore, my old code written to be Python 2.7 compatible should be modified for Python 3. 
 
 By convention, other output is allowed, but the final result should be the last line. 

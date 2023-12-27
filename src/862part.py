@@ -4,33 +4,32 @@
 # I generated partitions without assigning digits first, but using histograms
 # of digits is easier and still tractable.
 
-from math import factorial
-from number import prod
+from math import factorial, prod
 from collections import Counter
 
-def partition(n, m=1):
-    """Partition n into ordered parts
+def partitions(n, m=1):
+    """Create partitions of n.
 
     :param n: integer to partition
     :param m: min new value to add (for recursion)
-    :return: list of ordered parts, e.g. [[1,1,1], [1,2], [3]]
+    :return: generator of ordered partitions, e.g. [1,1,1], [1,2], [3]
     """
-    if n == 0: return [[]]
-    r = []
-    for i in range(m, n+1):
-        for l in partition(n-i, i):
-            r.append([i] + l)
+    if n == 0:
+        yield []
+        return
 
-    return r
+    for i in range(m, n+1):
+        for l in partitions(n-i, i):
+            yield [i] + l
 
 
 def S(k):
     s = 0
-    for part in partition(k):
-        l = len(part)
-        counter = Counter(part)
+    for partition in partitions(k):
+        l = len(partition)
+        counter = Counter(partition)
         # string permutations, e.g. aabc
-        c = factorial(k) // prod(factorial(x) for x in part)
+        c = factorial(k) // prod(factorial(x) for x in partition)
 
         #digit assignments without 0
         j = prod(range(9,9-l,-1)) // prod(map(factorial, counter.values()))

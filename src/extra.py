@@ -46,3 +46,20 @@ def D(s,d):
     if d == 0: return 0
     assert d >= 0
     return sum(i * c(s-i, d-1) * 10**(d-1) + D(s-i, d-1) for i in range(10))
+
+
+def partitions(n, m=1):
+    """Create partitions of n.
+
+    :param n: integer to partition
+    :param m: min new value to add (for recursion)
+    :return: generator of ordered partitions, e.g. [1,1,1], [1,2], [3]
+    """
+    if n == 0:
+        yield []
+        return
+
+    for i in range(m, n+1):
+        for l in partitions(n-i, i):
+            yield [i] + l
+

@@ -4,6 +4,9 @@
 # There are multinomial (N choose c0,...,c9) permutations
 # exclude c0 / N perms start with leading 0
 
+# My original solution involved generating partitions of k, like 1+1+2, then
+# some string combinatorics based on if the multiset had zeros or not
+
 from math import prod
 
 # important to not repeatedly do math.factorial calls

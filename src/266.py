@@ -1,8 +1,7 @@
 # 0/1 knapsack problem, solved with "meet-in-the-middle" approach
 # Easiest 65% difficulty ever
-
-from __future__ import division
-from number import sieve, prod, powerset
+from math import prod
+from number import sieve, powerset
 from bisect import bisect_left
 
 primes = sieve(190)
@@ -18,4 +17,3 @@ pB = sorted(prod(b) for b in powerset(B))
 
 PSR = max(pa * find_lt(pB, target/pa) for pa in pA)
 print(PSR % 10**16)
-

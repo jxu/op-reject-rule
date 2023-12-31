@@ -1,9 +1,9 @@
 # Denominator of Bernoulli numbers B_n by Bernoulli's Formula
 # D(n) = product of all p such that (p-1)|n by von Staudt-Clausen theorem
 # 20010 = 2*3*5*23*29, factor base = 2*2*7*11
-from number import sieve, prod
+from math import prod
+from number import sieve, is_prime
 from itertools import chain, combinations
-from number import is_prime  # Or gmpy2
 
 MAX_TEST = 10**9
 

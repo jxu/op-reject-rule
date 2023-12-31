@@ -11,7 +11,8 @@
 # This is the generalized inclusion-exclusion principle and the coefficient for
 # the intersection of m sets is (-1)^(m+k) C(m, k)
 
-from number import sieve, comb, prod
+from math import prod
+from number import sieve, comb
 
 def C(N):
     sqrt_N = int(N**0.5)

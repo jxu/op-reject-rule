@@ -3,6 +3,7 @@ import operator
 import math
 import random
 import itertools
+from math import prod
 from itertools import accumulate
 from functools import reduce
 from collections import Counter
@@ -12,14 +13,6 @@ PRIME_100 = (2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47, 53,
 
 
 ########## HELPER FUNCTIONS ##########
-def prod(iterable):
-    """Return the product of the values in the iterable.
-
-    Python 3.8+ Not to be confused with itertools.product!
-    """
-    return math.prod(iterable)
-
-
 def powerset(iterable):
     """Return the powerset of the iterable. (from itertools recipes)
 

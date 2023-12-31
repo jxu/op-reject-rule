@@ -2,8 +2,8 @@
 # Much simpler solution from Tepsi: Let p = probability of color being in draw
 # p = 1 - (60 choose 20)/(70 choose 20). Then total expected is 7p
 
-from number import comb, prod
-from math import factorial
+from number import comb
+from math import factorial, prod
 
 combos = []
 

@@ -1,6 +1,6 @@
-# A247649. Solution using a genralization of the Run Length Transform,
+# A247649. Solution using a generalization of the Run Length Transform,
 # N. J. A. Sloane, On the Number of ON Cells in Cellular Automata, arXiv:1503.01168
-from number import prod
+from math import prod
 
 def create_tri(n):
     # Calculate using generalized Pascal's identity

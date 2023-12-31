@@ -1,4 +1,4 @@
-from number import comb
+from math import comb
 
 def chance(f):
     c = 0

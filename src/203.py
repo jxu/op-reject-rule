@@ -1,4 +1,5 @@
-from number import sieve, comb
+from number import sieve
+from math import comb
 
 primes = sieve(int(comb(50, 25) ** 0.5)) # Max prime
 prime_squares = [p**2 for p in primes]

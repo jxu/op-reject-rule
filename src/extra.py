@@ -63,3 +63,15 @@ def partitions(n, m=1):
         for l in partitions(n-i, i):
             yield [i] + l
 
+
+def comb_mod(n, k, m):
+    from number import mod_inv
+    assert n >= 0
+    num, den = 1, 1
+    for i in range(n-k+1, n+1):
+        num = (num * i) % m
+    for i in range(1, k+1):
+        den = (den * i) % m
+
+    return (num * mod_inv(den, m)) % m
+

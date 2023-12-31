@@ -20,7 +20,7 @@ print(final)
 
 
 # Alternate solution (thread 113 #1)
-from number import comb
+from math import comb
 count = 0
 for i in range(1, 101):
     count += comb(8 + i, i)  # Increase the digit (no leading 0)

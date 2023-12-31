@@ -50,7 +50,7 @@ def count_test(n):
 # The number of strings guaranteeing inequality is C_k * (n choose 2k)
 # The total number of subset pairs is (n choose k)*(n-k choose k)/2
 # Expression can be simplified further
-from number import comb
+from math import comb
 
 def count_test2(n):
     s = 0

@@ -33,7 +33,8 @@
 # The inefficiency with this solution is computing M*(n) recursively.
 
 from itertools import accumulate
-from number import sieve, comb
+from number import sieve
+from math import comb
 from functools import cache
 
 def mobius_range(n, primes):

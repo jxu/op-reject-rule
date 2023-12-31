@@ -3,7 +3,7 @@ import operator
 import math
 import random
 import itertools
-from math import prod
+from math import prod, gcd
 from itertools import accumulate
 from functools import reduce
 from collections import Counter
@@ -47,14 +47,6 @@ def timeit(f):
 
 
 ########## NUMBER THEORY ##########
-def gcd(a, b):
-    """Uses math.gcd instead.
-
-    Python 3.9 has support for arbitrary number of arguments.
-    """
-    return math.gcd(a, b)
-
-
 def extended_euclidean(a, b):
     """Returns g, x, y for which a*x + b*y = g = gcd(a,b).
 
@@ -382,24 +374,7 @@ def fib_list(n):
     return fib
 
 
-def comb(n, k):
-    return math.comb(n, k)
-
-def comb_mod(n, k, m):
-    assert n >= 0
-    num, den = 1, 1
-    for i in range(n-k+1, n+1):
-        num = (num * i) % m
-    for i in range(1, k+1):
-        den = (den * i) % m
-
-    return (num * mod_inv(den, m)) % m
-
-
-
-
 ### ALGORITHM
-
 def binary_search(f, l, r):
     """Return L s.t. f(L)=0, f(L+1)=f(R)=1, if it exists
 

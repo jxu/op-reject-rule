@@ -24,15 +24,6 @@ def powerset(iterable):
     return chain.from_iterable(combinations(s, r) for r in range(len(s) + 1))
 
 
-def memoize(func):
-    """Decorates func with an unbounded cache (from functools).
-
-    @functools.cache in Python 3.9+
-    """
-    from functools import lru_cache
-    return lru_cache(maxsize=None)(func)
-
-
 def timeit(f):
     """Timing decorator for functions.
 

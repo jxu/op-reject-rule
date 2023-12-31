@@ -1,5 +1,5 @@
 from operator import add, sub, mul, floordiv as div
-from number import memoize
+from functools import cache
 
 def partition(x, l = (), r = ()):
     """Partition list x into LHS and RHS"""
@@ -8,7 +8,7 @@ def partition(x, l = (), r = ()):
     yield from partition(x[1:], l, (x[0],) + r)
 
 
-@memoize
+@cache
 def op_tree(nums):
     if len(nums) == 1: return {nums[0]}
     res = set()

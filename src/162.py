@@ -1,6 +1,6 @@
-from number import memoize
+from functools import cache
 
-@memoize
+@cache
 def make_string(pos, has_leading, has_0, has_1, has_A):
     if pos == 0:
         return has_leading and has_0 and has_1 and has_A
@@ -17,4 +17,5 @@ def make_string(pos, has_leading, has_0, has_1, has_A):
 
 
 strings = make_string(16, False, False, False, False)
+strings.cache_clear()
 print(hex(strings)[2:].upper())

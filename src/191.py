@@ -1,7 +1,7 @@
 # BIG MONEY BIG PRIZES
-from number import memoize
+from functools import cache
 
-@memoize
+@cache
 def prizes(day, lates, last_absent):
     if lates < 0 or day < 0: return 0
     if day == 0: return 1

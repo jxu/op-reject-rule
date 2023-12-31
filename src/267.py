@@ -1,6 +1,4 @@
-from number import comb, memoize
-
-combination = memoize(comb)
+from number import comb
 
 def chance(f):
     c = 0

@@ -18,11 +18,12 @@
 # A007895: z(n)
 # A179180: Z(n) shifted
 
-from number import fib_list, memoize
+from functools import cache
+from number import fib_list
 from bisect import bisect_left
 fib = fib_list(90)
 
-@memoize
+@cache
 def Z(N):
     if N < 2: return 0
     i = bisect_left(fib, N) - 1  # rightmost value less than N

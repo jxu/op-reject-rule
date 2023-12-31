@@ -32,11 +32,9 @@
 #
 # The inefficiency with this solution is computing M*(n) recursively.
 
-from __future__ import division
-
 from itertools import accumulate
-
-from number import sieve, comb, memoize
+from number import sieve, comb
+from functools import cache
 
 def mobius_range(n, primes):
     """Computes Möbius function for 0 to n using sieve approach.
@@ -131,7 +129,7 @@ def test_mertens_small():
     for i in range(1, len(mertens_small_)):
         assert mertens(i, primes) == mertens_small_[i]
 
-@memoize
+@cache
 def odd_mertens(n):
     # May save computation to use small_mobius to calculate small odd_mertens
     if n < 1: return 0

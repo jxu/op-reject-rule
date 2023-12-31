@@ -6,14 +6,15 @@
 # Product_p ((p x^p)^0 + (p x^p)^1 + (p x^p)^2 + ...)
 # = Product_p 1 / (1 - p x^p)
 
-from number import fib_list, sieve, memoize
+from number import fib_list, sieve
+from functools import cache
 import sys
 sys.setrecursionlimit(30000)
 
 fib = fib_list(24)
 primes = sieve(fib[-1])
 
-@memoize
+@cache
 def S(k, i=len(primes)-1):
     if k < 0 or i < 0: return 0
     if k == 0: return 1

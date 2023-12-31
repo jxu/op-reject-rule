@@ -1,6 +1,7 @@
 # Ran for 3 minutes until memory error from caching prime count values... this really isn't a task for python
 
-from number import sieve, memoize
+from number import sieve
+from functools import cache
 
 def test_prime_count():
     # A000720
@@ -33,14 +34,14 @@ def prime_count_sieve(n, primes):
 _prime_count_p = None
 _prime_count_limit = 10**4
 
-@memoize
+@cache
 def _phi(x, a):
     if a == 1:
         return (x + 1) // 2
     return _phi(x, a-1) - _phi(x // _prime_count_p[a], a-1)
 
 
-@memoize
+@cache
 def _pi(n):
     if n < _prime_count_limit:
         return prime_count_sieve(n, _prime_count_p[1:])

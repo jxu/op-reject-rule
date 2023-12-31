@@ -9,7 +9,23 @@
 # Removing @memoize: 58.4s
 # Pre-calculating ruler_full: 23.4s
 
-from number import sieve, ruler
+from number import sieve
+
+def ruler(n, p):
+    """Calculates max integer a such that p^a divides n."""
+    assert n > 0
+    a = 0
+    while n % p == 0:
+        n //= p
+        a += 1
+    return a
+
+
+def test_ruler():
+    for n in range(1, 11):
+        # A007814
+        assert ruler(n, 2) == [None,0,1,0,2,0,1,0,3,0,1][n]
+
 
 def s(p, a):  # s(p^a)
     if a <= p: return a*p

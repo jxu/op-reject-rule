@@ -114,12 +114,6 @@ def test_mod_inv():
     assert mod_inv(-1, 7) == 6
 
 
-def test_ruler():
-    for n in range(1, 11):
-        # A007814
-        assert ruler(n, 2) == [None,0,1,0,2,0,1,0,3,0,1][n]
-
-
 def test_int_to_base():
     assert int_to_base(16, 16) == [1, 0]
 

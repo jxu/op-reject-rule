@@ -332,15 +332,6 @@ def totient_range(n):
 
     return tots
 
-def ruler(n, p):
-    """Calculates max integer a such that p^a divides n."""
-    assert n > 0
-    a = 0
-    while n % p == 0:
-        n //= p
-        a += 1
-    return a
-
 
 def int_to_base(n, b):
     """Returns a list of digits in arbitrary base"""

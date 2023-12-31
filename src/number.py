@@ -93,7 +93,8 @@ def sieve(n):
 
 
 def linear_sieve(n):
-    """Linear sieve which computes factorization of 2 through n (incl).
+    """Compute least primes array up to n using the linear sieve.
+    lp[i] = least prime factor of i
 
     Credit: Paul Pritchard
     """

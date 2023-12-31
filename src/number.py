@@ -341,16 +341,6 @@ def int_to_base(n, b):
     return digits[::-1]
 
 
-def is_smooth(n, primes):
-    """Test if n has only factors in primes"""
-    assert n >= 2
-    for p in primes:
-        while n % p == 0:
-            n //= p
-
-    return n == 1
-
-
 def fib_list(n):
     """Returns list of Fibonacci numbers up to F_n (with F_0 = 0)"""
     assert n >= 1

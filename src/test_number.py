@@ -118,14 +118,6 @@ def test_int_to_base():
     assert int_to_base(16, 16) == [1, 0]
 
 
-def test_is_smooth():
-    small_primes = [2, 3]
-    for n in range(2, 11):
-        assert is_smooth(n, small_primes) == \
-               (None, None, True, True, True, False,
-                True, False, True, True, False)[n]
-
-
 def test_fib_list():
     assert fib_list(5) == [0, 1, 1, 2, 3, 5]
 

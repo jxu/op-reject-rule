@@ -16,7 +16,25 @@
 # ridiculously large (70+ digits) fundamental solutions of Pell's equations.
 
 # 10s with PyPy, 55s with python 3.5
-from number import sieve, is_smooth
+from number import sieve
+
+def is_smooth(n, primes):
+    """Test if n has only factors in primes"""
+    assert n >= 2
+    for p in primes:
+        while n % p == 0:
+            n //= p
+
+    return n == 1
+
+
+def test_is_smooth():
+    small_primes = [2, 3]
+    for n in range(2, 11):
+        assert is_smooth(n, small_primes) == \
+               (None, None, True, True, True, False,
+                True, False, True, True, False)[n]
+
 
 MAX_SMOOTH = 10**13  # Same for 10**14 and 10**15
 p = 47

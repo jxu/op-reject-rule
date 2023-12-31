@@ -1,6 +1,6 @@
 # "Streaking" to victory :3
 # n = 1 mod 2, 1 mod 3, ..., 1 mod k, n != 1 mod k+1
-from number import lcm  # math.lcm is python 3.9+
+from math import lcm
 from functools import reduce
 
 def lcm_n(n):

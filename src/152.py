@@ -3,8 +3,8 @@
 # For example: if 1/7^2 in sum, some other 1/(7k)^2 must be later in the sum!
 # Also use some simple heuristics and integer math.
 
-from __future__ import division
-from number import lcm, sieve
+from math import lcm
+from number import sieve
 
 D_MAX = 80
 primes = sieve(80)

@@ -236,12 +236,6 @@ def divisors(prime_powers, proper=False):
     return divs
 
 
-def lcm(a, b):
-    """Find lcm by reduction of the gcd. math.lcm in Python 3.9+"""
-    from math import gcd
-    return a * b // gcd(a, b)
-
-
 def phi(n, factors=None):
     """Euler's totient function, using the product formula.
 

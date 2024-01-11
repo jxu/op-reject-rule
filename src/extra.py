@@ -75,3 +75,18 @@ def comb_mod(n, k, m):
 
     return (num * mod_inv(den, m)) % m
 
+
+# this is supposed to be more efficient than char strings like "0011" but
+# it's not even that much faster. for fun
+from dataclasses import dataclass
+@dataclass
+class Bitstring:
+    val: int
+    nbits: int
+
+    def __hash__(self):
+        return hash((self.val, self.nbits))
+
+    def __repr__(self):  # prettier binary string output
+        s = format(self.val, 'b').zfill(self.nbits) if self.nbits else '_'
+        return f"<Bitstring {s}>"

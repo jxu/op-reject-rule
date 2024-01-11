@@ -1,55 +1,40 @@
 from number import sieve
 from functools import cache
 from collections import Counter
-from dataclasses import dataclass
-
-# this is supposed to be more efficient than char strings like "0011" but
-# it's not even that much faster. for fun
-@dataclass
-class Bitstring:
-    val: int
-    nbits: int
-
-    def __hash__(self):
-        return hash((self.val, self.nbits))
-
-    def __repr__(self):  # prettier binary string output
-        s = format(self.val, 'b').zfill(self.nbits) if self.nbits else '_'
-        return f"<Bitstring {s}>"
 
 
-suf = Counter()
+suf = [Counter() for _ in range(28)]
 primes = sieve(10**8)
-pb = set()
+pb = [set() for _ in range(28)]
+
 for p in primes:
     bl = p.bit_length()
-    pb.add(Bitstring(p, bl))  # p bitstring
+    pb[bl].add(p)
 
     # add to counter p's suffixes
     for i in range(bl+1):
         mask = (1 << i) - 1
-        suf[Bitstring(p & mask, i)] += 1
-
+        suf[i][p & mask] += 1
 
 @cache
-def E(x : Bitstring) -> float:
+def E(x : int, b : int) -> float:
     """Maximized expected points given player knows lsb of prime x."""
-    total = suf[x] - (x in pb)
+    total = suf[b][x] - (x in pb[b])
     if total == 0: return 0
 
-    x0 = Bitstring(x.val, x.nbits+1)
-    x1 = Bitstring(x.val | (1 << x.nbits), x.nbits+1)
+    x0 = x
+    x1 = x | (1 << b)
 
-    p0 = (x0 in pb) / total
-    p0m = (suf[x0] - (x0 in pb)) / total
-    p1 = (x1 in pb) / total
-    p1m = (suf[x1] - (x1 in pb)) / total
+    p0 = int(x0 in pb[b+1])
+    p0m = (suf[b+1][x0] - p0)
+    p1 = int(x1 in pb[b+1])
+    p1m = (suf[b+1][x1] - p1)
 
-    e0 = p0 + p0m * (1 + E(x0)) + p1m * E(x1)
-    e1 = p1 + p1m * (1 + E(x1)) + p0m * E(x0)
+    e0 = (p0 + p0m * (1 + E(x0,b+1)) + p1m * E(x1,b+1)) / total
+    e1 = (p1 + p1m * (1 + E(x1,b+1)) + p0m * E(x0,b+1)) / total
 
-    print(x, e0, e1)
+    #print(x, e0, e1)
     return max(e0, e1)
 
 
-print(round(E(Bitstring(0, 0)),8))
+print(round(E(0, 0), 8))

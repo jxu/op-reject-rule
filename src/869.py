@@ -2,10 +2,13 @@ from number import sieve
 from functools import cache
 from collections import Counter
 
+N = 10**8
+B = N.bit_length()
+suf = [Counter() for _ in range(B+1)]
+primes = sieve(N)
+pb = [set() for _ in range(B+1)]
 
-suf = [Counter() for _ in range(28)]
-primes = sieve(10**8)
-pb = [set() for _ in range(28)]
+print("primes")
 
 for p in primes:
     bl = p.bit_length()
@@ -16,25 +19,25 @@ for p in primes:
         mask = (1 << i) - 1
         suf[i][p & mask] += 1
 
-@cache
+print("test")
+
 def E(x : int, b : int) -> float:
     """Maximized expected points given player knows lsb of prime x."""
-    total = suf[b][x] - (x in pb[b])
+    if b == B: return 0
+    total = suf[b][x]
     if total == 0: return 0
 
     x0 = x
     x1 = x | (1 << b)
 
-    p0 = int(x0 in pb[b+1])
-    p0m = (suf[b+1][x0] - p0)
-    p1 = int(x1 in pb[b+1])
-    p1m = (suf[b+1][x1] - p1)
+    p0m = suf[b+1][x0]
+    p1m = suf[b+1][x1]
 
-    e0 = (p0 + p0m * (1 + E(x0,b+1)) + p1m * E(x1,b+1)) / total
-    e1 = (p1 + p1m * (1 + E(x1,b+1)) + p0m * E(x0,b+1)) / total
+    e0, e1 = E(x0, b+1), E(x1, b+1)
+    g0 = p0m * (1 + e0) + p1m * e1
+    g1 = p1m * (1 + e1) + p0m * e0
 
-    #print(x, e0, e1)
-    return max(e0, e1)
+    return max(g0, g1) / total
 
 
 print(round(E(0, 0), 8))

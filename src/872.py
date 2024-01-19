@@ -15,4 +15,8 @@ def f(n, k):
             s += n
     return s
 
+# one-liner with suspect n assignment expression
+def g(n, k): return n + sum(n := n-(1<<i) for i in range(64) if (n-k)>>i & 1)
+
 print(f(10**17, 9**17))
+print(g(10**17, 9**17))

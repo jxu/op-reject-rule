@@ -1,31 +1,23 @@
+# We maximize the score with the best-case array [k-1] * n,
+# but this array sum is r = n*(k-1) % k = 6337 above a multiple of k.
+# So, minimize score loss p(k-1) - p(k-1-a_i) for a_i summing to r with DP:
+# m(s) = min(p(k-1) - p(k-1-s), min_{0<i<s} m(i) + m(s-i))
+# This is O(k^2) and the result is max score minus gaps from adjusted primes
+# n * p(k-1) - m(r)
+# Other answers had tropical convolution!?
+
 from number import sieve
-from functools import cache
-from sys import setrecursionlimit
-
 primes = sieve(100000)
-k = 2
-N = primes[k]
-S = N * primes[k-1]  # max possible sum of a_i
-print(N, S)
 
-@cache
-def m(n, s):
-    print(n, s)
-    if n == 0:
-        return 0 if s == 0 else -1e9
-    if s < 0: return -1e9
-    return max(m(n-1, s-a) + primes[a] for a in range(k-10, k))
+def M(k, n):
+    r = n * (k-1) % k
+    # iterative because python can't handle recursion depth 7000
+    m = [0] * (r+1)
+    for s in range(1, r+1):
+        m[s] = primes[k-1] - primes[k-1-s]
+        if s > 1:
+            m[s] = min(m[s], min(m[j] + m[s-j] for j in range(1,s)))
 
+    return n * primes[k-1] - m[r]
 
-memo = [-1e9]*(S+1)
-memo[0] = 0
-
-for n in range(N):
-    new_memo = memo[:]
-    for s in range(S+1):
-        for a in range(s, k):
-            new_memo[s] = max(new_memo[s], memo[s-a] + primes[a])
-
-    memo = new_memo
-
-print(memo)
+print(M(7000, primes[7000]))

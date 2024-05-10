@@ -1,37 +1,22 @@
 from functools import cache 
-from bisect import bisect
+from bisect import bisect_left
 
 cubes = [i**3 for i in range(10**6)]
 
-def icbrt(n):
-    return cubes[bisect(cubes,n)-1]
-
-def d(n):
-    r = 0
-    while n:
-        k = icbrt(n)
-        n -= k
-        r += 1
-
-    return r
+def smaller_cube(n):
+    return cubes[bisect_left(cubes,n)-1]
 
 @cache
 def S(N):
-    #print(N)
     if N <= 1: return 0
-    k = icbrt(N-1)
-    q, r = N//k, N%k
-    #print(k, q, r)
 
-    return k*(q-1)*q//2 + q*S(k) + r*q + S(r)
-
-# r = 0
-# for i in range(101):
-#     print(i,r,S(i))
-#     r += d(i)
-
+    k = smaller_cube(N)
+    # original method
+    # q, r = N//k, N%k
+    # return k*(q-1)*q//2 + q*S(k) + r*q + S(r)
+    return S(k) + S(N-k) + (N - k)
 
 for k in range(int(10**(17/3))+1):
-    print(k, S(k**3))
+    S(k**3)
 
 print(S(10**17))

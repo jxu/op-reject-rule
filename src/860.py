@@ -26,19 +26,8 @@
 # These can be combined into one case, count twice if i>0.
 
 
-from number import mod_inv
+from number import fact_mod_list, inv_list
 m = 989898989
-
-def fact_mod_list(n, m):
-    """Compute [0!, ..., n!] mod m in O(n)."""
-    fact_mod = [1] * (n + 1)
-    for i in range(2, n+1):
-        fact_mod[i] = (i * fact_mod[i-1]) % m
-    return fact_mod
-
-def inv_list(l, m):
-    return [mod_inv(x,m) for x in l]
-
 
 def F(n):
     n //= 2  # makes math a little nicer

@@ -10,13 +10,10 @@
 # S(n), S(n-k), S(n-2k), ... there are only at most n/k calls.
 
 from functools import cache
-from bisect import bisect_left
 
-cubes = [i**3 for i in range(10**6)]
-
-# no floating point error
 def smaller_cube(n):
-    return cubes[bisect_left(cubes,n)-1]
+    k = round(n**(1/3))  # accurate enough closest cbrt
+    return k**3 if k**3 < n else (k-1)**3
 
 @cache
 def S(N):

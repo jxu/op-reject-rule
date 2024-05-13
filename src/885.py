@@ -1,6 +1,5 @@
 # Uninteresting brute force on possible ascending digit nums
 # See solution thread for constant-time solution!
-from number import fact_mod_list, inv_list
 
 M = 1123455689
 
@@ -15,18 +14,19 @@ def g(max_d, digits_left):
 
 
 def S(n):
-    fact_mod = fact_mod_list(n, M)
-    fact_inv = inv_list(fact_mod, M)
+    fact = [1] * (n + 1)
+    for i in range(2, n+1):
+        # runs just as fast without using mod arithmetic
+        fact[i] = (i * fact[i-1])
 
     r = 0
     for m in g(9, n):
         s = str(m).zfill(n)
-        x = fact_mod[n]
+        x = fact[n]
         for d in range(10):
-            x = (x * fact_inv[s.count(str(d))]) % M
-
-        r = (r + m * x) % M
+            x //= fact[s.count(str(d))]
+        r += m*x
 
     return r
 
-print(S(18))
+print(S(18) % M)

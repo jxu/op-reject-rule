@@ -1,6 +1,6 @@
 # Uninteresting brute force on possible ascending digit nums
 # See solution thread for constant-time solution!
-
+from math import factorial
 M = 1123455689
 
 def g(max_d, digits_left):
@@ -9,23 +9,25 @@ def g(max_d, digits_left):
 
     for d in range(max_d+1):
         for s in g(d, digits_left-1):
-            # build right-to-left. faster than string ops
-            yield 10*s + d
+            yield 10*s + d  # build right-to-left. faster than string ops
 
 
 def S(n):
-    fact = [1] * (n + 1)
-    for i in range(2, n+1):
-        # runs just as fast without using mod arithmetic
-        fact[i] = (i * fact[i-1])
+    # runs just as fast without using mod arithmetic
+    fact = [factorial(i) for i in range(n+1)]
 
     r = 0
     for m in g(9, n):
-        s = str(m).zfill(n)
-        x = fact[n]
+        z = m
+        digit_counts = [0]*10
+        for i in range(n):  # for leading zeros, add to 0 count
+            digit_counts[z%10] += 1
+            z //= 10
+
+        t = fact[n]
         for d in range(10):
-            x //= fact[s.count(str(d))]
-        r += m*x
+            t //= fact[digit_counts[d]]
+        r += m*t
 
     return r
 

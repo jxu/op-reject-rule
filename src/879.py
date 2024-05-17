@@ -21,36 +21,42 @@ LINES = []
 for line in COMPACT_LINES:
     LINES.append([int(c,16) for c in line])
 
-def valid(last, d):
+# a little abstraction
+def in_bit(b, i):
+    return bool(b & (1 << i))
+
+def clear_bit(b, i):
+    return b & ~(1 << i)
+
+def valid(used, last, d):
     for line in LINES:
-        if ({last, d} == {line[0], line[-1]}):
-            if len(line) == 4:
-                if ((used & (1 << line[1]) == 0) or (used & (1 << line[2]) == 0)):
-                    return False
-            else:
-                if used & (1 << line[1]) == 0:
-                    return False
+        if ((last == line[0] and d == line[-1]) or
+                (last == line[-1] and d == line[0])):  # line endpoints
+
+            if not in_bit(used, line[1]):
+                return False
+
+            if len(line) == 4 and not in_bit(used, line[2]):
+                return False
     return True
 
 @cache
 def f(used, new_digit):
-    #print("{:016b}".format(used_before_last), last)
     if not used: return 1
     r = 0
     for d in range(N):
-        mask = 1 << d
-        if not (used & mask): continue
+        if not in_bit(used, d): continue
 
-        if valid(new_digit, d):
-            r += f(used & ~(1 << d), d)
+        if valid(used, new_digit, d):
+            r += f(clear_bit(used, d), d)
 
     return r
 
 
 s = -N  # exclude length 1 passwords
-for used in range(1 << N):
+for used in range(1 << N):  # 0000 to FFFF
     for d in range(N):
-        if not (used & (1 << d)):
+        if not in_bit(used, d):
             s += f(used, d)
 
 print(s)

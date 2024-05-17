@@ -32,33 +32,25 @@ def valid(last, d):
     return True
 
 @cache
-def f(used, last):
-    print("{:09b}".format(used), last)
-
-
+def f(used_before_last, last):
+    print("{:09b}".format(used_before_last), last)
+    if not used_before_last: return 1
     r = 0
-
-    assert used & (1 << last)
-    if used == 1 << last: return 1
-
     for d in range(N):
-        if d == last: continue
         mask = 1 << d
-        if not (used & mask): continue
+        if not (used_before_last & mask): continue
 
         if valid(last, d):
-            r += f(used & ~(1 << last), d)
-
+            r += f(used_before_last & ~(1 << d), d)
 
     return r
+
 
 s = -N  # exclude length 1 passwords
 for used in range(1 << N):
     for d in range(N):
-        if used & (1 << d):
-            print("{:08b}".format(used), d)
+        if not (used & (1 << d)):
             s += f(used, d)
 
 print(s)
-
 

@@ -1,3 +1,4 @@
+from functools import cache
 
 COMPACT_LINES3 = (
     "012", "345", "678", "036", "147", "258", "048", "246"
@@ -17,7 +18,7 @@ COMPACT_LINES = \
      )
 
 LINES = []
-for line in COMPACT_LINES:
+for line in COMPACT_LINES3:
     LINES.append([int(c,16) for c in line])
 
 print(LINES)
@@ -37,22 +38,31 @@ def bad(s, n):
                     return True
     return False
 
-def f(rem):
-    yield []  # end seq here
-    if not rem: return
-
-    for n in range(16):
-        if not (rem & (1 << n)): continue
-
-        for s in f(rem ^ (1 << n)):
-            if not bad(s, n):
-                s.append(n)
-                yield s
+@cache
+def f(used, last):
+    print("{:09b}".format(used), last)
 
 
-sols = filter(lambda x: len(x) >= 2, f(0xffff))
-r = 0
-for sol in sols:
-    if r % 100000 == 0: print(''.join(hex(n)[2] for n in sol).rjust(16))
-    r += 1
-print(r)
+    r = 0
+
+    assert used & (1 << last)
+    if used == 1 << last: return 1
+
+    for d in range(9):
+        if d == last: continue
+        mask = 1 << d
+        if not (used & mask): continue
+
+        bad = False
+        for line in LINES:
+            if ({last,d} == {line[0], line[2]} and not (used & (1 << line[1])) ):
+                bad = True
+
+        if not bad:
+            r += f(used & ~(1 << last), d)
+
+
+    return r
+
+
+print(sum(f(0x1ff, d) for d in range(9)))

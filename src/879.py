@@ -1,14 +1,12 @@
 from functools import cache
 
-N = 9
+N = 16
 
-COMPACT_LINES3 = (
-    "012", "345", "678", "036", "147", "258", "048", "246"
-)
+COMPACT_LINES3 = ("012", "345", "678", "036", "147", "258", "048", "246")
 
 COMPACT_LINES = \
     ("048", "48C", "048C",
-     "159", "590", "1590",
+     "159", "59D", "159D",
      "26A", "6AE", "26AE",
      "37B", "7BF", "37BF",
      "012", "123", "0123",
@@ -20,28 +18,31 @@ COMPACT_LINES = \
      )
 
 LINES = []
-for line in COMPACT_LINES3:
+for line in COMPACT_LINES:
     LINES.append([int(c,16) for c in line])
-
-print(LINES)
 
 def valid(last, d):
     for line in LINES:
-        if ({last, d} == {line[0], line[2]} and not (used & (1 << line[1]))):
-            return False
+        if ({last, d} == {line[0], line[-1]}):
+            if len(line) == 4:
+                if ((used & (1 << line[1]) == 0) or (used & (1 << line[2]) == 0)):
+                    return False
+            else:
+                if used & (1 << line[1]) == 0:
+                    return False
     return True
 
 @cache
-def f(used_before_last, last):
-    print("{:09b}".format(used_before_last), last)
-    if not used_before_last: return 1
+def f(used, new_digit):
+    #print("{:016b}".format(used_before_last), last)
+    if not used: return 1
     r = 0
     for d in range(N):
         mask = 1 << d
-        if not (used_before_last & mask): continue
+        if not (used & mask): continue
 
-        if valid(last, d):
-            r += f(used_before_last & ~(1 << d), d)
+        if valid(new_digit, d):
+            r += f(used & ~(1 << d), d)
 
     return r
 

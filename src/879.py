@@ -1,5 +1,7 @@
 from functools import cache
 
+N = 9
+
 COMPACT_LINES3 = (
     "012", "345", "678", "036", "147", "258", "048", "246"
 )
@@ -23,20 +25,11 @@ for line in COMPACT_LINES3:
 
 print(LINES)
 
-def bad(s, n):
-    if not s: return False
+def valid(last, d):
     for line in LINES:
-        # check endpoints of line
-        if (s[-1] == line[0] and n == line[-1]) or \
-            (s[-1] == line[-1] and n == line[0]):
-
-            if len(line) == 4:
-                if line[1] not in s or line[2] not in s:
-                    return True
-            else:
-                if line[1] not in s:
-                    return True
-    return False
+        if ({last, d} == {line[0], line[2]} and not (used & (1 << line[1]))):
+            return False
+    return True
 
 @cache
 def f(used, last):
@@ -48,21 +41,24 @@ def f(used, last):
     assert used & (1 << last)
     if used == 1 << last: return 1
 
-    for d in range(9):
+    for d in range(N):
         if d == last: continue
         mask = 1 << d
         if not (used & mask): continue
 
-        bad = False
-        for line in LINES:
-            if ({last,d} == {line[0], line[2]} and not (used & (1 << line[1])) ):
-                bad = True
-
-        if not bad:
+        if valid(last, d):
             r += f(used & ~(1 << last), d)
 
 
     return r
 
+s = -N  # exclude length 1 passwords
+for used in range(1 << N):
+    for d in range(N):
+        if used & (1 << d):
+            print("{:08b}".format(used), d)
+            s += f(used, d)
 
-print(sum(f(0x1ff, d) for d in range(9)))
+print(s)
+
+

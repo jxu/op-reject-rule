@@ -1,25 +1,44 @@
+# From the example, for spots in a line like 1-5-9, 1-9 or 9-1 can only occur
+# if 5 appeared before in the sequence.
+# From there, it is DP keeping track of the new spot and
+# previously used spots (not including new spot).
+# Used spots are a bitset which allows hashing in python.
+# The length 3 and 4 lines are hardcoded because it's not that much nicer to
+# code all the line indexing. (plus some fun with hex)
+
 from functools import cache
 
-N = 16
+MODE_3x3 = False
 
-COMPACT_LINES3 = ("012", "345", "678", "036", "147", "258", "048", "246")
+if MODE_3x3:
+    N = 9
+    # 0 1 2
+    # 3 4 5
+    # 6 7 8
+    COMPACT_LINES = ("012", "345", "678", "036", "147", "258", "048", "246")
 
-COMPACT_LINES = \
-    ("048", "48C", "048C",
-     "159", "59D", "159D",
-     "26A", "6AE", "26AE",
-     "37B", "7BF", "37BF",
-     "012", "123", "0123",
-     "456", "567", "4567",
-     "89A", "9AB", "89AB",
-     "CDE", "DEF", "CDEF",
-     "258", "369", "69C", "369C", "7AD",
-     "16B", "05A", "5AF", "05AF", "49E"
-     )
+else:
+    N = 16
+    # 0 1 2 3
+    # 4 5 6 7
+    # 8 9 A B
+    # C D E F
+    COMPACT_LINES = \
+        ("048", "48C", "048C",  # vertical
+         "159", "59D", "159D",
+         "26A", "6AE", "26AE",
+         "37B", "7BF", "37BF",
+         "012", "123", "0123",  # horizontal
+         "456", "567", "4567",
+         "89A", "9AB", "89AB",
+         "CDE", "DEF", "CDEF",
+         "258", "369", "69C", "369C", "7AD",  # diagonal
+         "16B", "05A", "5AF", "05AF", "49E"
+         )
 
-LINES = []
-for line in COMPACT_LINES:
-    LINES.append([int(c,16) for c in line])
+
+LINES = [[int(c,16) for c in line] for line in COMPACT_LINES]
+print(list(LINES))
 
 # a little abstraction
 def in_bit(b, i):

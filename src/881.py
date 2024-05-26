@@ -1,4 +1,5 @@
-from number import factor, sieve
+from number import sieve
+from heapq import *
 
 primes = sieve(100)
 
@@ -22,35 +23,37 @@ class Polynomial:
 
         return Polynomial(r)
 
-def g(factors):
-    #factors = factor(n)
 
-
+def g(exponents):
     q = Polynomial([1])
-
-    for p, e in factors.items():
+    for e in exponents:
         q *= Polynomial([1] * (e+1))
-
     return max(q.coef)
 
-step = 2 * 2 * 3 * 5 * 7 * 11 * 13
-
-best_n, best_g = 0, 0
-for n in range(step, 10**10, step):
-    factors = factor(n)
-    z = False
-    for i in range(1, len(primes)):
-        if factors[primes[i]] > factors[primes[i-1]]:
-            z = True
-            break
-        if primes[i] > max(factors.keys()): break
-
-    if z: continue
-
-    gn = g(factors)
+h = [(2, [1])]
+best_g, best_n = 0, 0
+for _ in range(10**6):
+    n, e = heappop(h)
+    gn = g(e)
     if gn > best_g:
-        best_n = n
         best_g = gn
+        best_n = n
         print(n, gn)
 
+    if gn >= 10**4:
+        print(n)
+        break
+
+
+    last_e = len(e) - 1
+
+    n1 = n * primes[last_e]
+    f1 = e.copy()
+    f1[last_e] += 1
+    heappush(h, (n1, f1))
+
+    n2 = n * primes[last_e+1]
+    f2 = e.copy()
+    f2.append(1)
+    heappush(h, (n2, f2))
 

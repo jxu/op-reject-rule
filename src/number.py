@@ -197,7 +197,7 @@ def is_square(n):
 
 
 def factor(n):
-    """Return all prime factors of n.
+    """Return prime factorization of n as dict of prime:exponent pairs.
 
     Output dict of prime:exponent pairs using trial division.
     Modeled after sympy.ntheory.factorint

@@ -1,3 +1,21 @@
+# Let n = p1^e1 p2^e2 ... pj^ej.
+# For level k (numbering levels from the bottom up),
+# the width of the graph is # solutions to
+# a1 + ... + aj = k, with a1 <= e1, ..., aj <= ej.
+# With generating functions this is simply the coefficient of x^k in
+# (1 + x + x^2 + ... + x^e1) ... (1 + x + x^2 + ... + x^ej)
+# and g(n) is the maximum coefficient of the resulting polynomial.
+# (Here I implemented a simple Polynomial class with polynomial multiplication,
+# but j... suggests optimizing multiplication by 1 + x + x^2 + ...
+# in linear time.)
+
+# To actually find minimal n, I use a Dijkstra-like search of the solution
+# space I came up with while not being able to fall asleep last night.
+# Start with node n = 2 and list of prime exponents [1],
+# we can increase the last power or introduce a new power to the
+# list, since e1 >= e2 >= ... for n. This way the search won't revisit any n.
+# The min-heap has key n, and the search ends when n has g(n) >= 1000.
+
 from number import sieve
 from heapq import *
 
@@ -27,33 +45,23 @@ class Polynomial:
 def g(exponents):
     q = Polynomial([1])
     for e in exponents:
-        q *= Polynomial([1] * (e+1))
+        q *= Polynomial([1] * (e+1))  # math.prod wants SupportsIndex
     return max(q.coef)
 
 h = [(2, [1])]
-best_g, best_n = 0, 0
-for _ in range(10**6):
-    n, e = heappop(h)
-    gn = g(e)
-    if gn > best_g:
-        best_g = gn
-        best_n = n
-        print(n, gn)
 
-    if gn >= 10**4:
+while True:
+    n, e = heappop(h)
+    if g(e) >= 10**4:
         print(n)
         break
 
-
     last_e = len(e) - 1
+    n1, e1 = n * primes[last_e], e.copy()
+    e1[last_e] += 1
+    heappush(h, (n1, e1))
 
-    n1 = n * primes[last_e]
-    f1 = e.copy()
-    f1[last_e] += 1
-    heappush(h, (n1, f1))
-
-    n2 = n * primes[last_e+1]
-    f2 = e.copy()
-    f2.append(1)
-    heappush(h, (n2, f2))
+    n2, e2 = n * primes[last_e+1], e.copy()
+    e2.append(1)
+    heappush(h, (n2, e2))
 

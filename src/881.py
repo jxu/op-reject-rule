@@ -12,8 +12,8 @@
 # To actually find minimal n, I use a Dijkstra-like search of the solution
 # space I came up with while not being able to fall asleep last night.
 # Start with node n = 2 and list of prime exponents [1],
-# we can increase the last power or introduce a new power to the
-# list, since e1 >= e2 >= ... for n. This way the search won't revisit any n.
+# as long as e1 >= e2 >= ..., we can increase the last power or introduce
+# a new prime. This way the search won't revisit any n.
 # The min-heap has key n, and the search ends when n has g(n) >= 1000.
 
 from number import sieve
@@ -57,11 +57,10 @@ while True:
         break
 
     last_e = len(e) - 1
-    n1, e1 = n * primes[last_e], e.copy()
-    e1[last_e] += 1
-    heappush(h, (n1, e1))
+    if len(e) == 1 or e[-1] < e[-2]:
+        n1, e1 = n * primes[last_e], e[:-1] + [e[-1]+1]
+        heappush(h, (n1, e1))
 
-    n2, e2 = n * primes[last_e+1], e.copy()
-    e2.append(1)
+    n2, e2 = n * primes[last_e+1], e + [1]
     heappush(h, (n2, e2))
 

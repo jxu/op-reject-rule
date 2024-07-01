@@ -1,4 +1,5 @@
 from functools import cache
+from number import sieve
 
 def in_bit(b, i):
     return bool(b & (1 << i))
@@ -9,7 +10,7 @@ def set_bit(b, i):
 def clear_bit(b, i):
     return b & ~(1 << i)
 
-primes = (2, 3, 5, 7, 11, 13, 17)
+primes = sieve(34)
 
 # TODO: replace with better function
 def coprime(a, b):
@@ -18,13 +19,13 @@ def coprime(a, b):
 #print(coprime(6,9))
 #print(coprime(2,3))
 
-def odd_bit_count(n):
+def even_bit_count(n):  # bits 0, 2, 4, 6, ...
     return (n & 0x55555555).bit_count()
 
-def even_bit_count(n):
+def odd_bit_count(n):
     return (n & 0xaaaaaaaa).bit_count()
 
-n = 10
+n = 20
 
 @cache
 def f(seen, k):
@@ -32,14 +33,21 @@ def f(seen, k):
     if seen.bit_count() == 1: return 1
 
     # optimization
-    # n=20. without even-odd: size=2978690
-    # with even-odd: size=1972297
+    # n=20.
+    # without even-odd: hits=12271501 size=2831840
+    # with even-odd:    hits= 3483249 size=1214491
     d = even_bit_count(seen) - odd_bit_count(seen)
     z = seen.bit_count()
-    if abs(even_bit_count(seen) - odd_bit_count(seen)) > 1: return 0
+    #if abs(even_bit_count(seen) - odd_bit_count(seen)) > 1: return 0
+
     if k%2 == 0:
         if z%2 == 0 and d != 0: return 0
         if (z%2) != 0 and d != 1: return 0
+
+    if k%2 == 1:
+        if z%2 == 0 and d != 0: return 0
+        if z%2 != 0 and d != -1: return 0
+
 
     r = 0
     for newk in range(2, n+1):

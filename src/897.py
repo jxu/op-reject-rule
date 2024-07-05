@@ -3,38 +3,24 @@ from scipy.optimize import minimize
 
 
 def a(x):
-
-    #xm1 = np.r_[np.nan, x[:-1]]
-
-    #a = (x - xm1) * (2 - x**4 - xm1**4) / 2
-    #area = a[1:].sum()
-    #x = np.r_[-1, x, 1]
+    x = np.r_[-1,x,1]  # fixed endpoints at -1 and 1
     n = len(x)
+    y = x**4
+    area = sum((x[i] - x[i-1])*(2 - y[i] - y[i-1]) for i in range (1,n)) / 2
 
-    area = sum((x[i]-x[i-1])*(x[0]**4 + x[-1]**4 - x[i]**4 - x[i-1]**4)/2 for i in range(1, n))
-
-    area = sum(x[i]**4 * (x[i-1] - x[(i+1)%n] ) for i in range(n)) / 2
-    area = sum((x[i]**4 + x[i-1]**4)*(x[i] - x[i-1]) for i in range(n)) / 2
+    # telescoping more stable?
+    area = 1 + sum(x[i-1]*x[i]*(x[i]**3 - x[i-1]**3) for i in range(1,n))/2
 
     return -area
 
 def grad(x):
-    n = len(x)
-    xp1 = np.r_[x[1:], np.nan]
-    xm1 = np.r_[np.nan, x[:-1]]
-    g = -xm1**4 + 4 * x**3 * (xm1 - xp1) + xp1**4
-    g[0] = 0
-    g[-1] = 0
-    return g
+    x = np.r_[-1, x, 1]
+    g = np.array([-x[i-1]**4 + 4 * x[i]**3 * (x[i-1] - x[i+1]) + x[i+1]**4 for i in range(1,len(x)-1)])
 
-print(a(np.array([-0])))
+    return -g
 
-x = np.array([-1,-0.5, 0, 0.5,1])
-#step_size = 0.01
-# for i in range(100):
-#     print(a(x),x, grad(x))
-#     x += step_size * grad(x)
-
-res = minimize(a, x, bounds=np.array([(-1,1)]*5))
+x = np.linspace(-.9, 1, 101-2)
+# options={"ftol":1e-10, "gtol":1e-10, "maxfun":100000}
+res = minimize(a, x, bounds=np.array([(-1,1)]*len(x)), jac=grad)
 print(res)
-
+print(round(res.fun, 9))

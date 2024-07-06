@@ -1,26 +1,27 @@
 import numpy as np
-from scipy.optimize import minimize
+from scipy.optimize import minimize  # use cpython with scipy
 
+def shiftm1(x):
+    return np.r_[np.nan, x[:-1]]
 
 def a(x):
     x = np.r_[-1,x,1]  # fixed endpoints at -1 and 1
-    n = len(x)
-    y = x**4
-    area = sum((x[i] - x[i-1])*(2 - y[i] - y[i-1]) for i in range (1,n)) / 2
-
-    # telescoping more stable?
-    area = 1 + sum(x[i-1]*x[i]*(x[i]**3 - x[i-1]**3) for i in range(1,n))/2
-
+    xm1 = np.r_[np.nan, x[:-1]]
+    a = (xm1 * x * (x**3 - xm1**3))[1:].sum()
+    area = 1 + a/2
     return -area
 
 def grad(x):
     x = np.r_[-1, x, 1]
-    g = np.array([-x[i-1]**4 + 4 * x[i]**3 * (x[i-1] - x[i+1]) + x[i+1]**4 for i in range(1,len(x)-1)])
+    xm1 = np.r_[np.nan, x[:-1]]
+    xp1 = np.r_[x[1:], np.nan]
+    g = (-xm1**4 + 4*x**3 * (xm1 - xp1) + xp1**4)[1:-1]
 
     return -g
 
 x = np.linspace(-.9, 1, 101-2)
+
 # options={"ftol":1e-10, "gtol":1e-10, "maxfun":100000}
-res = minimize(a, x, bounds=np.array([(-1,1)]*len(x)), jac=grad)
+res = minimize(a, x, jac=grad, options={"gtol":1e-9})
 print(res)
 print(round(res.fun, 9))

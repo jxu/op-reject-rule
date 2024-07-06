@@ -19,9 +19,23 @@ def grad(x):
 
     return -g
 
-x = np.linspace(-.9, 1, 101-2)
+def hess(x):
+    x = np.r_[-1, x, 1]
+    n = len(x)
+    H = np.zeros((n,n))
+    for i in range(1, n-1):
+        H[i,i] = 12 * x[i]**2 * (x[i-1] - x[i+1])
+        H[i,i-1] = -4 * x[i-1]**3 + 4 * x[i]**3
+        H[i,i+1] =  4 * x[i+1]**3 - 4 * x[i]**3
+
+    return -H[1:-1,1:-1]
+
+x = np.linspace(-.9, .9, 101-2)
+
+#print(grad(x))
+#print(hess(x))
 
 # options={"ftol":1e-10, "gtol":1e-10, "maxfun":100000}
-res = minimize(a, x, jac=grad, options={"gtol":1e-9})
+res = minimize(a, x, jac=grad, hess=hess, method="trust-ncg")
 print(res)
-print(round(res.fun, 9))
+print(-round(res.fun, 9))

@@ -1,15 +1,26 @@
-import numpy as np
-from scipy.optimize import minimize  # use cpython with scipy
+# Level 10, 250 solved!
+# n=5 isn't symmetric! But (-1,1) and (1,1) have to be endpoints in convex
+# I tried many different optimization methods, even random basin-hopping, even
+# Hessian before, but for some reason it worked now with Hessian information.
+# Optimizing area under the n-gon turns out to be the same as maximizing n-gon
+# area, so doesn't help.
 
-def shiftm1(x):
-    return np.r_[np.nan, x[:-1]]
+# Also I computed gradients, with partial derivatives
+# dA / dx_i = -4 x_{i-1}^3 + 4 x_{i-1} x_i^3 - 4 x_i^3 x_{i+1} + x_{i+1}^4
+# dA / dx_i = 0 =>
+# x_i = cbrt((1/4) (x_{i-1}^4 - x_{i+1}^4) / (x_{i-1} - x{i+1}))
+# Endagorion suggests iterating per coordinate will converge
+
+import numpy as np
+from scipy.optimize import minimize # use cpython with scipy
+
 
 def a(x):
     x = np.r_[-1,x,1]  # fixed endpoints at -1 and 1
     xm1 = np.r_[np.nan, x[:-1]]
-    a = (xm1 * x * (x**3 - xm1**3))[1:].sum()
-    area = 1 + a/2
-    return -area
+    s = (xm1 * x * (x**3 - xm1**3))[1:].sum()
+    area = 1 + s/2
+    return -area  # to minimize
 
 def grad(x):
     x = np.r_[-1, x, 1]
@@ -30,12 +41,11 @@ def hess(x):
 
     return -H[1:-1,1:-1]
 
-x = np.linspace(-.9, .9, 101-2)
+n = 101
+x0 = np.linspace(-.99, 1, n-2)  # assymetric
 
-#print(grad(x))
-#print(hess(x))
+res = minimize(a, x0, jac=grad,  hess=hess, method="newton-cg")
 
-# options={"ftol":1e-10, "gtol":1e-10, "maxfun":100000}
-res = minimize(a, x, jac=grad, hess=hess, method="trust-ncg")
 print(res)
+print(res.x)
 print(-round(res.fun, 9))

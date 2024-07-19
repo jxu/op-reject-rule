@@ -9,10 +9,11 @@
 # dA / dx_i = -4 x_{i-1}^3 + 4 x_{i-1} x_i^3 - 4 x_i^3 x_{i+1} + x_{i+1}^4
 # dA / dx_i = 0 =>
 # x_i = cbrt((1/4) (x_{i-1}^4 - x_{i+1}^4) / (x_{i-1} - x{i+1}))
-# Endagorion suggests iterating per coordinate will converge
+# Endagorion suggests iterating over coordinates based on grad which I didn't
+# consider would work. See alternate solution.
 
 import numpy as np
-from scipy.optimize import minimize # use cpython with scipy
+from scipy.optimize import minimize  # use cpython with scipy
 
 
 def a(x):
@@ -42,9 +43,9 @@ def hess(x):
     return -H[1:-1,1:-1]
 
 n = 101
-x0 = np.linspace(-.99, 1, n-2)  # assymetric
+x0 = np.linspace(-.99, 1, n-2)  # asymmetric start
 
-res = minimize(a, x0, jac=grad,  hess=hess, method="newton-cg")
+res = minimize(a, x0, jac=grad, hess=hess, method="newton-cg")
 
 print(res)
 print(res.x)

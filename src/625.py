@@ -10,54 +10,55 @@
 # etc. up to j near sqrt(N).
 # Then calculate phi directly for phi(1) to phi(sqrt(N))
 from itertools import accumulate
-
+from functools import cache
 from number import totient_range
 
 # Save calculated values for future use (problem 625)
 # "Public" (no leading underscore) for now
-totient_sum_large = dict()  # Can implement as array for minor speedup
-totient_sum_small = None
-totient_small_cutoff = -1
+#totient_sum_large = dict()  # Can implement as array for minor speedup
+#totient_sum_small = None
+#totient_small_cutoff = -1
 
+class TotientSum:
+    """Class to compute sublinear totient sum and save computations."""
+    def __init__(self, n):
+        """Initialize cached values up to n^2/3"""
+        self.cutoff = int(n**(2/3))
+        self.totrange = totient_range(self.cutoff)
+        self.small = list(accumulate(self.totrange))
+
+    def __call__(self, n):
+        if n <= self.cutoff:
+            return self.small[n]
+
+        raise NotImplementedError
+
+
+CUTOFF = 10**7
+CUTOFF_INV = 10**11 // CUTOFF
+totrange = totient_range(CUTOFF)
+totsum_small = list(accumulate(totrange))
+
+@cache
 def totient_sum(n):
     """Follows the ideas outlined in my writeup plus sieving for about O(n^2/3)
 
-    Also saves precalculated values in global variables
     https://math.stackexchange.com/a/1740370
     """
+    if n <= CUTOFF:
+        return totsum_small[n]
 
-    cutoff = int(n**(2/3))
-    global totient_small_cutoff
+    s = n * (n + 1) // 2
+    c = int(n ** (1/2))
 
-    if cutoff > totient_small_cutoff:
-        totient_small_cutoff = cutoff
-        # Recalculate small totient range
-        totient_range_small = totient_range(cutoff)
+    for m in range(2, c + 1):
+        s -= totient_sum(n // m)
 
-        # Convert totient range to totient sum
-        global totient_sum_small
-        totient_sum_small = list(accumulate(totient_range_small))
+    for k in range(1, n//c):
+        s -= ((n//k) - (n//(k+1))) * totient_sum(k)
 
+    return s
 
-    def _Phi(n):
-        if n < cutoff:
-            return totient_sum_small[n]
-
-        if n in totient_sum_large:
-            return totient_sum_large[n]
-
-        isqrtn = int(n**0.5)
-        s = n*(n+1)//2
-        for x in range(2, isqrtn+1):
-            s -= _Phi(n // x)
-
-        for y in range(1, isqrtn + (isqrtn != n // isqrtn)):
-            s -= (n//y - n//(y+1)) * _Phi(y)
-
-        totient_sum_large[n] = s
-        return s
-
-    return _Phi(n)
 
 def G(N):
     s = 0
@@ -84,5 +85,11 @@ def test_totient_sum():
                  30396356427242]
     for i in range(len(powers_10)):
         assert totient_sum(10**i) == powers_10[i]
+
+
+assert totient_sum(10**9) == 303963551173008414
+assert totient_sum(10**11) == 3039635509283386211140
+
+print(totient_sum.cache_info())
 
 print(G(10**11) % 998244353)

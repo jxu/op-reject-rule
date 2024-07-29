@@ -13,30 +13,28 @@ from itertools import accumulate
 from functools import cache
 from number import totient_range
 
-
-CUTOFF = 10**7  # seems to work better than 10**8
-totrange = totient_range(CUTOFF)
-totsum_small = list(accumulate(totrange))
+PRECOMP = 10**7  # should be larger than sqrt(N). 10^7 sweet spot
+tot_range = totient_range(PRECOMP)
+totsum_range = list(accumulate(tot_range))
 
 @cache
 def totient_sum(n):
-    """Follows the ideas outlined in my writeup plus sieving for about O(n^2/3)
+    if n <= PRECOMP:
+        return totsum_range[n]
 
-    https://math.stackexchange.com/a/1740370
-    """
-    if n <= CUTOFF:
-        return totsum_small[n]
-
+    isqrtn = int(n**0.5)
     s = n * (n + 1) // 2
-    c = int(n ** 0.5)  # works better than n^1/3
 
-    for m in range(2, c + 1):
-        s -= totient_sum(n // m)
+    for i in range(2, isqrtn+1):
+        s -= totient_sum(n // i)
 
-    for k in range(1, n//c):
-        s -= ((n//k) - (n//(k+1))) * totient_sum(k)
+    for j in range(1, isqrtn+1):
+        s -= tot_range[j] * (n // j)
+
+    s += isqrtn * totient_sum(isqrtn)
 
     return s
+
 
 
 def G(N):
@@ -59,8 +57,10 @@ def G(N):
 
 def test_totient_sum():
     # A064018
+    assert totient_sum(100) == 3044
     assert totient_sum(10**9) == 303963551173008414
     assert totient_sum(10**11) == 3039635509283386211140
-    print(totient_sum.cache_info())
+
 
 print(G(10**11) % 998244353)
+

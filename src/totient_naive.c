@@ -1,9 +1,8 @@
-#include <iostream>
-using namespace std;
+#include <stdio.h>
 
 int gcd(int a, int b)
 {
-    while (b != 0)
+    while (b)
     {
         int c = a % b;
         a = b;
@@ -25,11 +24,10 @@ int phi(int n)
 
 int main()
 {
-    unsigned int sum = 0;
+    int sum = 0;
     for (int i=1; i<19000; i++) // Change this so it runs in 10 seconds
-    {
         sum += phi(i);
-    }
-        cout << sum << endl;
-        return 0;
+    
+    printf("%d\n", sum);
+    return 0;
 }

@@ -1,8 +1,8 @@
-Python Project Euler
-====================
-Code for a ~~elegant, concise~~ terrible computational efficiency language.
+OP Reject Rule
+==============
+_By Cert. joule rep._ 🧑‍🔧
 
-<sub>And occasionally C/C++ for speed, Mathematica for math, etc.</sub>
+Showing PyPy works - when there's no time limit!
 
 *Clean Code, and Keep It Simple, Stupid!*
 
@@ -12,7 +12,7 @@ Some features of number.py
 - Simple Sieve of Eratosthenes
 - Miller-Rabin primality test with potential witnesses
 - Euler's totient function, totient range, totient sum
-- Timeit and memoization wrapper
+- ~~Timeit and memoization wrapper~~
 - Prime-counting function using Meissel-Lehmer
 - Others: binary search, Dijkstra's algorithm, modular multiplicative inverse, int to base conversion, etc.
 
@@ -39,6 +39,7 @@ Problems Solved Milestones/Levels
 | 7     | 175      | 2017-06-28 |
 | 8     | 200      | 2018-08-26 |
 | 9     | 225      | 2023-02-08 |
+| 10    | 250      | 2024-07-14 |
 
 Solution Highlights
 -------------------

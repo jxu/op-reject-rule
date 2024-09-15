@@ -1,3 +1,7 @@
+"""Extra functions leftover from problems or number.py"""
+
+from number import *
+
 def mobius_range(n, primes):
     """Computes Möbius function for 0 to n using sieve approach.
 
@@ -15,7 +19,15 @@ def mobius_range(n, primes):
 
     return mus
 
+def test_mobius_range():
+    # A008683
+    small_mus = [0,1,-1,-1,0,-1,1,-1,0,0,1,-1,0,-1,1,1,0,-1,0,-1,
+                 0,1,1,-1,0,0,1,0,0,-1,-1]
+    n = len(small_mus)-1
+    primes = sieve(n)
 
+    assert mobius_range(n, primes) == small_mus
+    
 
 def ternary_search(f, l, r):
     for i in range(100):

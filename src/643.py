@@ -1,6 +1,13 @@
 """
-Old solution:
+New solution
+------------
+For each fixed t, gcd(a, b) = 2^t <=> gcd(a/2^t, b/2^t) = 1 
+So for each b (div by 2^t), the # a's satisfying is phi(b/2^t)
+For a < b <= N, this is summatory function Phi(b / 2^t)
+The exception is when b/2^t = 1, where we want phi(1) = 0 instead of 1 
 
+Old solution
+------------
 What a journey. I did not use totient function at all, instead I directly
 counted the pairs by inclusion-exclusion.
 
@@ -37,33 +44,11 @@ The inefficiency with this solution is computing M*(n) recursively.
 """
 
 from functools import cache
-
-# copied from 625
-# TODO: move to number.py again?
-
-from itertools import accumulate
-from functools import cache
-from number import totient_range
+from number import totient_range, totient_sum, totient_sum_range
 
 PRECOMP = 10**7  # sweet spot
-tot_range = totient_range(PRECOMP)
-totsum_range = list(accumulate(tot_range))
-
-@cache
-def totient_sum(n):
-    if n <= PRECOMP:
-        return totsum_range[n]
-
-    c = int(n**0.5)  # can adjust but sqrt n seems to work the best
-    s = n * (n + 1) // 2
-
-    for m in range(2, n//c + 1):
-        s -= totient_sum(n // m)
-
-    for k in range(1, c):
-        s -= (n//k - n//(k+1)) * totient_sum(k)
-
-    return s
+tot_range = totient_range(10**7)
+totient_sum.totsum_range = totient_sum_range(tot_range)
 
 N = 10**11
 
@@ -74,5 +59,3 @@ while p2 <= N:
     p2 *= 2
     
 print(s % 1000000007)
-
-

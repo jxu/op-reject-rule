@@ -1,12 +1,5 @@
 # Nice sublinear problem idea.
 
-# Totient sum calculation: Dirichlet hyperbola like methods I explain at
-# https://math.stackexchange.com/a/1740370
-# Basically starting with T(n) = Sum_{i=1..n} Phi(n//i), rearrange
-# Phi(n) = T(n) Sum_{i=2..n} Phi(n//i)
-# The observation is n//i is constant for large i, so count precisely how many
-# times each j = n//i value occurs.
-
 # gcdsum(j) = Sum_{i=1..j} gcd(i, j) = Sum_{d|j} d * phi(j/d)
 # because d = gcd(i, j) exactly when d|i and d|j and gcd(i/d, j/d) = 1
 # so there are phi(j/d) terms of d
@@ -19,33 +12,12 @@
 
 from itertools import accumulate
 from functools import cache
-from number import totient_range
+from number import totient_range, totient_sum_range, totient_sum
 
-PRECOMP = 10**7  # sweet spot
-tot_range = totient_range(PRECOMP)
-totsum_range = list(accumulate(tot_range))
+tot_range = totient_range(10**7) # sweet spot
+totsum_range = totient_sum_range(tot_range)
 
-@cache
-def totient_sum(n):
-    if n <= PRECOMP:
-        return totsum_range[n]
-
-    c = int(n**0.5)  # can adjust but sqrt n seems to work the best
-    s = n * (n + 1) // 2
-
-    for m in range(2, n//c + 1):
-        s -= totient_sum(n // m)
-
-    for k in range(1, c):
-        s -= (n//k - n//(k+1)) * totient_sum(k)
-
-    return s
-
-def test_totient_sum():
-    # A064018
-    assert totient_sum(100) == 3044
-    assert totient_sum(10**9) == 303963551173008414
-    assert totient_sum(10**11) == 3039635509283386211140
+totient_sum.totsum_range = totsum_range
 
 def T(n):
     return n * (n + 1) // 2

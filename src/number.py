@@ -5,7 +5,7 @@ import random
 import itertools
 from math import prod, gcd
 from itertools import accumulate
-from functools import reduce
+from functools import reduce, cache
 from collections import Counter
 
 PRIME_100 = (2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47, 53,
@@ -13,6 +13,7 @@ PRIME_100 = (2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47, 53,
 
 
 ########## HELPER FUNCTIONS ##########
+
 def powerset(iterable):
     """Return the powerset of the iterable. (from itertools recipes)
 
@@ -47,6 +48,7 @@ def timeit(f):
 
 
 ########## NUMBER THEORY ##########
+
 def extended_euclidean(a, b):
     """Returns g, x, y for which a*x + b*y = g = gcd(a,b).
 
@@ -327,6 +329,42 @@ def totient_range(n):
 
     return tots
 
+
+def totient_sum_range(tot_range):
+    """Helper function for pre-computing values for totient_sum"""
+    return list(accumulate(tot_range))
+
+
+@cache
+def totient_sum(n):
+    """Calculates the totient sum up to n in sub-linear time.
+
+    totsum_range is a list of precomputed totient sums, should be up to 
+    about n^2/3 for performance.
+    
+    Totient sum calculation: Dirichlet hyperbola like methods I explain at
+    https://math.stackexchange.com/a/1740370
+    
+    Basically starting with T(n) = Sum_{i=1..n} Phi(n//i), rearrange
+    Phi(n) = T(n) Sum_{i=2..n} Phi(n//i)
+    The observation is n//i is constant for large i, so count precisely how 
+    many times each j = n//i value occurs.
+    """
+    
+    if n < len(totient_sum.totsum_range):
+        return totient_sum.totsum_range[n]
+
+    c = int(n**0.5)  # can adjust but sqrt n seems to work the best
+    s = n * (n + 1) // 2
+
+    for m in range(2, n//c + 1):
+        s -= totient_sum(n // m)
+
+    for k in range(1, c):
+        s -= (n//k - n//(k+1)) * totient_sum(k)
+
+    return s
+    
 
 def int_to_base(n, b):
     """Returns a list of digits in arbitrary base"""

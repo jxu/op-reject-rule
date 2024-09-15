@@ -51,6 +51,12 @@ def test_totient_range():
     assert totient_range(10) == [0, 1, 1, 2, 2, 4, 2, 6, 4, 6, 4]
 
 
+def test_totient_sum():
+    # A064018
+    assert totient_sum(100) == 3044
+    assert totient_sum(10**9) == 303963551173008414
+    assert totient_sum(10**11) == 3039635509283386211140
+
 def test_is_square():
     assert is_square(1)
     assert not is_square(2)

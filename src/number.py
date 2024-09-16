@@ -5,7 +5,7 @@ import random
 import itertools
 from math import prod, gcd
 from itertools import accumulate
-from functools import reduce, cache
+from functools import reduce, cache, wraps
 from collections import Counter
 
 PRIME_100 = (2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47, 53,
@@ -46,6 +46,20 @@ def timeit(f):
 
     return timed
 
+
+def memoize_first(func):
+    """Memoize like functools.cache, but only consider first argument.
+
+    Adapted from https://wiki.python.org/moin/PythonDecoratorLibrary
+    """
+    cache = func.cache = {}
+
+    @wraps(func)
+    def memoizer(arg1, *args):
+        if arg1 not in cache:
+            cache[arg1] = func(arg1, *args)
+        return cache[arg1]
+    return memoizer
 
 ########## NUMBER THEORY ##########
 
@@ -335,8 +349,8 @@ def totient_sum_range(tot_range):
     return list(accumulate(tot_range))
 
 
-@cache
-def totient_sum(n):
+@memoize_first
+def totient_sum(n, totsum_range):
     """Calculates the totient sum up to n in sub-linear time.
 
     totsum_range is a list of precomputed totient sums, should be up to 
@@ -351,17 +365,17 @@ def totient_sum(n):
     many times each j = n//i value occurs.
     """
     
-    if n < len(totient_sum.totsum_range):
-        return totient_sum.totsum_range[n]
+    if n < len(totsum_range):
+        return totsum_range[n]
 
     c = int(n**0.5)  # can adjust but sqrt n seems to work the best
     s = n * (n + 1) // 2
 
     for m in range(2, n//c + 1):
-        s -= totient_sum(n // m)
+        s -= totient_sum(n // m, totsum_range)
 
     for k in range(1, c):
-        s -= (n//k - n//(k+1)) * totient_sum(k)
+        s -= (n//k - n//(k+1)) * totient_sum(k, totsum_range)
 
     return s
     

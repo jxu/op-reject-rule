@@ -46,16 +46,14 @@ The inefficiency with this solution is computing M*(n) recursively.
 from functools import cache
 from number import totient_range, totient_sum, totient_sum_range
 
-PRECOMP = 10**7  # sweet spot
-tot_range = totient_range(10**7)
-totient_sum.totsum_range = totient_sum_range(tot_range)
-
 N = 10**11
+tot_range = totient_range(10**7)
+totsum_range = totient_sum_range(tot_range)
 
 s = 0
 p2 = 2 
 while p2 <= N:
-    s += totient_sum(N // p2) - 1 
+    s += totient_sum(N // p2, totsum_range) - 1 
     p2 *= 2
     
 print(s % 1000000007)

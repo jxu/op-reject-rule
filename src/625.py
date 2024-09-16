@@ -17,8 +17,6 @@ from number import totient_range, totient_sum_range, totient_sum
 tot_range = totient_range(10**7) # sweet spot
 totsum_range = totient_sum_range(tot_range)
 
-totient_sum.totsum_range = totsum_range
-
 def T(n):
     return n * (n + 1) // 2
 
@@ -28,12 +26,12 @@ def G(N):
     s = 0
     isqrt = int(N**0.5)  # fixed
     for i in range(1, isqrt+1):
-        s += i * totient_sum(N // i)
+        s += i * totient_sum(N // i, totsum_range)
 
     for j in range(1, isqrt+1):
         s += tot_range[j] * T(N // j)
 
-    s -= T(isqrt) * totient_sum(isqrt)
+    s -= T(isqrt) * totient_sum(isqrt, totsum_range)
 
     return s
 

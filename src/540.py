@@ -14,14 +14,14 @@ nmax - (nmax//p) - (nmax//q) - ... + (nmax//pq) + ...
 Use a linear sieve to get distinct prime factorization for every m, 
 then brute-force inclusion-exclusion on powerset of those primes.
 
-The runtime is about O(W sqrt N), where W is avg 2 ^ omega(nmax) 
+The time complexity is about
+sum 2 ^ omega(sqrt(N - m^2)) for m up to sqrt N
 omega(n) = # distinct prime factors of n
-Avg order of sum 2^omega(n) up to sqrt N is O(log(sqrt N)) = O(log n), 
-very small mostly
-
+Avg order of sum 2^omega(n) over [1,N] is O(log N)? A064608 
+Very small mostly, something like O(log N sqrt N).
 See 540mu.py for a faster solution from the thread.
 
-80 sec on laptop
+Runtime: 80 s
 """
 
 from number import powerset, linear_sieve, prod
@@ -53,5 +53,5 @@ def P(N):
         
     return s
 
-#print(P(10**14))
+#print(P(10**6))
 print(P(3141592653589793))

@@ -155,3 +155,11 @@ def test_crt():
 
 def test_mod_inv_range():
     assert mod_inv_range(5) == [None, 1, 3, 2, 4]
+
+
+def test_mobius_range():
+    # A008683
+    small_mus = [1,-1,-1,0,-1,1,-1,0,0,1,-1,0,-1,1,1,0,-1,0,-1,
+                 0,1,1,-1,0,0,1,0,0,-1,-1]
+
+    assert mobius_range(len(small_mus))[1:] == small_mus

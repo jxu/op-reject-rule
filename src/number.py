@@ -329,6 +329,25 @@ def mod_inv_range(p, end=None):
     return inv
 
 
+def mobius_range(n):
+    """Computes Möbius function for [0, n] using a modified sieve approach.
+
+    Rick Sladkey has a fancier version that avoids going through prime again
+    in exchange for storing the entire i https://mathoverflow.net/a/99545
+    TODO: profile 
+    """
+    primes = sieve(n)    
+    mus = [1] * (n+1)
+    
+    for p in primes:
+        for i in range(p, n+1, p):
+            mus[i] *= -1
+        for i in range(p**2, n+1, p**2):
+            mus[i] *= 0
+
+    return mus
+
+
 def totient_range(n):
     """Calculates all totients in a range.
 

@@ -19,6 +19,8 @@ omega(n) = # distinct prime factors of n
 Avg order of sum 2^omega(n) up to sqrt N is O(log(sqrt N)) = O(log n), 
 very small mostly
 
+See 540mu.py for a faster solution from the thread.
+
 80 sec on laptop
 """
 

@@ -212,7 +212,7 @@ def is_square(n):
     return n == math.isqrt(n)**2
 
 
-def factor(n):
+def factor(n, primes):
     """Return prime factorization of n as dict of prime:exponent pairs.
 
     Output dict of prime:exponent pairs using trial division.
@@ -223,11 +223,17 @@ def factor(n):
         raise ValueError
 
     factors = Counter()
-    for d in PRIME_100 + tuple(range(101, int(n**0.5)+1, 2)):
+
+    #if is_prime(n):
+    #    return Counter({n:1})
+    
+    for d in primes:
         if d * d > n: break
         while n % d == 0:
             n //= d
             factors[d] += 1
+
+
 
     if n > 1: # Only one prime factor >= sqrt(n)
         factors[n] += 1

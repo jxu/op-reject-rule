@@ -97,3 +97,8 @@ class Polynomial:
                     r[i] += p.coef[j] * q.coef[i-j]
 
         return Polynomial(r)
+
+# https://stackoverflow.com/a/63552117/3163618
+def ctz(v):
+    if v == 0: raise ValueError
+    return (v & -v).bit_length() - 1

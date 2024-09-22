@@ -10,18 +10,18 @@ def test_is_prime_small():
     assert not is_prime(0)
     assert not is_prime(1)
 
-    primes_100 = {2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47,
-                  53, 59, 61, 67, 71, 73, 79, 83, 89, 97}
+    primes_1000 = sieve(1000)
 
-    for n in range(2, 100):
-        assert is_prime(n) == (n in primes_100)
+    for n in range(2, 1000):
+        assert is_prime(n) == (n in primes_1000)
 
 
-def test_is_prime_strong_pseudoprimes():
-    """Tests strong pseudoprimes base 2: A001262"""
-    strong_pseudoprimes = (2047, 3277, 4033, 4681, 8321, 15841, 29341,
-                           42799, 49141, 52633, 65281, 74665, 80581, 85489,
-                           88357, 90751, 104653, 130561, 196093, 220729)
+
+def test_is_prime_spsp():
+    """Tests smallest n strong pseudoprime to first k primes: A014233"""
+    strong_pseudoprimes = (
+        2047, 1373653, 25326001, 3215031751, 2152302898747, 3474749660383,
+        341550071728321, 3825123056546413051)
     for sp in strong_pseudoprimes:
         assert not is_prime(sp), sp
 

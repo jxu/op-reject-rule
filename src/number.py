@@ -8,8 +8,6 @@ from itertools import accumulate
 from functools import reduce, cache, wraps
 from collections import Counter
 
-PRIME_100 = (2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47, 53,
-             59, 61, 67, 71, 73, 79, 83, 89, 97)
 
 
 ########## HELPER FUNCTIONS ##########
@@ -142,65 +140,53 @@ def linear_sieve_factors(lp, n):
     return pp
 
 
-def is_prime(n, trials=20):
-    """Returns whether a number is prime or not using Miller-Rabin primality.
-
+def is_prime(n):
+    """Miller test if n is composite or (probably) prime
+    
     First check divisibility by small primes (below 100).
-    Deterministic variant by checking small set of potential witnesses.
-    Smallest number requiring first n prime numbers is A006945.
-    Credit: Albert Sweigart
+    Deterministic up to 2^64 by checking small set of potential witnesses.
+    Note: For repeated small n, checking in a prime set might be better.
     """
+    if not isinstance(n, int):  # don't accept floats
+        raise TypeError  
+    if n < 0:  # don't accept negatives 
+        raise ValueError
+    if n < 2: 
+        return False  # 0 and 1 considered not prime
 
-    assert n >= 0 and isinstance(n, int)  # don't handle negatives
-    if n < 2: return False  # 0 and 1 considered not prime
+    PRIME_12 = (2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37)
 
     # Small trial division
-    if n in PRIME_100: return True
-    if any(n % p == 0 for p in PRIME_100): return False
+    if n in PRIME_12: 
+        return True
 
-    s = n - 1
+    for p in PRIME_12:
+        if n % p == 0: 
+            return False
+
+    if n < 4759123141:
+        witness_set = (2, 3, 5, 7, 61)
+    else: 
+        # A014233(12) guaranteed up to 318665857834031151167461 > 2^64
+        witness_set = PRIME_12 
+            
+    u = n - 1   
     t = 0
-    while s % 2 == 0:
-        s = s // 2
-        t += 1
+    while u % 2 == 0:
+        u, t = u // 2, t + 1
 
-    # Testing is_prime set of potential witnesses is big speedup!
-    # (n<10^6: 13.8 -> 3.1 s, n<10^7: 136.2 -> 34.9 s)
-    # Still twice as slow as gmpy2 though :(
-    # Credit: Pomerance, Selfridge, Wagstaff, Jaeschke
-    witness_sets = (
-        (2047, (2,)),
-        (1373653, (2, 3)),
-        (25326001, (2, 3, 5)),
-        (3215031751, (2, 3, 5, 7)),
-        (3474749660383, (2, 3, 5, 7, 11, 13)),
-        (341550071728321, (2, 3, 5, 7, 11, 13, 17))
-    )
-
-    small_n = False
-    for witness_set in witness_sets:
-        if n < witness_set[0]:
-            witnesses = witness_set[1]
-            trials = len(witnesses)
-            small_n = True
-            break
-
-    for trial in range(trials):
-        # WITNESS ME
-        if small_n:
-            a = witnesses[trial]
-        else:
-            a = random.randrange(2, n - 1)
-
-        v = pow(a, s, n)
-        if v != 1: # this test does not apply if v is 1.
-            i = 0
-            while v != (n - 1):
-                if i == t - 1:
-                    return False  # WITNESSED
-                else:
-                    i = i + 1
-                    v = (v ** 2) % n
+    for a in witness_set:
+        if a > n - 2: continue
+        
+        x = pow(a, u, n)
+        for i in range(t):
+            y = x**2 % n  # x = x_i, y = x_{i-1}
+            if y == 1 and x != 1 and x != n-1:
+                return False
+            x = y 
+        if y != 1:
+            return False
+        
     return True
 
 

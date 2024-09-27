@@ -8,8 +8,6 @@ from itertools import accumulate
 from functools import reduce, cache, wraps
 from collections import Counter
 
-
-
 ########## HELPER FUNCTIONS ##########
 
 def powerset(iterable):
@@ -197,9 +195,11 @@ def is_square(n):
     """
     return n == math.isqrt(n)**2
 
+PRIMES_LIMIT = 1000
+PRIMES = sieve(PRIMES_LIMIT)
 
-def factor(n, primes):
-    """Return prime factorization of n as dict of prime:exponent pairs.
+def factor(n):
+    """Prime factorization of n as dict of prime:exponent pairs.
 
     Output dict of prime:exponent pairs using trial division.
     Modeled after sympy.ntheory.factorint
@@ -210,20 +210,24 @@ def factor(n, primes):
 
     factors = Counter()
 
-    #if is_prime(n):
-    #    return Counter({n:1})
-    
-    for d in primes:
+    # trial division for prime factors
+    for d in PRIMES:
         if d * d > n: break
         while n % d == 0:
             n //= d
             factors[d] += 1
 
+    if n == 1:
+        return factors 
 
-
-    if n > 1: # Only one prime factor >= sqrt(n)
+    # avoid factoring the non-factored part if large prime
+    if is_prime(n):
         factors[n] += 1
-    return factors
+        return factors
+
+
+    # factor further
+    raise NotImplementedError 
 
 
 def divisors(prime_powers, proper=False):

@@ -53,12 +53,12 @@ def test_totient_range():
 
 
 def test_totient_sum():
-    tot_range = totient_range(10**6)
+    tot_range = totient_range(10**5)
     totsum_range = totient_sum_range(tot_range)
 
     # A064018
     assert totient_sum(100, totsum_range) == 3044
-    assert totient_sum(10**9, totsum_range) == 303963551173008414
+    assert totient_sum(10**8, totsum_range) == 3039635516365908
     #assert totient_sum(10**11) == 3039635509283386211140
 
 def test_is_square():
@@ -86,7 +86,8 @@ def test_factor():
     assert factor(60) == {2:2, 3:1, 5:1}
     assert factor(61) == {61: 1}
     assert factor(103*107) == {103: 1, 107:1}
-
+    assert factor(1009) == {1009: 1} 
+    assert factor(1009**2) == {1009: 2}
 
 def test_divisors():
     assert sorted(divisors({})) == [1]

@@ -70,24 +70,48 @@ def test_is_square():
     assert not is_square(12345678987654321234567 ** 2 - 1)
 
 
+def test_pollard_rho():
+    for n in range(10, 1000):
+        if is_prime(n): continue
+        d = pollard_rho(n)
+        # non-trivial divisor
+        assert d != 1 and d != n and n % d == 0
+
+
 def test_factor():
-    factorizations = (None, {}, {2:1}, {3:1}, {2:2}, {5:1}, {2:1,3:1}, {7:1},
-                      {2:3}, {3:2}, {2:1,5:1}, {11:1}, {2:2,3:1}, {13:1},
-                      {2:1,7:1})
+    facts = {
+        1: {}, 
+        2: {2:1}, 
+        3: {3:1}, 
+        4: {2:2}, 
+        5: {5:1}, 
+        6: {2:1,3:1}, 
+        7: {7:1},
+        8: {2:3}, 
+        9: {3:2}, 
+        10: {2:1,5:1}, 
+        11: {11:1}, 
+        12: {2:2,3:1}, 
+        13: {13:1}, 
+        14: {2:1,7:1}, 
+        15: {3:1,5:1},
+        25: {5:2},
+        60: {2:2,3:1,5:1},
+        61: {61:1},
+        103*107: {103:1,107:1},
+        1009: {1009:1},
+        1009**2: {1009:2},
+        10007: {10007:1},
+        10007*10009: {10007:1,10009:1},
+        (10**9+7)*(10**9+9): {10**9+7:1,10**9+9:1},
+    }
 
     with pytest.raises(ValueError):
         factor(0)
 
-    for n in range(1, len(factorizations)):
-        assert factor(n) == factorizations[n]
+    for n in facts:
+        assert factor(n) == facts[n]
 
-    assert factor(17) == {17: 1}
-    assert factor(25) == {5: 2}
-    assert factor(60) == {2:2, 3:1, 5:1}
-    assert factor(61) == {61: 1}
-    assert factor(103*107) == {103: 1, 107:1}
-    assert factor(1009) == {1009: 1} 
-    assert factor(1009**2) == {1009: 2}
 
 def test_divisors():
     assert sorted(divisors({})) == [1]

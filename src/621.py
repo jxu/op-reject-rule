@@ -32,13 +32,13 @@ On the representation of integers as sums of triangular numbers (1995)
 On representations of a number as a sum of three squares (1998)
 """
 
-from number import factor, sieve
+from number import factor
 
 
-def r2(n, primes):
+def r2(n):
     """Sum of two squares function via Jacobi's two-square theorem"""
     r = 4
-    for p, e in factor(n, primes).items():
+    for p, e in factor(n).items():
         if p == 2: continue
         if p % 4 == 1: 
             r *= e + 1
@@ -53,10 +53,9 @@ def G(n):
 
 
 def r3(n):
-    primes = sieve(int(n**0.5))
     s = 0
     for c in range(int(n**0.5)+1):
-        s += 2 * r2(n - c*c, primes) 
+        s += 2 * r2(n - c*c) 
     return s
 
     

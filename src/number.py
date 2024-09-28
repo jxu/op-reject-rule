@@ -195,6 +195,26 @@ def is_square(n):
     """
     return n == math.isqrt(n)**2
 
+
+def pollard_rho(n):
+    """Factor out a non-trivial divisor for composite n using Pollard's rho.
+
+    ~~Brent's variant from CLRS is implemented.~~
+    """
+    for c in range(3, n):
+        def g(x): return (x*x + c) % n
+        y = x = 2
+        d = 1
+        while d == 1:
+            x = g(x)
+            y = g(g(y))
+            d = gcd(x-y, n)
+        if d != n:
+            return d
+
+    raise ValueError  # used all the polynomials...
+
+
 PRIMES_LIMIT = 1000
 PRIMES = sieve(PRIMES_LIMIT)
 
@@ -202,13 +222,17 @@ def factor(n):
     """Prime factorization of n as dict of prime:exponent pairs.
 
     Output dict of prime:exponent pairs using trial division.
-    Modeled after sympy.ntheory.factorint
     CPython/Pypy 3.6+, dict keys (primes) should be ordered
     """
     if n <= 0:
         raise ValueError
 
     factors = Counter()
+
+    # avoid trying to factor a large prime (relies on fast is_prime)
+    if is_prime(n):
+        factors[n] += 1
+        return factors
 
     # trial division for prime factors
     for d in PRIMES:
@@ -220,14 +244,18 @@ def factor(n):
     if n == 1:
         return factors 
 
-    # avoid factoring the non-factored part if large prime
+    # avoid factoring the non-factored part if it's prime
     if is_prime(n):
         factors[n] += 1
         return factors
 
+    # factor remaining part and add to factors
+    d = pollard_rho(n)
+    factors += factor(d)
+    factors += factor(n//d)
 
-    # factor further
-    raise NotImplementedError 
+    return factors
+    
 
 
 def divisors(prime_powers, proper=False):

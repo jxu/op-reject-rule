@@ -1,7 +1,8 @@
-# Ran for 3 minutes until memory error from caching prime count values... this really isn't a task for python
-
+from bisect import bisect 
 from number import sieve
 from functools import cache
+from math import comb, isqrt
+from itertools import accumulate
 
 def test_prime_count():
     # A000720
@@ -16,69 +17,61 @@ def test_prime_count():
         assert prime_count(10**i) == powers_10[i]
 
 
-# TODO: clean up prime counting function
-def prime_count_sieve(n, primes):
-    """Poor man's prime-counting function.
-
-    Requires a sorted list of primes with primes[0] == 2
-    """
-    assert primes[0] == 2
-    from bisect import bisect
-    return bisect(primes, n)
+def icbrt(x):
+    # https://cs.stackexchange.com/a/4841
+    if x < 0: raise ValueError
+    z0 = int(x**(1/3))
+    for z in (z0+1, z0, z0-1):
+        if z**3 <= x:
+            return z
 
 
-# Global list because python, though supposedly passing by assignment, runs way
-# faster with the globals :/
-# I have yet to figure out passing efficiently (and the whole exercise is
-# largely pointless compared to rewriting in a faster language)
-_prime_count_p = None
-_prime_count_limit = 10**4
+
+SIEVE_MAX = 10**7  # at least x^2/3
+primes = sieve(SIEVE_MAX)  # 0-indexed prime list
+
+
+small_primes = (2, 3, 5, 7, 11, 13, 17, 19)
+C = len(small_primes) # should be <= a = pi(x^1/3)
+Q = 2 * 3 * 5 * 7 * 11 * 13 * 17 * 19
+
+partial_sieve = [1] * (Q+1)
+partial_sieve[0] = 0
+for p in small_primes:
+    for j in range(p, Q+1, p):
+        partial_sieve[j] = 0
+
+phi_C = list(accumulate(partial_sieve))
+#print(phi_C)
+
+def phi(y, b):
+    #print("phi",y,b)
+    if y < primes[b-1]:
+        return 1 
+
+    assert b >= C
+    if b == C:
+        return (y // Q) * phi_C[Q] + phi_C[y % Q] 
+
+    return phi(y, b-1) - phi(y // primes[b-1], b-1)
 
 @cache
-def _phi(x, a):
-    if a == 1:
-        return (x + 1) // 2
-    return _phi(x, a-1) - _phi(x // _prime_count_p[a], a-1)
+def prime_count(x):
+    if x < 1:
+        raise ValueError
 
+    if x <= SIEVE_MAX:
+        return bisect(primes, x)
 
-@cache
-def _pi(n):
-    if n < _prime_count_limit:
-        return prime_count_sieve(n, _prime_count_p[1:])
+    a = prime_count(icbrt(x))  # rounding
+    b = prime_count(isqrt(x))
 
-    z = int((n + 0.5)**0.5)
-    a = _pi(int(z**0.5 + 0.5))
-    b = _pi(z)
-    c = _pi(int(n**(1/3) + 0.5))
-    s = _phi(n, a) + (b+a-2)*(b-a+1)//2
+    P2 = comb(a, 2) - comb(b, 2) 
+    for j in range(a+1, b+1): 
+        P2 += prime_count(x // primes[j-1])
 
-    for i in range(a+1, b+1):
-        w = n / _prime_count_p[i]
-        lim = _pi(int(w**0.5))
-        s -= _pi(int(w))
-        if i <= c:
-            for j in range(i, lim+1):
-                s += -_pi(int(w / _prime_count_p[j])) + j - 1
-    return s
+    return a - P2 + phi(x, a) - 1
 
-
-def prime_count(n):
-    """Prime-counting function using the Meissel-Lehmer algorithm.
-
-    Algorithm credit: user448810 (programming praxis)
-    Fiddly rounding from danaj (Dana Jacobsen)
-    https://programmingpraxis.com/
-    2011/07/22/counting-primes-using-legendres-formula/#comment-5958
-    """
-    # a-th prime for small a (1-indexed)
-    global _prime_count_p
-    sieve_max = int(n**0.5)+1  # can be optimized
-
-    # Recreate sieve if current sieve is smaller than new sieve
-    if _prime_count_p == None or _prime_count_p[-1] < sieve_max:
-        _prime_count_p = [None] + sieve(max(_prime_count_limit, sieve_max))
-
-    return _pi(n)
 
 
 def f(n):
@@ -111,4 +104,5 @@ def f(n):
     return count
 
 
-print(f(10**12))
+#print(f(10**12))
+print(prime_count(10**11))

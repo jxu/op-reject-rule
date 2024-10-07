@@ -1,4 +1,5 @@
-# 5:40 without cache
+# TODO: proper explanation
+# 2:10 with cache
 
 from bisect import bisect 
 from number import sieve
@@ -34,9 +35,10 @@ primes = sieve(SIEVE_MAX)  # 0-indexed prime list
 
 print("sieve done")
 
-small_primes = (2, 3, 5, 7, 11, 13, 17, 19)
+small_primes = (2, 3, 5, 7, 11, 13, 17)
 C = len(small_primes) # should be <= a = pi(x^1/3)
-Q = 2 * 3 * 5 * 7 * 11 * 13 * 17 * 19
+Q = 2 * 3 * 5 * 7 * 11 * 13 * 17
+
 
 partial_sieve = [1] * (Q+1)
 partial_sieve[0] = 0
@@ -55,7 +57,7 @@ for p in primes:
 prime_count_small = list(accumulate(prime_count_ind))
 
 
-
+@cache
 def phi(y, b):
     #print("phi",y,b)
     if y < primes[b-1]:
@@ -67,8 +69,9 @@ def phi(y, b):
 
     return phi(y, b-1) - phi(y // primes[b-1], b-1)
 
-
+@cache
 def prime_count(x):
+    #print("pi", x)
     if x < 1:
         raise ValueError
 
@@ -82,42 +85,35 @@ def prime_count(x):
     for j in range(a+1, b+1): 
         P2 += prime_count(x // primes[j-1])
 
-    print("done p2")
+    #print("done p2")
 
     return a - P2 + phi(x, a) - 1
 
 
 
 def f(n):
-    #primes = sieve(int(n**0.5))
-
     # Case 1: n = p^7
     count = prime_count(int(n**(1/7)))
 
-    # Case 2: n = p^3 * q
-    for p in primes:
-        if p**3 > n: break
+    i = 0
+    while (p := primes[i])**3 <= n:
+        # Case 2: n = p^3 * q, Exclude case with p == q
         q_max = n // (p**3)
-        # Exclude case with p == q
         count += prime_count(q_max) - (q_max >= p)
 
-    print("Starting case 3...")
-    # Case 3: n = p*q*r, p < q < r
-    for p_i in range(len(primes)):
-        p = primes[p_i]
-        if p**3 > n: break
-
-        for q_i in range(p_i + 1, len(primes)):
-            q = primes[q_i]
-            if q > (n / p)**0.5: break  # max q when q = r so n = p * q^2
-            print(p, q, n//(p*q))
-
+        # Case 3: n = p*q*r, p < q < r
+        j = i + 1
+        while (q := primes[j])**2 * p <= n:
+            #print(p, q)
             # q < r < n/pq, so add pi(n/pq) - pi(q)
-            count += prime_count(n // (p*q)) - (q_i + 1)
+            count += prime_count(n // (p*q)) - (j + 1)
+            j += 1
+        i += 1
 
-
+    print(phi.cache_info())
+    print(prime_count.cache_info())
     return count
 
 
-#print(f(10**12))
-print(prime_count(10**11))
+print(f(10**12))
+#print(prime_count(10**11))

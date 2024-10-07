@@ -1,3 +1,5 @@
+# 5:40 without cache
+
 from bisect import bisect 
 from number import sieve
 from functools import cache
@@ -27,9 +29,10 @@ def icbrt(x):
 
 
 
-SIEVE_MAX = 10**7  # at least x^2/3
+SIEVE_MAX = 5 * 10**7  # at least x^2/3
 primes = sieve(SIEVE_MAX)  # 0-indexed prime list
 
+print("sieve done")
 
 small_primes = (2, 3, 5, 7, 11, 13, 17, 19)
 C = len(small_primes) # should be <= a = pi(x^1/3)
@@ -44,6 +47,15 @@ for p in small_primes:
 phi_C = list(accumulate(partial_sieve))
 #print(phi_C)
 
+prime_count_ind = [0]*(SIEVE_MAX+1)  # more efficient to get from the sieve()
+for p in primes:
+    prime_count_ind[p] = 1
+
+# a little faster than binary search
+prime_count_small = list(accumulate(prime_count_ind))
+
+
+
 def phi(y, b):
     #print("phi",y,b)
     if y < primes[b-1]:
@@ -55,13 +67,13 @@ def phi(y, b):
 
     return phi(y, b-1) - phi(y // primes[b-1], b-1)
 
-@cache
+
 def prime_count(x):
     if x < 1:
         raise ValueError
 
     if x <= SIEVE_MAX:
-        return bisect(primes, x)
+        return prime_count_small[x]
 
     a = prime_count(icbrt(x))  # rounding
     b = prime_count(isqrt(x))
@@ -70,12 +82,14 @@ def prime_count(x):
     for j in range(a+1, b+1): 
         P2 += prime_count(x // primes[j-1])
 
+    print("done p2")
+
     return a - P2 + phi(x, a) - 1
 
 
 
 def f(n):
-    primes = sieve(int(n**0.5))
+    #primes = sieve(int(n**0.5))
 
     # Case 1: n = p^7
     count = prime_count(int(n**(1/7)))
@@ -100,6 +114,7 @@ def f(n):
 
             # q < r < n/pq, so add pi(n/pq) - pi(q)
             count += prime_count(n // (p*q)) - (q_i + 1)
+
 
     return count
 

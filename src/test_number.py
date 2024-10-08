@@ -1,6 +1,7 @@
 """Unit tests to ensure commonly used number functions are correct."""
 
 import pytest
+from bisect import bisect
 from number import *
 
 def test_is_prime_small():
@@ -68,6 +69,15 @@ def test_is_square():
     assert is_square(121)
     assert is_square(12345678987654321234567 ** 2)
     assert not is_square(12345678987654321234567 ** 2 - 1)
+
+
+def test_icbrt():
+    assert icbrt(0) == 0
+    assert icbrt(1) == 1
+    assert icbrt(0.9) == 0
+    cubes = [i**3 for i in range(1, 10)]
+    for i in range(10**3):
+        assert icbrt(i) == bisect(cubes, i)
 
 
 def test_pollard_rho():

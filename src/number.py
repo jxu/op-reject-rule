@@ -197,13 +197,21 @@ def is_square(n):
 
 
 
-def icbrt(x):
-    # https://cs.stackexchange.com/a/4841
+def icbrt(x: float):
+    """Integer (floor) cuberoot.
+
+    `x**(1/3)` could be above or below the exact integer result,
+    but as long as it's within an absolute error of 1, we can just check
+    the two neighboring values of `int(x**(1/3))`.
+    https://cs.stackexchange.com/a/4841
+    """
+    #
     if x < 0: raise ValueError
     z0 = int(x**(1/3))
     for z in (z0+1, z0, z0-1):
         if z**3 <= x:
             return z
+    raise ValueError
 
 
 def pollard_rho(n):

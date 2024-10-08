@@ -1,97 +1,100 @@
 # TODO: proper explanation
 # 2:10 with cache
 
-from bisect import bisect 
-from number import sieve
+from number import sieve, prod, icbrt
 from functools import cache
 from math import comb, isqrt
 from itertools import accumulate
 
-def test_prime_count():
-    # A000720
-    small_values = (0,0,1,2,2,3,3,4,4,4,4,5,5,6,6,6,6,7,7,8,8)
-    for i in range(len(small_values)):
-        assert prime_count(i) == small_values[i]
-
-    # A006880
-    powers_10 = (0, 4, 25, 168, 1229, 9592, 78498, 664579)
-
-    for i in range(len(powers_10)):
-        assert prime_count(10**i) == powers_10[i]
+class PrimeCount:
 
 
-def icbrt(x):
-    # https://cs.stackexchange.com/a/4841
-    if x < 0: raise ValueError
-    z0 = int(x**(1/3))
-    for z in (z0+1, z0, z0-1):
-        if z**3 <= x:
-            return z
+    def __init__(self, x):
+
+        self.SIEVE_MAX = 5 * 10**7  # at least x^2/3
+        self.primes = sieve(self.SIEVE_MAX)  # 0-indexed primes up to x^2/3
+
+        print("sieve done")
+
+
+        small_primes = (2, 3, 5, 7, 11, 13, 17)
+        self.C = C = len(small_primes) # should be <= a = pi(x^1/3)
+        self.Q = Q = prod(small_primes)
+
+
+        partial_sieve = [1] * (Q+1)
+        partial_sieve[0] = 0
+        for p in small_primes:
+            for j in range(p, Q+1, p):
+                partial_sieve[j] = 0
+
+        self.phi_C = list(accumulate(partial_sieve))
+
+        # more efficient to get from the sieve()
+        prime_count_ind = [0]*(self.SIEVE_MAX+1)
+        for p in self.primes:
+            prime_count_ind[p] = 1
+
+        # a little faster than binary search
+        self.prime_count_small = list(accumulate(prime_count_ind))
+
+
+        self.a = self.prime_count_small[icbrt(x)]  # rounding
+        self.b = self.prime_count_small[isqrt(x)]
 
 
 
-SIEVE_MAX = 5 * 10**7  # at least x^2/3
-primes = sieve(SIEVE_MAX)  # 0-indexed prime list
+    def phi(self, y, b):
+        #print("phi",y,b)
+        C, Q = self.C, self.Q
+        if y < self.primes[b-1]:
+            return 1
 
-print("sieve done")
+        assert b >= C
+        if b == C:
+            return (y // Q) * self.phi_C[Q] + self.phi_C[y % Q]
 
-small_primes = (2, 3, 5, 7, 11, 13, 17)
-C = len(small_primes) # should be <= a = pi(x^1/3)
-Q = 2 * 3 * 5 * 7 * 11 * 13 * 17
-
-
-partial_sieve = [1] * (Q+1)
-partial_sieve[0] = 0
-for p in small_primes:
-    for j in range(p, Q+1, p):
-        partial_sieve[j] = 0
-
-phi_C = list(accumulate(partial_sieve))
-#print(phi_C)
-
-prime_count_ind = [0]*(SIEVE_MAX+1)  # more efficient to get from the sieve()
-for p in primes:
-    prime_count_ind[p] = 1
-
-# a little faster than binary search
-prime_count_small = list(accumulate(prime_count_ind))
+        return self.phi(y, b-1) - self.phi(y // self.primes[b-1], b-1)
 
 
-@cache
-def phi(y, b):
-    #print("phi",y,b)
-    if y < primes[b-1]:
-        return 1 
+    def __call__(self, x):
+        #print("pi", x)
+        if x < 1:
+            raise ValueError
 
-    assert b >= C
-    if b == C:
-        return (y // Q) * phi_C[Q] + phi_C[y % Q] 
+        if x <= self.SIEVE_MAX:
+            return self.prime_count_small[x]
 
-    return phi(y, b-1) - phi(y // primes[b-1], b-1)
+        a, b = self.a, self.b
 
-@cache
-def prime_count(x):
-    #print("pi", x)
-    if x < 1:
-        raise ValueError
+        P2 = comb(a, 2) - comb(b, 2)
+        for j in range(a+1, b+1):
+            # No recursive call
+            P2 += self.prime_count_small[x // self.primes[j-1]]
 
-    if x <= SIEVE_MAX:
-        return prime_count_small[x]
+        return a - P2 + self.phi(x, a) - 1
 
-    a = prime_count(icbrt(x))  # rounding
-    b = prime_count(isqrt(x))
 
-    P2 = comb(a, 2) - comb(b, 2) 
-    for j in range(a+1, b+1): 
-        P2 += prime_count(x // primes[j-1])
+    def test_prime_count(self):
+        prime_count = self.__call__(10**7)
 
-    #print("done p2")
+        # A000720
+        small_values = (0,0,1,2,2,3,3,4,4,4,4,5,5,6,6,6,6,7,7,8,8)
+        for i in range(len(small_values)):
+            assert prime_count(i) == small_values[i]
 
-    return a - P2 + phi(x, a) - 1
+        # A006880
+        powers_10 = (0, 4, 25, 168, 1229, 9592, 78498, 664579)
+
+        for i in range(len(powers_10)):
+            assert prime_count(10**i) == powers_10[i]
 
 
 
 def f(n):
+    prime_count = PrimeCount(n)
+    primes = prime_count.primes
+
     # Case 1: n = p^7
     count = prime_count(int(n**(1/7)))
 
@@ -110,10 +113,8 @@ def f(n):
             j += 1
         i += 1
 
-    print(phi.cache_info())
-    print(prime_count.cache_info())
+    #print(prime_count.phi.cache_info())
     return count
 
 
 print(f(10**12))
-#print(prime_count(10**11))

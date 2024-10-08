@@ -196,6 +196,16 @@ def is_square(n):
     return n == math.isqrt(n)**2
 
 
+
+def icbrt(x):
+    # https://cs.stackexchange.com/a/4841
+    if x < 0: raise ValueError
+    z0 = int(x**(1/3))
+    for z in (z0+1, z0, z0-1):
+        if z**3 <= x:
+            return z
+
+
 def pollard_rho(n):
     """Factor out a non-trivial divisor for composite n using Pollard's rho.
 

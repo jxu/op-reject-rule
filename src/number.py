@@ -57,6 +57,30 @@ def memoize_first(func):
         return cache[arg1]
     return memoizer
 
+
+class FenwickTree:
+    # currently 1-indexed, doesn't use 0
+    def __init__(self, l):
+        self.t = [0] * len(l)
+        for i in range(1, len(l)):
+            self.add(i, l[i])
+
+
+    def sum_to(self, r):
+        # sum a[0:r]
+        s = 0
+        while r > 0:
+            s += self.t[r]
+            r -= (r & -r)
+        return s
+
+    def add(self, i, delta):
+        # sync a[i] += delta
+        while (i <= len(self.t)):
+            self.t[i] += delta
+            i += i & -i
+
+
 ########## NUMBER THEORY ##########
 
 def extended_euclidean(a, b):

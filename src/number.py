@@ -59,23 +59,26 @@ def memoize_first(func):
 
 
 class FenwickTree:
-    # currently 1-indexed, doesn't use 0
+    # Implementation is 1-based, but interface works for 0-based
     def __init__(self, l):
-        self.t = [0] * len(l)
-        for i in range(1, len(l)):
-            self.add(i, l[i])
+        self.t = [0] * (len(l)+1)
+        for i in range(len(l)):
+            self.add_to(i, l[i])
 
 
     def sum_to(self, r):
-        # sum a[0:r]
+        """sum a[0:r]"""
+        r += 1
         s = 0
         while r > 0:
             s += self.t[r]
             r -= (r & -r)
         return s
 
-    def add(self, i, delta):
-        # sync a[i] += delta
+
+    def add_to(self, i, delta):
+        """sync a[i] += delta"""
+        i += 1
         while (i <= len(self.t)):
             self.t[i] += delta
             i += i & -i

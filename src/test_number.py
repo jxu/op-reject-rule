@@ -4,6 +4,17 @@ import pytest
 from bisect import bisect
 from number import *
 
+def test_fenwick_tree():
+    ft = FenwickTree([1]*8)
+    # only test through interface, not underlying array
+    for i in range(8):
+        assert ft.sum_to(i) == i+1
+
+    ft.add_to(4, 1)
+    for i in range(8):
+        assert ft.sum_to(i) == i+1 if i < 4 else i+2
+
+
 def test_is_prime_small():
     with pytest.raises(Exception):
         is_prime(-1)

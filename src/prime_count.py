@@ -105,7 +105,7 @@ def prime_count(x):
         # sieve out p_(b+1)
         p = PRIMES[b]
         for i in range(p, len(sieve_ind), p):
-            ind_new.add(i, -1)
+            ind_new.add_to(i, -1)
 
 
 

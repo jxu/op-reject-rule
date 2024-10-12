@@ -5,7 +5,7 @@ from prime_count import prime_count, PRIMES
 
 
 def f(n):
-    primes = PRIMES
+    primes = PRIMES[1:]
 
     # Case 1: n = p^7
     count = prime_count(int(n**(1/7)))

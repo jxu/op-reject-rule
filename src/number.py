@@ -79,7 +79,7 @@ class FenwickTree:
     def add_to(self, i, delta):
         """sync a[i] += delta"""
         i += 1
-        while (i <= len(self.t)):
+        while (i < len(self.t)):
             self.t[i] += delta
             i += i & -i
 

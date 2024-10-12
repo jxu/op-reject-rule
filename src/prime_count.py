@@ -5,7 +5,7 @@ from itertools import accumulate
 X_MAX = 10**12  # Module-wide maximum
 ALPHA = 4       # tuning parameter, < x^1/6
 
-Z = int(X_MAX ** (2 / 3)) // ALPHA + 1  # sieve interval
+Z = int(X_MAX ** (2 / 3) / ALPHA) + 1  # sieve interval
 PRIMES = [0] + sieve(Z)  # precompute 1-indexed primes up to x^2/3 / alpha
 print("sieve up to", Z)
 ACBRTX = ALPHA * icbrt(X_MAX)
@@ -64,6 +64,7 @@ def prime_count(x):
     if x <= Z:
         return PRIME_COUNT_SMALL[x]
 
+    assert ALPHA <= int(x ** (1/6))
     acbrtx = ALPHA * icbrt(x)  # alpha cbrt(x)
     z = int(x ** (2 / 3)) // ALPHA + 1
     a = PRIME_COUNT_SMALL[acbrtx]  # pi(alpha x^1/3)
@@ -87,11 +88,11 @@ def prime_count(x):
     S = 0
 
     # sieve out first C primes
-    sieve_ind = [1] * z
+    sieve_ind = [1] * int(1.1*z)  # hacky rounding error fix
     sieve_ind[0] = 0
     for i in range(1, C+1):
         p = PRIMES[i]
-        for j in range(p, z, p):
+        for j in range(p, len(sieve_ind), p):
             sieve_ind[j] = 0
 
     sieve_c = FenwickTree(sieve_ind)
@@ -100,12 +101,13 @@ def prime_count(x):
         m_min = max(acbrtx // PRIMES[b+1], PRIMES[b+1])
         for m in range(m_min+1, acbrtx+1):
             if abs(MU_PMIN[m]) > PRIMES[b+1]:
+                #print(m, b, z, x // (m * PRIMES[b+1]))
                 phi_b = sieve_c.sum_to(x // (m * PRIMES[b+1]))
                 S += MU[m] * phi_b
 
         # sieve out p_(b+1)
         p = PRIMES[b+1]
-        for i in range(p, z, p):
+        for i in range(p, len(sieve_ind), p):
             if sieve_ind[i] == 1:
                 sieve_c.add_to(i, -1)
                 sieve_ind[i] = 0

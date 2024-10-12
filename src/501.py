@@ -27,5 +27,5 @@ def f(n):
 
     return count
 
-
+#print(prime_count(10**12 // (2*13)))
 print(f(10**12))

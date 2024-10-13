@@ -1,21 +1,22 @@
-from number import sieve, prod, icbrt, FenwickTree
+from number import sieve, prod, FenwickTree
 from math import comb, isqrt
 from itertools import accumulate
 
 X_MAX = 10**12  # Module-wide maximum
 ALPHA = 4       # tuning parameter, < x^1/6
+C = 7           # precompute phi(x,c)
 
-Z = int(X_MAX ** (2 / 3) / ALPHA) + 1  # sieve interval
-PRIMES = [0] + sieve(Z)  # precompute 1-indexed primes up to x^2/3 / alpha
-print("sieve up to", Z)
-ACBRTX = ALPHA * icbrt(X_MAX)
+Z = (X_MAX)**(2/3) / ALPHA  # sieve max, doesn't need to be exact
+PRIMES = [0] + sieve(int(Z)+1)  # precompute 1-indexed primes up to z
+print("sieve up to", int(Z)+1)
 
-# Precompute phi(x, c) for small constant c, should be <= a = pi(x^1/3)
-C = 7
+
+ACBRTX = int(ALPHA * X_MAX**(1/3)) + 1  # not exact
+assert C <= ACBRTX
 PRIMES_C = PRIMES[1:C+1]
 Q = prod(PRIMES_C)
 
-# Phi_c sieves out first c primes, then counts
+# Phi_c sieves out first c primes
 SIEVE_C = [1] * (Q + 1)
 SIEVE_C[0] = 0
 for p in PRIMES_C:
@@ -24,34 +25,34 @@ for p in PRIMES_C:
 
 PHI_C = list(accumulate(SIEVE_C))
 
-# Precompute pi(x) for <= x^2/3 since those can be stored in memory
+# Precompute pi(x) for <= z ~ x^2/3 since those can be stored in memory
 # (More efficient to get indicator array as part of the prime sieve() oh well
 # a little faster than binary searching)
-prime_count_ind = [0]*(Z + 1)
+prime_count_ind = [0]*int(Z + 1)
 for p in PRIMES[1:]:
     prime_count_ind[p] = 1
 
 PRIME_COUNT_SMALL = list(accumulate(prime_count_ind))
 
 
-# special sieve of mu(n) pmin(n) for n <= x^1/3
-N = ACBRTX + 1
-MU_PMIN = [1] * N
+# special sieve of mu(n) pmin(n) for n <= alpha x^1/3
+MU_PMIN = [1] * (ACBRTX + 1)
 MU_PMIN[0] = 0
-for j in range(2, N):
+MU = [0] * (ACBRTX + 1)
+MU[1] = 1
+for j in range(2, ACBRTX + 1):
     if MU_PMIN[j] == 1:
-        for i in range(j, N, j):
+        for i in range(j, ACBRTX + 1, j):
             MU_PMIN[i] = -j if MU_PMIN[i] == 1 else -MU_PMIN[i]
 
-for j in range(2, N):
+for j in range(2, ACBRTX + 1):
     if MU_PMIN[j] == -j:
-        for i in range(j*j, N, j*j):
+        for i in range(j*j, ACBRTX + 1, j * j):
             MU_PMIN[i] = 0
 
-MU = [0] * N
-for i in range(N):
-    if MU_PMIN[i] != 0:
-        MU[i] = 1 if MU_PMIN[i] > 0 else -1
+    if MU_PMIN[j] != 0:
+        MU[j] = 1 if MU_PMIN[j] > 0 else -1  # integer sgn
+
 
 def phi_c(y):
     return (y // Q) * PHI_C[Q] + PHI_C[y % Q]
@@ -64,31 +65,37 @@ def prime_count(x):
     if x <= Z:
         return PRIME_COUNT_SMALL[x]
 
-    assert ALPHA <= int(x ** (1/6))
-    acbrtx = ALPHA * icbrt(x)  # alpha cbrt(x)
-    z = int(x ** (2 / 3)) // ALPHA + 1
-    a = PRIME_COUNT_SMALL[acbrtx]  # pi(alpha x^1/3)
+    assert ALPHA <= x**(1/6)
+    acbrtx = ALPHA * x**(1/3)  # float, may be off
+    z = int(x / acbrtx) + 1  # not exact
+
+    # find exact floor of acbrtx
+    iacbrtx = int(acbrtx) + 1
+    while iacbrtx**3 > ALPHA**3 * x:
+        iacbrtx -= 1
+
+    a = PRIME_COUNT_SMALL[iacbrtx]  # pi(alpha x^1/3)
     a2 = PRIME_COUNT_SMALL[isqrt(x)]  # pi(x^1/2)
+    #print("a a2", a, a2)
 
     P2 = comb(a, 2) - comb(a2, 2)
     for b in range(a+1, a2+1):
         # No recursive call
         P2 += PRIME_COUNT_SMALL[x // PRIMES[b]]
 
-    print("P2",P2)
+    #print("P2",P2)
 
     S0 = 0
-    for n in range(1, acbrtx+1):
+    for n in range(1, iacbrtx+1):
         # pmin(1) = +inf
         if n == 1 or abs(MU_PMIN[n]) > PRIMES[C]:
             S0 += MU[n] * phi_c(x // n)
 
-    print("S0",S0)
+    #print("S0",S0)
 
     S = 0
-
     # sieve out first C primes
-    sieve_ind = [1] * int(1.1*z)  # hacky rounding error fix
+    sieve_ind = [1] * z
     sieve_ind[0] = 0
     for i in range(1, C+1):
         p = PRIMES[i]
@@ -98,10 +105,14 @@ def prime_count(x):
     sieve_c = FenwickTree(sieve_ind)
 
     for b in range(C, a-1):
-        m_min = max(acbrtx // PRIMES[b+1], PRIMES[b+1])
-        for m in range(m_min+1, acbrtx+1):
+        # exact m0
+        m0 = int(acbrtx / PRIMES[b+1]) + 1
+        while (m0 * PRIMES[b+1])**3 > ALPHA**3 * x:
+            m0 -= 1
+
+        m_min = max(m0, PRIMES[b+1])
+        for m in range(m_min+1, iacbrtx+1):
             if abs(MU_PMIN[m]) > PRIMES[b+1]:
-                #print(m, b, z, x // (m * PRIMES[b+1]))
                 phi_b = sieve_c.sum_to(x // (m * PRIMES[b+1]))
                 S += MU[m] * phi_b
 
@@ -112,11 +123,11 @@ def prime_count(x):
                 sieve_c.add_to(i, -1)
                 sieve_ind[i] = 0
 
-
+    #print("S", S)
     return S0 - S + a - P2 - 1
 
 
-def _test_prime_count():
+def test_prime_count():
     # A006880
     # 10^12 may cause OOM
     powers_10 = (0, 4, 25, 168, 1229, 9592, 78498, 664579, 5761455, 50847534,
@@ -125,5 +136,6 @@ def _test_prime_count():
     for i in range(len(powers_10)):
         assert prime_count(10**i) == powers_10[i]
 
-print(prime_count(X_MAX))
+#print(prime_count(X_MAX))
+
 

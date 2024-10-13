@@ -19,7 +19,7 @@ def f(n):
         # Case 3: n = p*q*r, p < q < r
         j = i + 1
         while (q := primes[j])**2 * p <= n:  # q*q*p < n
-            print(p, q)
+            #print(p, q)
             # q < r < n/pq, so add pi(n/pq) - pi(q)
             count += prime_count(n // (p*q)) - (j + 1)
             j += 1
@@ -27,5 +27,4 @@ def f(n):
 
     return count
 
-#print(prime_count(10**12 // (2*13)))
 print(f(10**12))

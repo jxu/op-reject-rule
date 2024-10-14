@@ -42,7 +42,7 @@ def pre_prime_count(N):
 
     return list(accumulate(prime_count_ind))
 
-PRIME_COUNT_SMALL = pre_prime_count(Z)
+PRIME_COUNT = pre_prime_count(Z)
 
 
 def mu_pmin_sieve(N):
@@ -91,7 +91,7 @@ def prime_count(x):
         raise ValueError
 
     if x <= Z:
-        return PRIME_COUNT_SMALL[x]
+        return PRIME_COUNT[x]
 
     assert ALPHA <= x**(1/6)
     acbrtx = ALPHA * x**(1/3)  # float, may be off
@@ -100,17 +100,15 @@ def prime_count(x):
     # find exact floor of acbrtx
     iacbrtx = exact_floor(acbrtx, lambda z: z**3 <= ALPHA**3 * x)
 
-    a = PRIME_COUNT_SMALL[iacbrtx]  # pi(alpha x^1/3)
-    a2 = PRIME_COUNT_SMALL[isqrt(x)]  # pi(x^1/2)
-    #print("a a2", a, a2)
+    a = PRIME_COUNT[iacbrtx]  # pi(alpha x^1/3)
+    a2 = PRIME_COUNT[isqrt(x)]  # pi(x^1/2)
+
 
     # phi2(x,a)
     P2 = comb(a, 2) - comb(a2, 2)
     for b in range(a+1, a2+1):
-        # No recursive call
-        P2 += PRIME_COUNT_SMALL[x // PRIMES[b]]
+        P2 += PRIME_COUNT[x // PRIMES[b]]  # No recursive call
 
-    #print("P2",P2)
 
     # phi(x,a) Ordinary leaves
     S0 = 0
@@ -119,7 +117,6 @@ def prime_count(x):
         if n == 1 or abs(MU_PMIN[n]) > PRIMES[C]:
             S0 += sgn(MU_PMIN[n]) * phi_c(x // n)
 
-    #print("S0",S0)
 
     # phi(x,a) Special leaves
     S = 0
@@ -135,35 +132,76 @@ def prime_count(x):
 
     for b in range(C, a-1):
         pb1 = PRIMES[b+1]
-        if pb1**2 <= iacbrtx:  # Case 1 leaves
 
-            m_min = exact_floor(acbrtx / pb1,
-                lambda z: (z * pb1)**3 <= ALPHA**3 * x)
+        # Case 1 leaves, Algorithm 1
+        if pb1**2 <= iacbrtx:
+            S1b = 0
+            m1b = iacbrtx
+            while (m1b * pb1)**3 > ALPHA**3 * x:
+                if abs(MU_PMIN[m1b]) > pb1:
+                    y = x // (m1b * pb1)
+                    phi_b = dyn_sieve.sum_to(y)
+                    S1b -= sgn(MU_PMIN[m1b]) * phi_b
+                m1b -= 1
 
-            for m in range(m_min+1, iacbrtx+1):
-                if abs(MU_PMIN[m]) > pb1:
-                    phi_b = dyn_sieve.sum_to(x // (m * pb1))
-                    S += - sgn(MU_PMIN[m]) * phi_b
+            S += S1b
 
-        else:  # Case 2 leaves
-            for d in range(b+2, a+1):
-                # trivial leaves
-                if max(x // (pb1**2), pb1) < PRIMES[d] <= acbrtx:
-                    S += 1
-                # easy leaves
-                elif (max(x // (pb1**3), pb1) < PRIMES[d]
-                      <= min(x // (pb1**2), iacbrtx)):
-                    S += PRIME_COUNT_SMALL[x // (pb1 * PRIMES[d])] - b + 1
-                else:  # hard leaves
-                    S += dyn_sieve.sum_to(x // (pb1 * PRIMES[d]))
+        # Case 2 leaves, Algorithm 2
+        else:
+            xpb12 = x // (pb1**2)
 
-        # sieve out p_(b+1)
+            # number of trivial leaves is a + 1 - tb
+            if xpb12 <= pb1:        tb = b + 2
+            elif xpb12 < iacbrtx:   tb = PRIME_COUNT[xpb12] + 1
+            else:                   tb = a + 1
+
+            # step 1
+            d2b = tb - 1  # largest d not considered yet
+            S2b = a - d2b
+            t = 0
+
+            while d2b > b + 1:  # step 2
+                y = x // (pb1 * PRIMES[d2b])
+
+                if t == 0:  # step 3, clustered easy leaves
+                    if y >= iacbrtx:
+                        t = 2
+                    else:
+                        l = PRIME_COUNT[y] - b + 1
+                        d_ = PRIME_COUNT[x // (pb1 * PRIMES[b + l])]
+
+                        # step 4
+                        if PRIMES[d_+1]**2 <= x // pb1 or d_ <= b:
+                            t = 1
+                            # goto step 6
+                        else:
+                            S2b += l * (d2b - d_)
+                            d2b = d_
+                            continue  # goto 2
+
+                if t == 1:  # step 5, sparse easy leaves
+                    if y >= iacbrtx:
+                        t = 2
+                    else:
+                        l = PRIME_COUNT[y] - b + 1
+                        # step 6
+                        S2b += l
+                        d2b -= 1
+                        continue  # goto 2
+
+                if t == 2:  # step 7-9, hard leaves
+                    S2b += dyn_sieve.sum_to(int(y))
+                    d2b -= 1
+
+            S += S2b
+
+
+        # sieve out p_(b+1) for next step
         for i in range(pb1, len(sieve_ind), pb1):
             if sieve_ind[i] == 1:
                 dyn_sieve.add_to(i, -1)
                 sieve_ind[i] = 0
 
-    #print("S", S)
     return S0 + S + a - P2 - 1
 
 
@@ -176,6 +214,6 @@ def test_prime_count():
     for i in range(len(powers_10)):
         assert prime_count(10**i) == powers_10[i]
 
-print(prime_count(X_MAX))
+#print(prime_count(X_MAX))
 
 

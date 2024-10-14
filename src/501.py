@@ -12,6 +12,7 @@ def f(n):
 
     i = 0
     while (p := primes[i])**3 <= n:
+        print(p)
         # Case 2: n = p^3 * q, Exclude case with p == q
         q_max = n // (p**3)
         count += prime_count(q_max) - (q_max >= p)

@@ -3,7 +3,7 @@ from math import comb, isqrt
 from itertools import accumulate
 
 X_MAX = 10**12  # Module-wide maximum
-ALPHA = 4       # tuning parameter, < x^1/6
+ALPHA = 10      # tuning parameter, < x^1/6
 C = 7           # precompute phi(x,c)
 
 Z = (X_MAX)**(2/3) / ALPHA  # sieve max, doesn't need to be exact
@@ -92,6 +92,7 @@ def prime_count(x):
     a2 = PRIME_COUNT_SMALL[isqrt(x)]  # pi(x^1/2)
     #print("a a2", a, a2)
 
+    # phi2(x,a)
     P2 = comb(a, 2) - comb(a2, 2)
     for b in range(a+1, a2+1):
         # No recursive call
@@ -99,6 +100,7 @@ def prime_count(x):
 
     #print("P2",P2)
 
+    # phi(x,a) Ordinary leaves
     S0 = 0
     for n in range(1, iacbrtx+1):
         # pmin(1) = +inf
@@ -107,6 +109,7 @@ def prime_count(x):
 
     #print("S0",S0)
 
+    # phi(x,a) Special leaves
     S = 0
     # sieve out first C primes
     sieve_ind = [1] * z
@@ -119,25 +122,37 @@ def prime_count(x):
     sieve_c = FenwickTree(sieve_ind)
 
     for b in range(C, a-1):
-        # exact m0
-        m0 = exact_floor(acbrtx / PRIMES[b+1],
-            lambda z: (z * PRIMES[b+1])**3 <= ALPHA**3 * x)
+        pb1 = PRIMES[b+1]
+        if pb1**2 <= iacbrtx:  # Case 1 leaves
 
-        m_min = max(m0, PRIMES[b+1])
-        for m in range(m_min+1, iacbrtx+1):
-            if abs(MU_PMIN[m]) > PRIMES[b+1]:
-                phi_b = sieve_c.sum_to(x // (m * PRIMES[b+1]))
-                S += MU[m] * phi_b
+            m_min = exact_floor(acbrtx / pb1,
+                lambda z: (z * pb1)**3 <= ALPHA**3 * x)
+
+            for m in range(m_min+1, iacbrtx+1):
+                if abs(MU_PMIN[m]) > pb1:
+                    phi_b = sieve_c.sum_to(x // (m * pb1))
+                    S += - MU[m] * phi_b
+
+        else:  # Case 2 leaves
+            for d in range(b+2, a+1):
+                # trivial leaves
+                if max(x // (pb1**2), pb1) < PRIMES[d] <= acbrtx:
+                    S += 1
+                # easy leaves
+                elif (max(x // (pb1**3), pb1) < PRIMES[d]
+                      <= min(x // (pb1**2), iacbrtx)):
+                    S += PRIME_COUNT_SMALL[x // (pb1 * PRIMES[d])] - b + 1
+                else:  # hard leaves
+                    S += sieve_c.sum_to(x // (pb1 * PRIMES[d]))
 
         # sieve out p_(b+1)
-        p = PRIMES[b+1]
-        for i in range(p, len(sieve_ind), p):
+        for i in range(pb1, len(sieve_ind), pb1):
             if sieve_ind[i] == 1:
                 sieve_c.add_to(i, -1)
                 sieve_ind[i] = 0
 
     #print("S", S)
-    return S0 - S + a - P2 - 1
+    return S0 + S + a - P2 - 1
 
 
 def test_prime_count():

@@ -16,42 +16,54 @@ assert C <= ACBRTX
 PRIMES_C = PRIMES[1:C+1]
 Q = prod(PRIMES_C)
 
-# Phi_c sieves out first c primes
-SIEVE_C = [1] * (Q + 1)
-SIEVE_C[0] = 0
-for p in PRIMES_C:
-    for j in range(p, Q+1, p):
-        SIEVE_C[j] = 0
 
-PHI_C = list(accumulate(SIEVE_C))
+def pre_phi_c(N):
+    """Phi_c sieves out first c primes"""
+    sieve_c = [1] * (N + 1)
+    sieve_c[0] = 0
+    for p in PRIMES_C:
+        for j in range(p, N+1, p):
+            sieve_c[j] = 0
 
-# Precompute pi(x) for <= z ~ x^2/3 since those can be stored in memory
-# (More efficient to get indicator array as part of the prime sieve() oh well
-# a little faster than binary searching)
-prime_count_ind = [0]*int(Z + 1)
-for p in PRIMES[1:]:
-    prime_count_ind[p] = 1
-
-PRIME_COUNT_SMALL = list(accumulate(prime_count_ind))
+    return list(accumulate(sieve_c))
 
 
-# special sieve of mu(n) pmin(n) for n <= alpha x^1/3
-MU_PMIN = [1] * (ACBRTX + 1)
-MU_PMIN[0] = 0
-MU = [0] * (ACBRTX + 1)
-MU[1] = 1
-for j in range(2, ACBRTX + 1):
-    if MU_PMIN[j] == 1:
-        for i in range(j, ACBRTX + 1, j):
-            MU_PMIN[i] = -j if MU_PMIN[i] == 1 else -MU_PMIN[i]
+PHI_C = pre_phi_c(Q)
 
-for j in range(2, ACBRTX + 1):
-    if MU_PMIN[j] == -j:
-        for i in range(j*j, ACBRTX + 1, j * j):
-            MU_PMIN[i] = 0
 
-    if MU_PMIN[j] != 0:
-        MU[j] = 1 if MU_PMIN[j] > 0 else -1  # integer sgn
+def pre_prime_count(N):
+    """Precompute pi(x) for <= z since those can be stored in memory
+    (More efficient to get indicator array as part of sieve(), oh well
+    a little faster than binary searching)
+    """
+    prime_count_ind = [0]*int(N + 1)
+    for p in PRIMES[1:]:
+        prime_count_ind[p] = 1
+
+    return list(accumulate(prime_count_ind))
+
+PRIME_COUNT_SMALL = pre_prime_count(Z)
+
+
+def mu_pmin_sieve(N):
+    """special sieve of mu(n) pmin(n) for n <= N"""
+    mu_pmin = [1] * (N+1)
+    for j in range(2, N+1):
+        if mu_pmin[j] == 1:
+            for i in range(j, N+1, j):
+                mu_pmin[i] = -j if mu_pmin[i] == 1 else -mu_pmin[i]
+
+    for j in range(2, N+1):
+        if mu_pmin[j] == -j:
+            for i in range(j*j, N+1, j * j):
+                mu_pmin[i] = 0
+
+    return mu_pmin
+
+MU_PMIN = mu_pmin_sieve(ACBRTX+1)
+
+def sgn(x):
+    return (x > 0) - (x < 0)
 
 
 def phi_c(y):
@@ -105,7 +117,7 @@ def prime_count(x):
     for n in range(1, iacbrtx+1):
         # pmin(1) = +inf
         if n == 1 or abs(MU_PMIN[n]) > PRIMES[C]:
-            S0 += MU[n] * phi_c(x // n)
+            S0 += sgn(MU_PMIN[n]) * phi_c(x // n)
 
     #print("S0",S0)
 
@@ -119,7 +131,7 @@ def prime_count(x):
         for j in range(p, len(sieve_ind), p):
             sieve_ind[j] = 0
 
-    sieve_c = FenwickTree(sieve_ind)
+    dyn_sieve = FenwickTree(sieve_ind)
 
     for b in range(C, a-1):
         pb1 = PRIMES[b+1]
@@ -130,8 +142,8 @@ def prime_count(x):
 
             for m in range(m_min+1, iacbrtx+1):
                 if abs(MU_PMIN[m]) > pb1:
-                    phi_b = sieve_c.sum_to(x // (m * pb1))
-                    S += - MU[m] * phi_b
+                    phi_b = dyn_sieve.sum_to(x // (m * pb1))
+                    S += - sgn(MU_PMIN[m]) * phi_b
 
         else:  # Case 2 leaves
             for d in range(b+2, a+1):
@@ -143,12 +155,12 @@ def prime_count(x):
                       <= min(x // (pb1**2), iacbrtx)):
                     S += PRIME_COUNT_SMALL[x // (pb1 * PRIMES[d])] - b + 1
                 else:  # hard leaves
-                    S += sieve_c.sum_to(x // (pb1 * PRIMES[d]))
+                    S += dyn_sieve.sum_to(x // (pb1 * PRIMES[d]))
 
         # sieve out p_(b+1)
         for i in range(pb1, len(sieve_ind), pb1):
             if sieve_ind[i] == 1:
-                sieve_c.add_to(i, -1)
+                dyn_sieve.add_to(i, -1)
                 sieve_ind[i] = 0
 
     #print("S", S)

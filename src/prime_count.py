@@ -58,6 +58,22 @@ def phi_c(y):
     return (y // Q) * PHI_C[Q] + PHI_C[y % Q]
 
 
+def exact_floor(z, bound_check):
+    """
+    Exact floor subroutine.
+
+    :param z: initial guess (float within 1 of the true result)
+    :param bound_check: exact predicate of z satisfying bound
+    :return: largest integer satisfying bound
+
+    https://cs.stackexchange.com/a/4841
+    """
+    z = int(z) + 1
+    while not bound_check(z):
+        z -= 1
+    return z
+
+
 def prime_count(x):
     if x < 0:
         raise ValueError
@@ -70,9 +86,7 @@ def prime_count(x):
     z = int(x / acbrtx) + 1  # not exact
 
     # find exact floor of acbrtx
-    iacbrtx = int(acbrtx) + 1
-    while iacbrtx**3 > ALPHA**3 * x:
-        iacbrtx -= 1
+    iacbrtx = exact_floor(acbrtx, lambda z: z**3 <= ALPHA**3 * x)
 
     a = PRIME_COUNT_SMALL[iacbrtx]  # pi(alpha x^1/3)
     a2 = PRIME_COUNT_SMALL[isqrt(x)]  # pi(x^1/2)
@@ -106,9 +120,8 @@ def prime_count(x):
 
     for b in range(C, a-1):
         # exact m0
-        m0 = int(acbrtx / PRIMES[b+1]) + 1
-        while (m0 * PRIMES[b+1])**3 > ALPHA**3 * x:
-            m0 -= 1
+        m0 = exact_floor(acbrtx / PRIMES[b+1],
+            lambda z: (z * PRIMES[b+1])**3 <= ALPHA**3 * x)
 
         m_min = max(m0, PRIMES[b+1])
         for m in range(m_min+1, iacbrtx+1):
@@ -136,6 +149,6 @@ def test_prime_count():
     for i in range(len(powers_10)):
         assert prime_count(10**i) == powers_10[i]
 
-#print(prime_count(X_MAX))
+print(prime_count(X_MAX))
 
 

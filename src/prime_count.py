@@ -1,9 +1,45 @@
+"""Computes prime_count(x) up to 10^12, along with one-time precomputation.
+
+This module implements the algorithms of
+"Computing π(x): the combinatorial method" by Oliveira e Silva.
+
+The computation uses the Meissel method, improved by Lehmer (1959),
+Lagarias-Miller-Odlyzko (1985), and Deléglise-Rivat (1996).
+
+Basics of the Meissel-Lehmer method:
+Let phi(x,a) count the positive integers up to x (inclusive) that are not
+divisible by any of the first a primes, i.e. no small prime factors.
+Also let phi_k(x,a) count those integers with exactly k prime factors
+(including repetitions).
+
+The Lagarias et al. methods use a = pi(alpha cbrt x), with alpha <= x^1/6
+phi(x,a) = phi_0(x,a) + phi_1(x,a) + phi_2(x,a)
+with phi_0(x,a) = 1, phi_1(x,a) = pi(x) - a, so that
+pi(x) = phi(x,a) + a - 1 - phi_2(x,a)
+
+The computation of phi2(x,a) is easy to do combinatorially. Since I can fit
+[1,z] into memory, pi(x) can be precomputed and stored entirely for the range.
+
+phi(x,a) is based on the recurrence which forms a binary tree:
+phi(x,a) = phi(x,a-1) - phi(x/p_a,a-1)
+The rest is deciding when to split the node (recurse) and when not to.
+Lagarias et al. show that Lehmer's original algorithm examines too many leaves.
+For efficient computation, this algorithm has lots of fancy counting of the
+contributions of the leaves. Normally [1,z] needs to be sieved in segments,
+but I take a shortcut as for my purposes z is small enough to fit the
+whole sieve and cumulative sums (Fenwick tree for fast updates) in memory.
+
+Of course doing it in python is a waste compared to implementing in a real
+language, because I'm writing C-like code at this point.
+C++ constexpr might even be able to precompute a lot at compile time.
+"""
+
 from number import sieve, prod, FenwickTree
 from math import comb, isqrt
 from itertools import accumulate
 
 X_MAX = 10**12  # Module-wide maximum
-ALPHA = 10      # tuning parameter, < x^1/6
+ALPHA = 8       # tuning parameter, < x^1/6
 C = 7           # precompute phi(x,c)
 
 Z = (X_MAX)**(2/3) / ALPHA  # sieve max, doesn't need to be exact
@@ -110,7 +146,7 @@ def prime_count(x):
         P2 += PRIME_COUNT[x // PRIMES[b]]  # No recursive call
 
 
-    # phi(x,a) Ordinary leaves
+    # phi(x,a) Ordinary leaves, only alpha cbrt x of them
     S0 = 0
     for n in range(1, iacbrtx+1):
         # pmin(1) = +inf
@@ -123,8 +159,7 @@ def prime_count(x):
     # sieve out first C primes
     sieve_ind = [1] * z
     sieve_ind[0] = 0
-    for i in range(1, C+1):
-        p = PRIMES[i]
+    for p in PRIMES_C:
         for j in range(p, len(sieve_ind), p):
             sieve_ind[j] = 0
 
@@ -146,7 +181,7 @@ def prime_count(x):
 
             S += S1b
 
-        # Case 2 leaves, Algorithm 2
+        # Case 2 leaves, Algorithm 2 hell
         else:
             xpb12 = x // (pb1**2)
 
@@ -190,7 +225,7 @@ def prime_count(x):
                         continue  # goto 2
 
                 if t == 2:  # step 7-9, hard leaves
-                    S2b += dyn_sieve.sum_to(int(y))
+                    S2b += dyn_sieve.sum_to(y)
                     d2b -= 1
 
             S += S2b
@@ -207,13 +242,10 @@ def prime_count(x):
 
 def test_prime_count():
     # A006880
-    # 10^12 may cause OOM
     powers_10 = (0, 4, 25, 168, 1229, 9592, 78498, 664579, 5761455, 50847534,
                  455052511, 4118054813, 37607912018)
 
     for i in range(len(powers_10)):
         assert prime_count(10**i) == powers_10[i]
 
-#print(prime_count(X_MAX))
-
-
+print(prime_count(X_MAX))

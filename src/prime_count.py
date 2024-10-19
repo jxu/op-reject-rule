@@ -159,13 +159,15 @@ def prime_count(x):
 
     # phi(x,a) Special leaves
     S = 0
-    # sieve out first C primes
-    sieve_ind = [1] * z
-    sieve_ind[0] = 0
-    for p in PRIMES_C:
-        for j in range(p, len(sieve_ind), p):
-            sieve_ind[j] = 0
+    # sieve out first C primes, only storing odd values
+    assert C >= 1
+    sieve_ind = [1] * (z // 2)
 
+    for p in PRIMES_C[1:]:  # skip 2
+        for j in range(p, z, 2*p):  # odd multiples of p
+            sieve_ind[j//2] = 0
+
+    # phi(y,b) = tree sum up to index (y-1)//2
     dyn_sieve = FenwickTree(sieve_ind)
 
     for b in range(C, a-1):
@@ -178,7 +180,7 @@ def prime_count(x):
             while (m1b * pb1)**3 > ALPHA**3 * x:
                 if abs(MU_PMIN[m1b]) > pb1:
                     y = x // (m1b * pb1)
-                    phi_b = dyn_sieve.sum_to(y)
+                    phi_b = dyn_sieve.sum_to((y-1)//2)
                     S1b -= sgn(MU_PMIN[m1b]) * phi_b
                 m1b -= 1
 
@@ -228,17 +230,18 @@ def prime_count(x):
                         continue  # goto 2
 
                 if t == 2:  # step 7-9, hard leaves
-                    S2b += dyn_sieve.sum_to(y)
+                    S2b += dyn_sieve.sum_to((y-1)//2)
                     d2b -= 1
 
             S += S2b
 
 
-        # sieve out p_(b+1) for next step
-        for i in range(pb1, len(sieve_ind), pb1):
-            if sieve_ind[i] == 1:
-                dyn_sieve.add_to(i, -1)
-                sieve_ind[i] = 0
+        # sieve out (odd) multiples of p_(b+1) for next step
+        for i in range(pb1, z, 2*pb1):
+            if sieve_ind[i//2] == 1:
+                dyn_sieve.add_to(i//2, -1)
+                sieve_ind[i//2] = 0
+
 
     return S0 + S + a - P2 - 1
 

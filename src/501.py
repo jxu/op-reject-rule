@@ -1,4 +1,5 @@
-# about 2 min with improved prime_count
+# 2:10 with cache before
+# 6 min without cache because OOM
 
 from prime_count import prime_count, PRIMES
 
@@ -11,7 +12,7 @@ def f(n):
 
     i = 0
     while (p := primes[i])**3 <= n:
-        #print(p)
+        print(p)
         # Case 2: n = p^3 * q, Exclude case with p == q
         q_max = n // (p**3)
         count += prime_count(q_max) - (q_max >= p)
@@ -19,7 +20,7 @@ def f(n):
         # Case 3: n = p*q*r, p < q < r
         j = i + 1
         while (q := primes[j])**2 * p <= n:  # q*q*p < n
-            print(p, q)
+            #print(p, q)
             # q < r < n/pq, so add pi(n/pq) - pi(q)
             count += prime_count(n // (p*q)) - (j + 1)
             j += 1

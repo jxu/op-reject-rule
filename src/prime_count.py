@@ -1,7 +1,7 @@
 """Computes prime_count(x) up to 10^12, along with one-time precomputation.
 
 This module implements the algorithms of
-"Computing π(x): the combinatorial method" by Oliveira e Silva (2006).
+"Computing π(x): the combinatorial method" by Oliveira e Silva.
 
 The computation uses the Meissel method, improved by Lehmer (1959),
 Lagarias-Miller-Odlyzko (1985), and Deléglise-Rivat (1996).
@@ -32,17 +32,6 @@ whole sieve and cumulative sums (Fenwick tree for fast updates) in memory.
 Of course doing it in python is a waste compared to implementing in a real
 language, because I'm writing C-like code at this point.
 C++ constexpr might even be able to precompute a lot at compile time.
-
-Unscientific benchmarks for alpha (in sec)
-1: 10.5
-2: 5.0
-3: 3.4
-4: 3.0 3.0 3.4
-5: 2.9 3.4 3.2
-6: 3.1 3.5 3.1
-7: 3.7 3.3 3.6
-8: 4.1 4.4 3.8
-10: 5.1
 """
 
 from number import prod, FenwickTree
@@ -50,8 +39,10 @@ from math import comb, isqrt
 from itertools import accumulate
 
 X_MAX = 10**12  # Module-wide maximum
-ALPHA = 4       # tuning parameter, < x^1/6
+ALPHA = 8       # tuning parameter, < x^1/6
 C = 7           # precompute phi(x,c)
+
+Z = (X_MAX)**(2/3) / ALPHA  # sieve max, doesn't need to be exact
 
 
 def mu_pmin_sieve(N):
@@ -85,9 +76,9 @@ def mu_pmin_sieve(N):
 ACBRTX = int(ALPHA * X_MAX**(1/3)) + 1  # not exact
 assert C <= ACBRTX
 
-# paper only sieves up to alpha cbrt x, but I do sqrt(x) because it's close
-MU_PMIN, PRIMES, PRIME_COUNT = mu_pmin_sieve(isqrt(X_MAX))
-print("sieve up to", isqrt(X_MAX))
+# actually more than necessary since I can fit it
+MU_PMIN, PRIMES, PRIME_COUNT = mu_pmin_sieve(int(Z)+1)
+print("sieve up to", int(Z)+1)
 
 PRIMES_C = PRIMES[1:C+1]
 Q = prod(PRIMES_C)
@@ -136,7 +127,7 @@ def prime_count(x):
     if x < 0:
         raise ValueError
 
-    if x <= isqrt(X_MAX):
+    if x <= Z:
         return PRIME_COUNT[x]
 
     assert ALPHA <= x**(1/6)
@@ -147,6 +138,15 @@ def prime_count(x):
     iacbrtx = exact_floor(acbrtx, lambda z: z**3 <= ALPHA**3 * x)
 
     a = PRIME_COUNT[iacbrtx]  # pi(alpha x^1/3)
+    a2 = PRIME_COUNT[isqrt(x)]  # pi(x^1/2)
+
+
+    # phi2(x,a)
+    P2 = comb(a, 2) - comb(a2, 2)
+    for b in range(a+1, a2+1):
+        # if PRIME_COUNT up to z not available, use phi(x/p_b,a) + a - 1
+        # from phi sieved below up to a. Each query takes log(z) time
+        P2 += PRIME_COUNT[x // PRIMES[b]]
 
 
     # phi(x,a) Ordinary leaves, only alpha cbrt x of them
@@ -169,15 +169,6 @@ def prime_count(x):
 
     # phi(y,b) = tree sum up to index (y-1)//2
     dyn_sieve = FenwickTree(sieve_ind)
-
-
-    def sieve_out(p):
-        # sieve out (odd) multiples of p for next step
-        for i in range(p, z, 2*p):
-            if sieve_ind[i//2] == 1:
-                dyn_sieve.add_to(i//2, -1)
-                sieve_ind[i//2] = 0
-
 
     for b in range(C, a-1):
         pb1 = PRIMES[b+1]
@@ -244,23 +235,12 @@ def prime_count(x):
 
             S += S2b
 
-        #sieve out p_{b+1} for next iter
-        sieve_out(pb1)
 
-    # sieve out p_a
-    sieve_out(PRIMES[a])
-
-
-    # phi2(x,a)
-    a2 = PRIME_COUNT[isqrt(x)]  # pi(x^1/2)
-    P2 = comb(a, 2) - comb(a2, 2)
-    for b in range(a+1, a2+1):
-        # if PRIME_COUNT up to z not available, use phi(x/p_b,a) + a - 1
-        # from phi sieved up to p_a. Each query takes log(z) time
-        if x // PRIMES[b] < isqrt(X_MAX):
-            P2 += PRIME_COUNT[x // PRIMES[b]]
-        else:
-            P2 += dyn_sieve.sum_to((x // PRIMES[b] - 1) // 2) + a - 1
+        # sieve out (odd) multiples of p_(b+1) for next step
+        for i in range(pb1, z, 2*pb1):
+            if sieve_ind[i//2] == 1:
+                dyn_sieve.add_to(i//2, -1)
+                sieve_ind[i//2] = 0
 
 
     return S0 + S + a - P2 - 1

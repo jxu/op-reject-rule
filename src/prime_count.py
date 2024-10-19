@@ -34,7 +34,7 @@ language, because I'm writing C-like code at this point.
 C++ constexpr might even be able to precompute a lot at compile time.
 """
 
-from number import sieve, prod, FenwickTree
+from number import prod, FenwickTree
 from math import comb, isqrt
 from itertools import accumulate
 
@@ -43,12 +43,43 @@ ALPHA = 8       # tuning parameter, < x^1/6
 C = 7           # precompute phi(x,c)
 
 Z = (X_MAX)**(2/3) / ALPHA  # sieve max, doesn't need to be exact
-PRIMES = [0] + sieve(int(Z)+1)  # precompute 1-indexed primes up to z
-print("sieve up to", int(Z)+1)
+
+
+def mu_pmin_sieve(N):
+    """special sieve of mu(n) pmin(n) for n <= N.
+
+    Also computes primes and PRIME_COUNT along the way.
+    """
+    mu_pmin = [1] * (N+1)
+    primes = [0]  # 1-indexed primes
+    prime_count_small = [0] * (N+1)
+    pc = 0
+
+    for j in range(2, N+1):
+        if mu_pmin[j] == 1:
+            for i in range(j, N+1, j):
+                mu_pmin[i] = -j if mu_pmin[i] == 1 else -mu_pmin[i]
+
+    for j in range(2, N+1):
+        if mu_pmin[j] == -j:  # is prime
+            primes.append(j)
+            pc += 1
+
+            for i in range(j*j, N+1, j * j):
+                mu_pmin[i] = 0
+
+        prime_count_small[j] = pc
+
+    return mu_pmin, primes, prime_count_small
 
 
 ACBRTX = int(ALPHA * X_MAX**(1/3)) + 1  # not exact
 assert C <= ACBRTX
+
+# actually more than necessary since I can fit it
+MU_PMIN, PRIMES, PRIME_COUNT = mu_pmin_sieve(int(Z)+1)
+print("sieve up to", int(Z)+1)
+
 PRIMES_C = PRIMES[1:C+1]
 Q = prod(PRIMES_C)
 
@@ -67,36 +98,6 @@ def pre_phi_c(N):
 PHI_C = pre_phi_c(Q)
 
 
-def pre_prime_count(N):
-    """Precompute pi(x) for <= z since those can be stored in memory
-    (More efficient to get indicator array as part of sieve(), oh well
-    a little faster than binary searching)
-    """
-    prime_count_ind = [0]*int(N + 1)
-    for p in PRIMES[1:]:
-        prime_count_ind[p] = 1
-
-    return list(accumulate(prime_count_ind))
-
-PRIME_COUNT = pre_prime_count(Z)
-
-
-def mu_pmin_sieve(N):
-    """special sieve of mu(n) pmin(n) for n <= N"""
-    mu_pmin = [1] * (N+1)
-    for j in range(2, N+1):
-        if mu_pmin[j] == 1:
-            for i in range(j, N+1, j):
-                mu_pmin[i] = -j if mu_pmin[i] == 1 else -mu_pmin[i]
-
-    for j in range(2, N+1):
-        if mu_pmin[j] == -j:
-            for i in range(j*j, N+1, j * j):
-                mu_pmin[i] = 0
-
-    return mu_pmin
-
-MU_PMIN = mu_pmin_sieve(ACBRTX+1)
 
 def sgn(x):
     return (x > 0) - (x < 0)
@@ -143,7 +144,9 @@ def prime_count(x):
     # phi2(x,a)
     P2 = comb(a, 2) - comb(a2, 2)
     for b in range(a+1, a2+1):
-        P2 += PRIME_COUNT[x // PRIMES[b]]  # No recursive call
+        # if PRIME_COUNT up to z not available, use phi(x/p_b,a) + a - 1
+        # from phi sieved below up to a. Each query takes log(z) time
+        P2 += PRIME_COUNT[x // PRIMES[b]]
 
 
     # phi(x,a) Ordinary leaves, only alpha cbrt x of them

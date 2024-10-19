@@ -76,7 +76,8 @@ def mu_pmin_sieve(N):
 ACBRTX = int(ALPHA * X_MAX**(1/3)) + 1  # not exact
 assert C <= ACBRTX
 
-# actually more than necessary since I can fit it
+# actually more than necessary for one-off calculation pi(X_MAX)
+# but benefits smaller pi(x) as in problem 501
 MU_PMIN, PRIMES, PRIME_COUNT = mu_pmin_sieve(int(Z)+1)
 print("sieve up to", int(Z)+1)
 

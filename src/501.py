@@ -1,5 +1,4 @@
-# 2:10 with cache before
-# 6 min without cache because OOM
+# 40 sec with improved prime_count and precompute to currently 10^8 / ALPHA
 
 from prime_count import prime_count, PRIMES
 

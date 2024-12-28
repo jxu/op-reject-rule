@@ -2,8 +2,7 @@
 
 Recurrence (expected drilling time if already drilled to x)
 f(x) = min_{y>x} (y + e^(x-y) f(y)) 
-(cond prob of not finding water drilling to y, given drilled to x 
-is e^-y / e^-x)
+cond prob of not finding water drilling to y, given drilled to x, = e^-y / e^-x
 
 I couldn't figure out how to solve this recurrence, because f(x) depends on
 every possible value of f(y). However, if we knew the optimal sequence

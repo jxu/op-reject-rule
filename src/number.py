@@ -216,11 +216,13 @@ def is_prime(n):
 
 
 def is_square(n):
-    """Returns if a number is square without floating point math.
+    """Returns if a number is square, for reasonable n, < 10^18
 
-    Also consider pre-compute set of squares
+    Correct as long as round(n**0.5) is the true squareroot of square n.
+    A little faster than exact n == math.isqrt(n)**2
+    (Also consider pre-compute set of squares?)
     """
-    return n == math.isqrt(n)**2
+    return round(n**0.5)**2 == n
 
 
 

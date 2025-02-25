@@ -1,17 +1,30 @@
-# q*d + r = n;  must be r,d,q or r,q,d
+# For n = q*d + r, by def r < d
+# Possible (increasing) geometric sequences: r,d,q  r,q,d  q,r,d
 # (d^3)/r + r = a^2
 
-LIMIT = 10**5
-squares = set(i*i for i in range(1, int(LIMIT**0.5)+1))
-s = set()
+def is_square(n):
+    return round(n**0.5)**2 == n
 
-for d in range(1, int(LIMIT**0.5)):
-    d3 = d**3
-    for r in range(d-1, 0, -1):
-        if d3/r + r > LIMIT: break
-        if d3 % r == 0:
-            if d3 // r + r in squares:
-                print(d, r, d/r)
-                s.add(d3 // r + r)
+def f(N):
+    s = set()
+    r = 1
+    while r + r**2 < N:  # r up to O(n^1/2)
+        c = 1
+        while c**2 <= r:  # c up to O(r^1/2) = O(n^1/4)
+            if r % (c**2) == 0:
+                b = c + 1
+                # b up to something small
+                while (n := b**3 * r**2 // c**3 + r) < N:
+                    if is_square(n):
+                        d = b * r // c
+                        q = b * b * r // (c * c)
+                        print(r, d, q, n)
+                        s.add(n)
 
-print(sum(s))
+                    b += 1
+            c += 1
+        r += 1
+
+    return sum(s)
+
+print(f(10**12))

@@ -24,7 +24,7 @@ int main()
                 // Could put these as comma expressions in the cond,
                 // but that's confusing
                 long d = b * (r / c);
-                long q = b * b * (r / c / c);
+                long q = d * b / c;
                 long n = d * q + r;
                 if (n >= N) break;
 

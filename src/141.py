@@ -19,12 +19,14 @@ def f(N):
     while r + r**2 < N:  # r up to O(N^1/2)
         for c in range(1, int(r**0.5)+1):
             if r % (c**2) == 0:
-                b = c + 1
-                # b up to something small
-                while (n := b**3 * r**2 // c**3 + r) < N:
+                b = c + 1  # b up to something small
+                while True:
+                    d = b * (r // c)
+                    q = d * b // c
+                    n = d * q + r
+                    if n >= N: break
+                    
                     if is_square(n):
-                        d = b * r // c
-                        q = b * b * r // (c * c)
                         print(r, d, q, n)
                         s.add(n)
 

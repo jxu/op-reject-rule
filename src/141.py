@@ -17,20 +17,23 @@ def f(N):
     s = set()
     r = 1
     while r + r**2 < N:  # r up to O(N^1/2)
-        for c in range(1, int(r**0.5)+1):
-            if r % (c**2) == 0:
-                b = c + 1  # b up to something small
-                while True:
-                    d = b * (r // c)
-                    q = d * b // c
-                    n = d * q + r
-                    if n >= N: break
-                    
-                    if is_square(n):
-                        print(r, d, q, n)
-                        s.add(n)
+        # optimization: if r is not mult of 4, skip even c
+        # skipping mult of 3 is possible but not as nice
+        inc = 2 if r % 4 else 1
+        for c in range(1, int(r**0.5)+1, inc):
+            if r % (c**2): continue
+            b = c + 1  # b up to something small
+            while True:
+                d = b * (r // c)
+                q = d * b // c
+                n = d * q + r
+                if n >= N: break
+                
+                if is_square(n):
+                    print(r, d, q, n)
+                    s.add(n)
 
-                    b += 1
+                b += 1
         r += 1
 
     return sum(s)

@@ -16,7 +16,8 @@ int main()
 
     for (long r = 1; r + r*r < N; ++r) // more flexible for loop cond
     {
-        for (long c = 1; c * c <= r; ++c)
+        int inc = (r % 4) ? 2 : 1;
+        for (long c = 1; c * c <= r; c += inc)
         {
             if (r % (c*c)) continue; // only consider c^2 divides r
             for (long b = c + 1; ; ++b)

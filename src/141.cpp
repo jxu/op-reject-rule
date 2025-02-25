@@ -1,29 +1,41 @@
-// q*d + r = n;  must be r,d,q or r,q,d
-// (d^3)/r + r = a^2
-
-#include <iostream>
-#include "number.h"
 #include <cmath>
+#include <iostream>
+#include <unordered_set>
+#include <numeric>
 
-const long long LIMIT = pow(10, 12);
-const int RATIO_LIMIT = 15;
+bool is_square(long n)
+{
+    long r = round(sqrt(n));
+    return (r * r == n);
+}
 
 int main()
 {
-    long long s = 0;
-    for (long long d=1; d<int(sqrt(LIMIT)); d++)
+    const long N = 1'000'000'000'000;
+    std::unordered_set<long> s;
+
+    for (long r = 1; r + r*r < N; ++r) // more flexible for loop cond
     {
-        for (int r=d-1; r>=1; r--)
+        for (long c = 1; c * c <= r; ++c)
         {
-            long long n = d*d*d/r + r;
-            if (n >= LIMIT || d/r > RATIO_LIMIT) break;
-            if (d*d*d % r == 0 && is_square(n))
+            if (r % (c*c)) continue; // only consider c^2 divides r
+            for (long b = c + 1; ; ++b)
             {
-                s += n;
-                std::cout << d << '\t' << r << '\t' << float(d)/r << '\t' << sqrt(n) << std::endl;
+                // Could put these as comma expressions in the cond,
+                // but that's confusing
+                long d = b * (r / c);
+                long q = b * b * (r / c / c);
+                long n = d * q + r;
+                if (n >= N) break;
+
+                if (is_square(n))
+                {
+                    std::cout << r << " " << d << " " << q << " ";
+                    std::cout << n << '\n';
+                    s.insert(n);
+                }
             }
         }
     }
-    std::cout << s << std::endl;
-    return 0;
+    std::cout << std::accumulate(s.begin(), s.end(), 0L) << '\n';
 }

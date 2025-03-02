@@ -503,6 +503,12 @@ def inv_list(l, m):
     """Inverse mod m of every value in l."""
     return [mod_inv(x,m) for x in l]
 
+
+def ceil_div(x, y):
+    """Ceil(x / y) for positive integers."""
+    return (x + y - 1) // y
+
+
 ### ALGORITHM
 def binary_search(f, l, r):
     """Return L s.t. f(L)=0, f(L+1)=f(R)=1, if it exists

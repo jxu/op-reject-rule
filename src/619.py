@@ -1,8 +1,7 @@
-from number import sieve
+from number import sieve, ceil_div
 from collections import Counter
 
-primes = sieve(1234567)
-#primes = sieve(55)
+
 
 # Row-reduce binary matrix
 def binary_rr(L, m, n):
@@ -42,6 +41,7 @@ def binary_rr(L, m, n):
 
 
 def C(a, b):
+    primes = sieve(b)
 
     rows = b - a + 1
     cols = len(primes)
@@ -53,14 +53,12 @@ def C(a, b):
         p = primes[i]  # prime and prime powers
         pp = p
         while pp <= b:
-            for n in range(pp * (a//pp), b+1, pp):
-                
-                if n < a: continue  # ceil div
+            for n in range(pp * ceil_div(a, pp), b+1, pp):
                 #print(pp, n)
                 m[n-a][i] += 1
             pp *= p
 
-    #print(m)
+    print(m)
     print("done factoring")
 
     # remove all 0s rows (no small prime factors), set coef mod 2
@@ -74,14 +72,15 @@ def C(a, b):
             if m[i][j] % 2: 
                 L[i].append(j)
 
-    #print(L)
+    print(L)
     print("done sparse")
 
     rr_m = binary_rr(L, rows, cols)
-    #print(m)
+    print(m)
     nullity = sum(row == [] for row in rr_m)  # count 0 rows
     print(nullity)
     return pow(2, nullity, 1000000007) - 1
 
 #print(C(40,55))
-print(C(1000000,1234567))
+print(C(1000,1234))
+#print(C(1000000,1234567))

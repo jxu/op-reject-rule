@@ -1,20 +1,21 @@
-import numpy as np
 from number import sieve
+from collections import Counter
 
-primes = sieve(55)
+primes = sieve(1234567)
+#primes = sieve(55)
 
 # Row-reduce binary matrix
-def binary_rr(A):
-    m, n = A.shape
+def binary_rr(L, m, n):
     h = k = 0  # pivot row, col
 
     while h < m and k < n:
-        print("pivot", k)
-        print(A)
+        if k < 10 or k % 1000 == 0: 
+            print("pivot", k)
+        #print(L)
         found_piv = False
         piv = None
         for i in range(h, m):
-            if A[i,k]:
+            if k in L[i]:
                 found_piv = True
                 piv = i
                 break
@@ -22,25 +23,32 @@ def binary_rr(A):
         if not found_piv:
             k += 1
         else:
-            A[[h,piv]] = A[[piv,h]]  # swap rows
+            L[piv], L[h] = L[h], L[piv]  # swap rows
             for i in range(h+1, m):
-                f = A[i,k]
-                #print(f)
-                A[i,k] = 0
-                for j in range(k+1, n):
-                    A[i,j] ^= A[h,j] & f
+                if k in L[i]:
+                    for j in L[h]:
+                        if j in L[i]:
+                            L[i].remove(j)
+                        else:
+                            L[i].append(j)
 
             h += 1
             k += 1
 
-    return A
+    return L
 
 
 
 
 
 def C(a, b):
-    m = np.zeros([b-a+1, len(primes)], dtype=np.int8)
+
+    rows = b - a + 1
+    cols = len(primes)
+
+    print((rows, cols))
+
+    m = [Counter() for _ in range(b-a+1)]
     for i in range(len(primes)):
         p = primes[i]  # prime and prime powers
         pp = p
@@ -49,22 +57,31 @@ def C(a, b):
                 
                 if n < a: continue  # ceil div
                 #print(pp, n)
-                m[n-a,i] += 1
+                m[n-a][i] += 1
             pp *= p
-            
 
-    print(m.shape)
+    #print(m)
+    print("done factoring")
 
     # remove all 0s rows (no small prime factors), set coef mod 2
-    m = m[~ np.all(m == 0, axis=1)] % 2
-    print("after removing rows")
-    print(m)
+    # convert to sparse format: list of rows
+    # skip removing empty rows for now
+    L = [[] for _ in range(rows)]
+    
+    for i in range(rows):
 
-    rr_m = binary_rr(m)
+        for j in m[i]:  # keys
+            if m[i][j] % 2: 
+                L[i].append(j)
+
+    #print(L)
+    print("done sparse")
+
+    rr_m = binary_rr(L, rows, cols)
     #print(m)
-    nullity = int(np.sum(~rr_m.any(axis=1)))  # count 0 rows
+    nullity = sum(row == [] for row in rr_m)  # count 0 rows
     print(nullity)
     return pow(2, nullity, 1000000007) - 1
 
-
-print(C(40, 55))
+#print(C(40,55))
+print(C(1000000,1234567))

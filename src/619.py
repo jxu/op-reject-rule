@@ -2,7 +2,6 @@ from number import sieve, ceil_div
 from collections import Counter
 
 
-
 # Row-reduce binary matrix
 def binary_rr(L, m, n):
     h = k = 0  # pivot row, col
@@ -37,11 +36,8 @@ def binary_rr(L, m, n):
     return L
 
 
-
-
-
 def C(a, b):
-    primes = sieve(b)
+    primes = sieve(b//2 + 1)
 
     rows = b - a + 1
     cols = len(primes)
@@ -58,29 +54,34 @@ def C(a, b):
                 m[n-a][i] += 1
             pp *= p
 
-    print(m)
+    #print(m)
     print("done factoring")
 
     # remove all 0s rows (no small prime factors), set coef mod 2
     # convert to sparse format: list of rows
     # skip removing empty rows for now
-    L = [[] for _ in range(rows)]
+    L = []
     
     for i in range(rows):
-
+        #print(m[i], len(m[i]))
+        if len(m[i]) == 0:
+            continue
+        L.append([])
         for j in m[i]:  # keys
             if m[i][j] % 2: 
-                L[i].append(j)
+                L[-1].append(j)
 
-    print(L)
+    #print(L)
     print("done sparse")
+    rows = len(L)
 
     rr_m = binary_rr(L, rows, cols)
-    print(m)
+    #print(m)
     nullity = sum(row == [] for row in rr_m)  # count 0 rows
     print(nullity)
     return pow(2, nullity, 1000000007) - 1
 
+#print(C(5,10))
 #print(C(40,55))
-print(C(1000,1234))
-#print(C(1000000,1234567))
+#print(C(1000,1234))
+print(C(1000000,1234567))

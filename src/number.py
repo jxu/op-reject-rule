@@ -216,13 +216,13 @@ def is_prime(n):
 
 
 def is_square(n):
-    """Returns if a number is square, for reasonable n, < 10^18
+    """Returns if a number is square.
 
-    Correct as long as round(n**0.5) is the true squareroot of square n.
-    A little faster than exact n == math.isqrt(n)**2
+    round(n**0.5) might be a little faster, as long as it is
+    the true squareroot of square n (probably for n up to 10^18)
     (Also consider pre-compute set of squares?)
     """
-    return round(n**0.5)**2 == n
+    return n == math.isqrt(n)**2
 
 
 

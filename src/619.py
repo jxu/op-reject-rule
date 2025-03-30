@@ -33,31 +33,25 @@ only one multiple of p, and x/p factors as all primes <= sqrt(b) which are
 eliminated out. So these p add 1 to the rank too.
 
 I left the sparse row reduce code anyway because it's more interesting.
+But very inefficient with python data structures. Takes about 5 min
 """
-# - max prime b/2, sparse matrix 217706 x 60415: 4m40s
-# - max pf b-a, sparse 197120 x 20794: 2m25s
 
-from number import sieve, ceil_div
-from collections import Counter
-
+from number import linear_sieve
 
 # Row-reduce binary matrix
 def binary_rr(L, m, n):
     h = k = 0  # pivot row, col
 
     while h < m and k < n:
-        if k < 10 or k % 1000 == 0: 
-            print("pivot", k)
+        if k % 1000 == 0: print("pivot", k)
         #print(L)
-        found_piv = False
         piv = None
         for i in range(h, m):
             if k in L[i]:
-                found_piv = True
                 piv = i
                 break
 
-        if not found_piv:
+        if piv == None:
             k += 1
         else:
             L[piv], L[h] = L[h], L[piv]  # swap rows
@@ -76,52 +70,38 @@ def binary_rr(L, m, n):
 
 
 def C(a, b):
-    primes = sieve(b)
+    lp = linear_sieve(b)
 
     rows = b - a + 1
+    pfs = [[] for _ in range(rows)]  
+    primes = set()  # only primes that divide x in [a,b]
+    
+    # generage primes list and factorizations
+    for x in range(a, b+1):
+        y = x
+        while y > 1:
+            pfs[x-a].append(lp[y])
+            primes.add(lp[y])
+            y //= lp[y]
+
+    print(pfs)
+    primes = sorted(list(primes))
     cols = len(primes)
 
-    #print((rows, cols))
-    # factor all n
-    m = [Counter() for _ in range(b-a+1)]
-    for i in range(len(primes)):
-        p = primes[i]  # prime and prime powers
-        pp = p
-        while pp <= b:
-            for n in range(pp * ceil_div(a, pp), b+1, pp):
-                #print(pp, n)
-                m[n-a][i] += 1
-            pp *= p
+    # sparse matrix mod 2
+    M = [[] for _ in range(rows)]
 
-    #print(m)
-    print("done factoring")
+    for x in range(a, b+1):
+        for p in set(pfs[x-a]):
+            if pfs[x-a].count(p) % 2:
+                # maintaining separate primes_index is a little faster
+                M[x-a].append(primes.index(p))
 
-    # ignore any n with too large factor, set coef mod 2
-    # convert to sparse format: list of rows
-    # skip removing empty rows for now
-    L = []
-    max_col = 0
-    for i in range(rows):
-
-
-        if any(primes[pi] > (b-a) for pi in m[i]):
-            
-            continue
-        #if len(m[i]) == 0:
-        #    continue
-        L.append([])
-        for j in m[i]:  # keys
-            max_col = max(max_col, j)
-            if m[i][j] % 2: 
-                L[-1].append(j)
-
-    #print(L)
+    print(M)
     print("done sparse")
-    rows = len(L)
-    cols = max_col+1
-    print((rows, cols))
+    print(f"matrix {rows} x {cols}")
 
-    rr_m = binary_rr(L, rows, cols)
+    rr_m = binary_rr(M, rows, cols)
     #print(m)
     nullity = sum(row == [] for row in rr_m)  # count 0 rows
     print(nullity)
@@ -130,4 +110,4 @@ def C(a, b):
 #print(C(5,10))
 #print(C(40,55))
 #print(C(1000,1234))
-#print(C(1000000,1234567))
+print(C(1000000,1234567))

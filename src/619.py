@@ -32,33 +32,40 @@ Then for every p > sqrt(b), for any x as a multiple of p, there can be
 only one multiple of p, and x/p factors as all primes <= sqrt(b) which are
 eliminated out. So these p add 1 to the rank too.
 
-I left the sparse row reduce code anyway because it's more interesting.
+I left the sparse row reduce code anyway because it's more interesting,
 But very inefficient with python data structures. Takes about 5 min
 """
 
 from number import linear_sieve
 
-# Row-reduce binary matrix
 def binary_rr(L, m, n):
+    """Gaussian elimination of a sparse binary matrix.
+
+    The sparse m x n matrix is represented as a list of lists (of indices)
+    Time complexity is something like O(min(m,n) m r) 
+    where r is the avg row length, usually very short.
+    """
     h = k = 0  # pivot row, col
 
     while h < m and k < n:
         if k % 1000 == 0: print("pivot", k)
         #print(L)
         piv = None
+        # search for pivot
         for i in range(h, m):
-            if k in L[i]:
+            if k in L[i]:  # (i,k) entry nonzero
                 piv = i
                 break
 
-        if piv == None:
+        if piv == None:  # no pivot, skip col
             k += 1
         else:
-            L[piv], L[h] = L[h], L[piv]  # swap rows
-            for i in range(h+1, m):  # rows below pivot h
+            L[piv], L[h] = L[h], L[piv]  # swap row h and pivot
+            for i in range(h+1, m):  # row i below pivot h
                 if k in L[i]:
                     for j in L[h]:
-                        if j in L[i]:  # add or remove entry in row i
+                        # add or remove entry in row i
+                        if j in L[i]:
                             L[i].remove(j)
                         else:
                             L[i].append(j)
@@ -102,8 +109,7 @@ def C(a, b):
     print(f"matrix {rows} x {cols}")
 
     rr_m = binary_rr(M, rows, cols)
-    #print(m)
-    nullity = sum(row == [] for row in rr_m)  # count 0 rows
+    nullity = sum(len(row) == 0 for row in rr_m)  # count 0 rows
     print(nullity)
     return pow(2, nullity, 1000000007) - 1
 

@@ -1,7 +1,7 @@
 from number import sieve
 
 primes = sieve(1000)
-MAXP = 13
+MAXP = 14
 
 def U(N):
     s = 0
@@ -11,6 +11,7 @@ def U(N):
         p = primes[i]
         newL = []
         newM = M * p
+        #print("pM", p, M)
         for j in range(p):
             for r in L:
                 t = j * M + r
@@ -19,13 +20,13 @@ def U(N):
                     newL.append(t)
                 else:
                     #print(t, "mod", newM, "add")
-                    c = ((N+1) // newM + (((N) % newM) >= t))
+                    c = ((N) // newM + (((N) % newM) >= t))
                     #print("count", c)
-                    s += p * c        
-                    L = newL 
+                    s += p * c
+        L = newL 
         M = newM
 
-        print(M, len(L))
+        print(len(L), "rems mod", M)
 
     print("leftover about", len(L) * (N // M))
     # handle remaining cases manually

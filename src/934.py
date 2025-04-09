@@ -11,8 +11,8 @@
 #         else: (n = 0,7 mod 11 => n = 0,7*210 mod 11*210)
 #         etc.
 #
-# So we maintain a list of residue classes that are yet unknown u(n)
-# for each prime, the list is extended and modulus is multiplied by p
+# So we maintain a list of residue classes mod M that are yet unknown u(n)
+# for each prime, the list is from mod M to mod p*M
 # then go through all the residues and check if they are 0, 7, 14, ... mod p
 # if they are, they go in the list. otherwise, u(n) = p, and we add to total
 # p times (how many in the res class occur <= N)
@@ -24,16 +24,14 @@
 
 from number import sieve
 
-primes = sieve(100)  # suffices
-MAXP = 15  # adjust to consider as large res list as fits in memory
+primes = sieve(100)  # actually suffices
 
 def U(N):
     s = 0
     M = 1
     res = [0]
-    for p in primes[:MAXP]:
+    for p in primes:
         newres = []
-        newM = M * p
         for j in range(p):
             for r in res:
                 n = j * M + r
@@ -42,18 +40,20 @@ def U(N):
                 if (n % p) % 7 == 0:
                     newres.append(n)
                 else:
-                    c = N // newM + (N % newM >= n)
+                    c = N // (M*p) + (N % (M*p) >= n)  # res count <= N
                     s += p * c
         
         res = newres
-        M = newM
+        M *= p
         print(len(res), "rems mod", M)
 
-    # handle remaining cases individually
-    for n in res:
-        if n == 0: continue
+        if M > N:
+            break
+
+    # handle remaining cases individually, skipping 0
+    for n in res[1:]:
         # no need to factor, just try primes
-        for p in primes[MAXP:]:
+        for p in primes[15:]:
             if (n % p) % 7 > 0:
                 s += p
                 break

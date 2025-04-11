@@ -60,5 +60,31 @@ def U(N):
     
     return s
 
-#print(U(1470))
-print(U(10**17))
+# After simplifying my original method, it can be written
+# slightly shorter recursively:
+def U2(N, M=1, res=[0], P=primes):
+    s = 0
+    if M > N:
+        for n in res[1:]:
+            for p in P:
+                if (n % p) % 7:
+                    s += p
+                    break
+        return s
+
+    newres = []
+    p = P[0]  # pop lowest prime
+    for j in range(p):
+        for r in res:
+            n = j * M + r
+            if n > N: break
+            if (n % p) % 7 == 0:
+                newres.append(n)
+            else:
+                s += p * (N // (M*p) + (N % (M*p) >= n))
+
+    return s + U2(N, p*M, newres, P[1:])
+
+
+#print(U2(1470))
+print(U2(10**17))

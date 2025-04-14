@@ -29,24 +29,13 @@
 from number import mod_inv
 m = 989898989
 
-def fact_mod_list(n, m):
-    """Compute [0!, ..., n!] mod m in O(n)."""
-    fact_mod = [1] * (n + 1)
-    for i in range(2, n+1):
-        fact_mod[i] = (i * fact_mod[i-1]) % m
-    return fact_mod
-
-
-def inv_list(l, m):
-    """Inverse mod m of every value in l."""
-    return [mod_inv(x,m) for x in l]
-
-
-
 def F(n):
     n //= 2  # makes math a little nicer
-    fact_mod = fact_mod_list(2*n, m)
-    fact_inv = inv_list(fact_mod, m)
+    fact_mod = [1] * (2*n + 1)
+    for i in range(2, 2*n + 1):
+        fact_mod[i] = (i * fact_mod[i-1]) % m
+
+    fact_inv = [mod_inv(x,m) for x in fact_mod]
 
     s = 0
     for i in range (0, n//5+1):

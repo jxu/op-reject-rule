@@ -57,33 +57,6 @@ def memoize_first(func):
         return cache[arg1]
     return memoizer
 
-
-class FenwickTree:
-    # Implementation is 1-based, but interface works for 0-based
-    def __init__(self, l):
-        self.t = [0] * (len(l)+1)
-        for i in range(len(l)):
-            self.add_to(i, l[i])
-
-
-    def sum_to(self, r):
-        """sum a[0:r]"""
-        r += 1
-        s = 0
-        while r > 0:
-            s += self.t[r]
-            r -= (r & -r)
-        return s
-
-
-    def add_to(self, i, delta):
-        """sync a[i] += delta"""
-        i += 1
-        while (i < len(self.t)):
-            self.t[i] += delta
-            i += i & -i
-
-
 ########## NUMBER THEORY ##########
 
 def extended_euclidean(a, b):
@@ -323,6 +296,8 @@ def divisors(prime_powers, proper=False):
 
     return divs
 
+
+# TODO: restore simplified primecount
 
 def phi(n, factors=None):
     """Euler's totient function, using the product formula.

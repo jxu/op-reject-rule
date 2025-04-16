@@ -63,15 +63,13 @@ def U(N):
 # After simplifying my original method, it can be written
 # slightly shorter recursively:
 def U2(N, M=1, res=[0], P=primes):
-    s = 0
     if M > N:
-        for n in res[1:]:
-            for p in P:
-                if (n % p) % 7:
-                    s += p
-                    break
-        return s
+        # python trick to get first elem that matches cond
+        # at the expense of being slightly slower
+        return sum(next(p for p in P if (n % p) % 7) 
+                   for n in res[1:])
 
+    s = 0
     newres = []
     p = P[0]  # pop lowest prime
     for j in range(p):

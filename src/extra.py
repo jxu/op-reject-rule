@@ -102,3 +102,16 @@ class Polynomial:
 def ctz(v):
     if v == 0: raise ValueError
     return (v & -v).bit_length() - 1
+
+import numpy as np
+def matrix_powmod(A, k, mod):
+    r = np.eye(2, dtype=np.int64)
+    while k:
+        if k % 2:
+            r = (r @ A) % mod
+        A = (A @ A) % mod
+        k >>= 1
+
+    return r
+
+

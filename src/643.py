@@ -8,12 +8,12 @@ The exception is when b/2^t = 1, where we want phi(1) = 0 instead of 1
 See 643ie for original solution
 """
 
-from functools import cache
-from number import totient_range, totient_sum, totient_sum_range
+from itertools import accumulate
+from number import totient_range, totient_sum
 
 N = 10**11
 tot_range = totient_range(10**7)
-totsum_range = totient_sum_range(tot_range)
+totsum_range = list(accumulate((tot_range)))
 
 s = 0
 p2 = 2 

@@ -391,11 +391,6 @@ def totient_range(n):
     return tots
 
 
-def totient_sum_range(tot_range):
-    """Helper function for pre-computing values for totient_sum"""
-    return list(accumulate(tot_range))
-
-
 @memoize_first
 def totient_sum(n, totsum_range):
     """Calculates the totient sum up to n in sub-linear time.

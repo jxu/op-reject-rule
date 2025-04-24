@@ -3,7 +3,7 @@
 import pytest
 from bisect import bisect
 from number import *
-
+from itertools import accumulate
 
 def test_is_prime_small():
     with pytest.raises(Exception):
@@ -56,7 +56,7 @@ def test_totient_range():
 
 def test_totient_sum():
     tot_range = totient_range(10**5)
-    totsum_range = totient_sum_range(tot_range)
+    totsum_range = list(accumulate(tot_range))
 
     # A064018
     assert totient_sum(100, totsum_range) == 3044

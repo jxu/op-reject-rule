@@ -11,11 +11,10 @@
 # - F(sqrt n) * G(sqrt n)
 
 from itertools import accumulate
-from functools import cache
-from number import totient_range, totient_sum_range, totient_sum
+from number import totient_range, totient_sum
 
 tot_range = totient_range(10**7) # sweet spot
-totsum_range = totient_sum_range(tot_range)
+totsum_range = list(accumulate(tot_range))
 
 def T(n):
     return n * (n + 1) // 2

@@ -350,14 +350,17 @@ def mobius_range(n):
     in exchange for storing the entire i https://mathoverflow.net/a/99545
     TODO: profile 
     """
-    primes = sieve(n)    
-    mus = [1] * (n+1)
-    
-    for p in primes:
-        for i in range(p, n+1, p):
+    isprime = [True] * (n+1)
+    mus = [1] * (n+1)  # mus[0] invalid
+
+    for i in range(2, n+1):
+        if isprime[i]:
             mus[i] *= -1
-        for i in range(p**2, n+1, p**2):
-            mus[i] *= 0
+            for j in range(2*i, n+1, i):
+                isprime[j] = False
+                mus[j] *= -1
+            for j in range(i*i, n+1, i*i):
+                mus[j] = 0
 
     return mus
 

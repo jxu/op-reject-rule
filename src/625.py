@@ -10,11 +10,8 @@
 # Sum_{i<=sqrt n} f(i) G(n/i) + Sum_{j<=sqrt n} g(j) F(n/j)
 # - F(sqrt n) * G(sqrt n)
 
-from itertools import accumulate
-from number import totient_range, totient_sum
+from number import totient_sum
 
-tot_range = totient_range(10**7) # sweet spot
-totsum_range = list(accumulate(tot_range))
 
 def T(n):
     return n * (n + 1) // 2
@@ -25,12 +22,12 @@ def G(N):
     s = 0
     isqrt = int(N**0.5)  # fixed
     for i in range(1, isqrt+1):
-        s += i * totient_sum(N // i, totsum_range)
+        s += i * totient_sum(N // i)
 
     for j in range(1, isqrt+1):
-        s += tot_range[j] * T(N // j)
+        s += totient_sum(j) * T(N // j)
 
-    s -= T(isqrt) * totient_sum(isqrt, totsum_range)
+    s -= T(isqrt) * totient_sum(isqrt)
 
     return s
 

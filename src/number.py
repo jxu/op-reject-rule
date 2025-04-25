@@ -43,20 +43,6 @@ def timeit(f):
     return timed
 
 
-def memoize_first(func):
-    """Memoize like functools.cache, but only consider first argument.
-
-    Adapted from https://wiki.python.org/moin/PythonDecoratorLibrary
-    """
-    cache = func.cache = {}
-
-    @wraps(func)
-    def memoizer(arg1, *args):
-        if arg1 not in cache:
-            cache[arg1] = func(arg1, *args)
-        return cache[arg1]
-    return memoizer
-
 ########## NUMBER THEORY ##########
 
 def extended_euclidean(a, b):
@@ -391,12 +377,16 @@ def totient_range(n):
     return tots
 
 
-@memoize_first
-def totient_sum(n, totsum_range):
+# Saved totient sum precomputation
+totsum_range = None
+
+@cache
+def totient_sum(n):
     """Calculates the totient sum up to n in sub-linear time.
 
-    totsum_range is a list of precomputed totient sums, should be up to 
-    about n^2/3 for performance.
+    The first time this is called, it maintains a list of precomputed
+    totient sums up to ~ 10^8 = n^2/3 of max input.
+    Similar magic to what sympy does.
     
     Totient sum calculation: Dirichlet hyperbola like methods I explain at
     https://math.stackexchange.com/a/1740370
@@ -406,6 +396,9 @@ def totient_sum(n, totsum_range):
     The observation is n//i is constant for large i, so count precisely how 
     many times each j = n//i value occurs.
     """
+    global totsum_range
+    if totsum_range is None:
+        totsum_range = list(accumulate(totient_range(10**7)))
     
     if n < len(totsum_range):
         return totsum_range[n]
@@ -414,10 +407,10 @@ def totient_sum(n, totsum_range):
     s = n * (n + 1) // 2
 
     for m in range(2, n//c + 1):
-        s -= totient_sum(n // m, totsum_range)
+        s -= totient_sum(n // m)
 
     for k in range(1, c):
-        s -= (n//k - n//(k+1)) * totient_sum(k, totsum_range)
+        s -= (n//k - n//(k+1)) * totient_sum(k)
 
     return s
     

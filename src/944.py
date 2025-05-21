@@ -13,11 +13,31 @@ M = 1234567891
 
 def T(n): return n*(n+1)//2
 
+s = int(M**0.5)
+l1 = []
+x = 1
+for i in range(s):
+    l1.append(x)
+    x = (2 * x) % (M)
+
+l2 = []
+x = 1
+s2 = pow(2, s, M)
+for i in range(M // s + 1):
+    l2.append(x)
+    x = (s2 * x) % (M)
+
+
+def pow2(x):
+    x = x % (M-1)
+    return (l2[x//s] * l1[x%s]) % (M) 
+
+
 def S(n):
     c = int(n**0.5)
     return (T(n) * pow(2, n-1, M)
-        - sum(i * pow(2, (n - n//i) % (M-1), M) for i in range(1, n//c + 1)) 
-        - sum((T(n//j) - T(n//(j+1))) * pow(2, (n-j)%(M-1), M) 
+        - sum(i * pow2(n - n//i) for i in range(1, n//c + 1)) 
+        - sum((T(n//j) - T(n//(j+1))) * pow2(n-j) 
               for j in range(1, c)))
 
 print(S(10**14) % M)

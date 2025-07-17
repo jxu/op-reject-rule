@@ -445,6 +445,19 @@ def ceil_div(x, y):
     return (x + y - 1) // y
 
 
+def val_fact(p, n):
+    """p-adic valuation of n!, i.e. largest k with p^k | n! 
+
+    Uses basic counting, or "Legendre's Formula"
+    """
+    v = 0
+    pp = p
+    while pp <= n:
+        v += n // pp
+        pp *= p
+    return v
+
+
 ### ALGORITHM
 def binary_search(f, l, r):
     """Return L s.t. f(L)=0, f(L+1)=f(R)=1, if it exists

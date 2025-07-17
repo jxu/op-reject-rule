@@ -1,9 +1,10 @@
-"""Unit tests to ensure commonly used number functions are correct."""
+"""Unit tests to ensure commonly used number functions are correct.
+
+Run with `pypy -m pytest`
+"""
 
 import pytest
-from bisect import bisect
 from number import *
-from itertools import accumulate
 
 def test_is_prime_small():
     with pytest.raises(Exception):
@@ -187,3 +188,9 @@ def test_mobius_range():
                  0,1,1,-1,0,0,1,0,0,-1,-1]
 
     assert mobius_range(len(small_mus))[1:] == small_mus
+
+
+def test_val_fact():
+    assert val_fact(2, 3) == 1
+    assert val_fact(2, 10) == 8
+

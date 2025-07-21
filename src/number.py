@@ -283,40 +283,40 @@ def phi(n, factors=None):
     return r
 
 
-def mul_order(a, n, phi_n=None, factors_phi=None):
-    """Compute the multiplicative order of a mod n.
+def mul_order(a: int, m: int, phi_m: int, factors_phi: Counter[int]):
+    """Compute the multiplicative order of a mod m.
 
-    Algorithm from Bach & Shallit, Algorithmic Number Theory
-    https://rosettacode.org/wiki/Multiplicative_order
-    For phi(n) = q1^e1 ... qk^ek, let yi = phi(n) without qi factors,
-    xi = a^yi mod n, then raise to qi power mod n until xi = 1, then the min
-    necessary qi's have been factored into order.
+    Algorithm 4.79 from Applied Handbook of Cryptography
+    Let n = phi(m) = |(Z/mZ)*|. The order of a must divide n.
+    Let n = p1^e1 ... pk^ek. Init t := n.
+    For each i, divide out all pi^ei from t and compute a1 := a^t,
+    then keep raising a1 to the pi'th power and multiplying t by pi
+    until a1 = 1 is reached, which must be a multiple of the order.
 
-    See 417.py for more tricks with CRT.
+    For any i, t always has enough other pj_ej, so we just need to find 
+    the min di s.t. order | t * pi^di 
 
-    :param a: element of (Z/nZ)*, coprime to n
-    :param n: modulus
-    :param phi_n: the order of group (Z/nZ)*, if available
-    :param factors_phi: factorization of phi(n), if available
-    :return: ord_n(a)
+    :param a: element of (Z/mZ)*, coprime to m
+    :param m: modulus
+    :param phi_m: the order of group (Z/mZ)*
+    :param factors_phi: factorization of phi(m), as dict of pi:ei pairs
+    :return: ord_m(a)
+
+    Maybe keep order in factored form
     """
-    if gcd(a, n) != 1:
+    if gcd(a, m) != 1:
         raise ValueError
 
-    if phi_n is None:
-        phi_n = phi(n)
-    if factors_phi is None:
-        factors_phi = factor(phi_n)
+    n = phi_m
+    t = n 
+    for pi, ei in factors_phi.items():
+        t //= pi ** ei
+        a1 = pow(a, t, m)
+        while a1 != 1:
+            a1 = pow(a1, pi, m)
+            t *= pi
 
-    order = 1
-    for qi, ei in factors_phi.items():
-        yi = phi_n // (qi ** ei)
-        xi = pow(a, yi, n)
-        while xi != 1:
-            xi = pow(xi, qi, n)
-            order *= qi
-
-    return order
+    return t
 
 
 def mod_inv(a, m):

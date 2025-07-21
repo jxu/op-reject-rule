@@ -42,12 +42,13 @@ def test_mul_order():
     mod5_cases = ((1,1), (2,4), (3,4), (4,2))
     mod10_cases = ((1,1), (3,4), (7,4), (9,2))
     for a, o in mod5_cases:
-        assert mul_order(a, 5) == o
+        assert mul_order(a, 5, 4, Counter({2:2})) == o
     for a, o in mod10_cases:
-        assert mul_order(a, 10) == o
+        assert mul_order(a, 10, 4, Counter({2:2})) == o
 
-    with pytest.raises(ValueError): mul_order(2, 10)
-    assert mul_order(3, 61) == 10
+    with pytest.raises(ValueError): 
+        mul_order(2, 10, 4, Counter({2:2}))
+    assert mul_order(3, 61, 60, Counter({2:2, 3:1, 5:1})) == 10
 
 
 def test_totient_range():

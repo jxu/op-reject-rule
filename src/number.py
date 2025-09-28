@@ -141,10 +141,9 @@ def is_prime(n):
     PRIME_12 = (2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37)
 
     # Small trial division
-    if n in PRIME_12: 
-        return True
-
     for p in PRIME_12:
+        if n == p:
+            return True
         if n % p == 0: 
             return False
 

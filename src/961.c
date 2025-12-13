@@ -4,12 +4,13 @@
 
 char memo[1 << N];  // init to zero, meaning not calculated
 
-long long pow_(int a, int b)
+// compute 9 ** popcount(x) with x's bits
+long long popcount9(int x)
 {
-    long long x = 1;
-    for (int i = 0; i < b; ++i)
-        x *= a;
-    return x;
+    long long t = 1;
+    for (; x; x >>= 1)
+        if (x & 1) t *= 9;
+    return t;
 }
 
 int remove_bit(int x, int d)
@@ -41,9 +42,7 @@ int main()
     for (int x = 0; x < 1 << N; ++x)
     {
         if (negamax(x) == 1)
-        {
-            s += pow_(9, __builtin_popcount(x));  
-        }
+            s += popcount9(x);
     }
     printf("%lld\n", s);
 }

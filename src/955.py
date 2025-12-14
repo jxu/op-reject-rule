@@ -12,12 +12,10 @@
 # Since m' is given, we can rearrange as difference of squares
 # m'^2 - 1 = n'^2 - k'^2 = (n'-k')(n'+k')
 #
-# Then all that's left is factor z = m'^2 - 1 as x * y 
+# Then all that's left is factor z = m'^2 - 1 as x * y
+# (A shortcut is m'^2 - 1 also factors as diff of squares)
 # (where n' = (y+x)/2, k' = (y-x)/2) and pick smallest k'
 # then increment index by k for next iter
-#
-# Inspired by Fermat's factorization theorem. A shortcut is m'^2 - 1 also
-# factors as diff of squares
 
 from number import divisors, factor
 
@@ -31,7 +29,9 @@ def f(N):
         mm = 2 * m + 1
         z = mm**2 - 1
         
-        divs = divisors(factor(z))  # most computational part
+        # most computational part
+        f1, f2 = factor(mm - 1), factor(mm + 1)
+        divs = divisors(f1 + f2)  # combine factor Counters
         best_kk = 0
         best_nn = 0
         

@@ -5,19 +5,22 @@ from collections import Counter
 
 # quick-n-dirty quaternion group:
 # represent elements 1, -1, i, -i, j, -j, k, -k as 0 thru 7
-MUL_TABLE = [
-    [0, 1, 2, 3, 4, 5, 6, 7],  # 1
-    [1, 0, 3, 2, 5, 4, 7, 6],  # -1
-    [2, 3, 1, 0, 6, 7, 5, 4],  # i
-    [3, 2, 0, 1, 7, 6, 4, 5],  # -i
-    [4, 5, 7, 6, 1, 0, 2, 3],  # j
-    [5, 4, 6, 7, 0, 1, 3, 2],  # -j
-    [6, 7, 4, 5, 3, 2, 1, 0],  # k
-    [7, 6, 5, 4, 2, 3, 0, 1],  # -k
+P1, M1, PI, MI, PJ, MJ, PK, MK = range(8)
+
+
+QMUL = [
+    [P1, M1, PI, MI, PJ, MJ, PK, MK],  # 1
+    [M1, P1, MI, PI, MJ, PJ, MK, PK],  # -1
+    [PI, MI, M1, P1, PK, MK, MJ, PJ],  # i
+    [MI, PI, P1, M1, MK, PK, PJ, MJ],  # -i
+    [PJ, MJ, MK, PK, M1, P1, PI, MI],  # j
+    [MJ, PJ, PK, MK, P1, M1, MI, PI],  # -j
+    [PK, MK, PJ, MJ, MI, PI, M1, P1],  # k
+    [MK, PK, MJ, PJ, PI, MI, P1, M1],  # -k
 ]
 
 # i^-1 = -i,  j^-1 = -j, k^-1 = -k
-INV_TABLE = [0, 1, 3, 2, 5, 4, 7, 6]
+QINV = [P1, M1, MI, PI, MJ, PJ, MK, PK]
 
 
 def F(N):
@@ -33,11 +36,11 @@ def F(N):
             # b[j] = 0 -> x -> i
             # b[j] = 1 -> y -> k
             # b[j] = 2 -> z -> j
-            r = [2, 6, 4][b[j]]
+            r = [PI, PK, PJ][b[j]]
 
-            c[i] = MUL_TABLE[c[i]][r]
+            c[i] = QMUL[c[i]][r]
 
     counter = Counter(c)
-    return sum(counter[k] * counter[INV_TABLE[k]] for k in counter)
+    return sum(counter[k] * counter[QINV[k]] for k in counter)
 
 print(F(10**6))

@@ -1,43 +1,46 @@
-# brute force?
+# brute force: rearranging as a^2 - 1 = c^2 - b^2
+# factor as (a - 1) (a + 1) = (c - b) (c + b)
+# combining factors of (a-1) (a+1), pick divisors x = c-b, y = c+b
+
+# From thread: actually, pythagorean tree triples works too!
+# See Problem 224
+from collections import Counter
 from number import linear_sieve, linear_sieve_factors, divisors
 
-M = 25_000_000
+def f(M):
+    lp = linear_sieve(M)
 
-lp = linear_sieve(M)
+    # trivial cases have a = 1, b = c
+    s = (M - 1) // 2
 
-s = 0
+    # Avoid doing extra work by storing a+1 factors for later use
+    # But not storing factorizations for entire a range
+    am1_factors = Counter()
+    a_factors = Counter([2])
 
-# trivial cases
-a = 1
-for b in range(1, M):
-    c = b
-    if a + b + c <= M:
-        #print(a, b, c)
-        s += 1
+    for a in range(2, M//3):
+        ap1_factors = linear_sieve_factors(lp, a+1)
 
-for a in range(2, M//3):
-    am1, ap1 = a - 1, a + 1
-    am1_factors = linear_sieve_factors(lp, am1)
-    ap1_factors = linear_sieve_factors(lp, ap1)
+        # combine as dict, although gcd(a-1, a+1) = 1 or 2
+        factors = am1_factors + ap1_factors
+        divs = divisors(factors)  # unordered
 
-    factors = am1_factors + ap1_factors
+        for x in divs:
+            y = (a - 1) * (a + 1) // x
 
-    divs = divisors(factors)
-    #print(am1_factors, ap1_factors)
-    #print(am1 * ap1, divs)
+            if (y + x) % 2: continue
+            
+            c = (x + y) // 2
+            b = (y - x) // 2
 
-    for x in divs:
-        y = (am1) * ap1 // x
+            if a + y <= M and a <= b:
+                #print(a, b, c)
+                s += 1
 
-        if (y + x) % 2: continue
-        
-        c = (x + y) // 2
-        b = (y - x) // 2
+        # shift stored factors
+        am1_factors, a_factors = a_factors, ap1_factors
 
-        if a + y <= M and a <= b:
-            print(a, b, c)
-            #assert a*a + b* b == c*c + 1
-            s += 1
+    return s
 
-print(s)
-        
+print(f(25_000_000))
+            

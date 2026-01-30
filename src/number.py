@@ -246,11 +246,10 @@ def factor(n):
 
 
 def divisors(prime_powers, proper=False):
-    """Returns divisors given (ordered) factorization dict.
+    """Generates divisors given factorization dict.
 
-    Ex. `divisors({2:2,3:1})` should return [1,2,3,4,6,12] in some order
+    E.g. `divisors({2:2,3:1})` should generate 1,2,3,4,6,12 in *some order*
     """
-    divs = []
     exp_ranges = []
     n = 1
     for p, maxe in prime_powers.items():
@@ -259,9 +258,8 @@ def divisors(prime_powers, proper=False):
 
     for pps in itertools.product(*exp_ranges):
         if not proper or prod(pps) != n:
-            divs.append(prod(pps))
+            yield prod(pps)
 
-    return divs
 
 
 # TODO: restore simplified primecount

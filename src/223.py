@@ -15,7 +15,7 @@ for b in range(1, M):
         #print(a, b, c)
         s += 1
 
-for a in range(2, M):
+for a in range(2, M//3):
     am1, ap1 = a - 1, a + 1
     am1_factors = linear_sieve_factors(lp, am1)
     ap1_factors = linear_sieve_factors(lp, ap1)

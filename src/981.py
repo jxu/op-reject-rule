@@ -27,9 +27,11 @@ def f(a, b, c, r):
         f(a, b-1, c, MUL_TABLE[r][5]) + 
         f(a, b, c-1, MUL_TABLE[r][7]))
 
-print(f(8, 8, 8, 0))
+#print(f(8, 8, 8, 0))
 
-for i in range(1, 5):
-    for j in range(1, 5):
-        for k in range(1, 5):
-            print(i, j, k, f(i, j, k, 0))
+for r in range(8):
+    print(r)
+    for i in range(5):
+        for j in range(5):
+            for k in range(5):
+                print(i, j, k, f(i, j, k, r))

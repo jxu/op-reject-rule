@@ -1,37 +1,29 @@
-from functools import cache
+from number import fact_range, mod_inv_range
 
-# represent elements 1, -1, i, -i, j, -j, k, -k as 0 thru 7
+M = 888_888_883 
+FACT = fact_range(M)
+MOD_INV = mod_inv_range(M)
 
-MUL_TABLE = [
-    [0, 1, 2, 3, 4, 5, 6, 7],  # 1
-    [1, 0, 3, 2, 5, 4, 7, 6],  # -1
-    [2, 3, 1, 0, 6, 7, 5, 4],  # i
-    [3, 2, 0, 1, 7, 6, 4, 5],  # -i
-    [4, 5, 7, 6, 1, 0, 2, 3],  # j
-    [5, 4, 6, 7, 0, 1, 3, 2],  # -j
-    [6, 7, 4, 5, 3, 2, 1, 0],  # k
-    [7, 6, 5, 4, 2, 3, 0, 1],  # -k
-]
-
-# i^-1 = -i,  j^-1 = -j, k^-1 = -k
-INV_TABLE = [0, 1, 3, 2, 5, 4, 7, 6]
-
-@cache
-def f(a, b, c, r):
-    if a < 0 or b < 0 or c < 0:
-        return 0
-    if a == b == c == 0:
-        return r == 0
+def N(X, Y, Z):
+    n = X + Y + Z
     
-    return (f(a-1, b, c, MUL_TABLE[r][3]) +
-        f(a, b-1, c, MUL_TABLE[r][5]) + 
-        f(a, b, c-1, MUL_TABLE[r][7]))
+    if not (X % 2 == Y % 2 == Z % 2):
+        return 0
 
-#print(f(8, 8, 8, 0))
+    r = (FACT[n] * MOD_INV[2] *
+        MOD_INV[FACT[X]] * MOD_INV[FACT[Y]] * MOD_INV[FACT[Z]]) % M
 
-for r in range(8):
-    print(r)
-    for i in range(5):
-        for j in range(5):
-            for k in range(5):
-                print(i, j, k, f(i, j, k, r))
+    # correction factor
+    if n % 2 == 0:
+        r += ((-1)**(n//2) * FACT[n//2] * MOD_INV[2] * 
+              MOD_INV[FACT[X//2]] * MOD_INV[FACT[Y//2]] * MOD_INV[FACT[Z//2]])
+            
+
+    return r % M
+
+s = 0
+for i in range(88):
+    for j in range(88):
+        for k in range(88):
+            s = (s + N(i**3, j**3, k**3)) % M
+print(s)

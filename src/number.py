@@ -327,17 +327,24 @@ def mod_inv(a, m):
     return x % m
 
 
-def mod_inv_range(p, end=None):
-    """Computes inverse mod p in range [1, end] in O(end) time
+def mod_inv_range(p):
+    """Computes inverse mod p in range [1, p-1] in O(p) time
 
     Credit: cp-algorithms, e-maxx.ru
     """
-    if end is None: end = p-1
-    inv = [None] * (end+1)
+    inv = [0] * p
     inv[1] = 1
-    for i in range(2, end+1):
+    for i in range(2, p):
         inv[i] = (-(p//i) * inv[p%i]) % p
     return inv
+
+
+def fact_range(p):
+    """Returns factorials 0!, 1!, ..., (p-1)! mod p."""
+    fact = [1] * p
+    for i in range(1, p):
+        fact[i] = (fact[i-1] * i) % p
+    return fact
 
 
 def mobius_range(n):

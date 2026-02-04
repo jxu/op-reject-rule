@@ -1,8 +1,14 @@
-from number import fact_range, mod_inv_range
+from number import fact_range, mod_inv
+from functools import cache
 
 M = 888_888_883 
 FACT = fact_range(M, 3 * 88**3)
-MOD_INV = mod_inv_range(M)
+
+
+# much faster than mod_inv_range for not too many inverses
+@cache
+def inv(n):
+    return mod_inv(n, M)
 
 def N(X, Y, Z):
     n = X + Y + Z
@@ -10,13 +16,13 @@ def N(X, Y, Z):
     if not (X % 2 == Y % 2 == Z % 2):
         return 0
 
-    r = (FACT[n] * MOD_INV[2] *
-        MOD_INV[FACT[X]] * MOD_INV[FACT[Y]] * MOD_INV[FACT[Z]]) % M
+    r = (FACT[n] * inv(2) *
+        inv(FACT[X]) * inv(FACT[Y]) * inv(FACT[Z])) % M
 
     # correction factor
     if n % 2 == 0:
-        r += ((-1)**(n//2) * FACT[n//2] * MOD_INV[2] * 
-              MOD_INV[FACT[X//2]] * MOD_INV[FACT[Y//2]] * MOD_INV[FACT[Z//2]])
+        r += ((-1)**(n//2) * FACT[n//2] * inv(2) * 
+              inv(FACT[X//2]) * inv(FACT[Y//2]) * inv(FACT[Z//2]))
             
 
     return r % M

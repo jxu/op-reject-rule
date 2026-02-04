@@ -1,7 +1,7 @@
 from number import fact_range, mod_inv_range
 
 M = 888_888_883 
-FACT = fact_range(M)
+FACT = fact_range(M, 3 * 88**3)
 MOD_INV = mod_inv_range(M)
 
 def N(X, Y, Z):

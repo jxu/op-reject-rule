@@ -339,11 +339,12 @@ def mod_inv_range(p):
     return inv
 
 
-def fact_range(p):
-    """Returns factorials 0!, 1!, ..., (p-1)! mod p."""
-    fact = [1] * p
-    for i in range(1, p):
-        fact[i] = (fact[i-1] * i) % p
+def fact_range(m, end=None):
+    """Returns factorials 0!, 1!, ..., (end)! mod m."""
+    if end is None: end = m-1
+    fact = [1] * m
+    for i in range(1, end+1):
+        fact[i] = (fact[i-1] * i) % m
     return fact
 
 

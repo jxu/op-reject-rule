@@ -1,27 +1,28 @@
 # 40 sec with improved prime_count and precompute to currently 10^8 / ALPHA
 
-from prime_count import prime_count, PRIMES
+from sympy import primepi
+from number import sieve
 
+primes = sieve(10**6)
 
 def f(n):
-    primes = PRIMES[1:]
 
     # Case 1: n = p^7
-    count = prime_count(int(n**(1/7)))
+    count = primepi(int(n**(1/7)))
 
     i = 0
     while (p := primes[i])**3 <= n:
         print(p)
         # Case 2: n = p^3 * q, Exclude case with p == q
         q_max = n // (p**3)
-        count += prime_count(q_max) - (q_max >= p)
+        count += primepi(q_max) - (q_max >= p)
 
         # Case 3: n = p*q*r, p < q < r
         j = i + 1
         while (q := primes[j])**2 * p <= n:  # q*q*p < n
             #print(p, q)
             # q < r < n/pq, so add pi(n/pq) - pi(q)
-            count += prime_count(n // (p*q)) - (j + 1)
+            count += primepi(n // (p*q)) - (j + 1)
             j += 1
         i += 1
 

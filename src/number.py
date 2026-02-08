@@ -261,9 +261,6 @@ def divisors(prime_powers, proper=False):
             yield prod(pps)
 
 
-
-# TODO: restore simplified primecount
-
 def phi(n, factors=None):
     """Euler's totient function, using the product formula.
 

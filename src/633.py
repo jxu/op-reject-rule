@@ -14,4 +14,7 @@ def e(k):
     if k == 0: return 1
     return sum((-1)**(j-1) * e(k-j) * p(j) for j in range(1, k+1)) / k
 
-print(f"{(6 / (pi**2)) * e(7):.4e}")
+def c(k):
+    return (6 / pi**2) * e(k)
+
+print(f"{c(7):.4e}")

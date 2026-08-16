@@ -1,10 +1,8 @@
-using Primes
-using Memoization
-using Printf
+using Primes, Memoize, Printf
 
 ps = primes(10^6)
 
-@memoize p(k) = sum((q^2 - 1.)^-k for q in ps)
+@memoize p(k) = sum((Float64(q)^2 - 1)^-k for q in ps)
 
 @memoize e(k) = 
     k == 0 ? 1 :

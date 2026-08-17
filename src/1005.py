@@ -1,46 +1,40 @@
-import sys
 from number import sieve
 from functools import cache
 
-sys.setrecursionlimit(3000)
 primes = sieve(2026)
 
 @cache
-def f(n, min_i):
-    # count increasing tuples that sum to n, using only primes[i] and greater
-    if n < 0: return 0
+def count_lists(n, min_i):
+    """Count prime lists that sum to n, using only primes[min_i] and greater"""
     if n == 0: return 1
     s = 0
     for i in range(min_i, len(primes)):
-        if (n - primes[i] < 0): break
-        s += f(n - primes[i], i+1)
+        if (n - primes[i] < 0): break  # speed-up
+        s += count_lists(n - primes[i], i+1)
 
     return s
 
 
-def search(n, min_i, target):
+def search(n, i, target):
+    """Search tree for target order-statistic, child list sums to n, 
+    considering prime[i] here 
+    """
     if n == 0: return 1
 
-    print(n, min_i, target)
+    count = count_lists(n - primes[i], i+1)  # size of child subtree
 
-    s = 0
+    # previously this was a for loop, but it's turned into a recursion
+    # adjusting target count
+    if target < count:
+        # take prime and recurse into subtree
+        return (primes[i] * search(n - primes[i], i+1, target)) % 10**9
+    else: 
+        # pass prime, keeping n and adjusting target count
+        return search(n, i+1, target - count)
 
-    for i in range(min_i, len(primes)):
-
-        if target < s + f(n - primes[i], i+1):
-            #print("output", primes[i])
-            # compute product directly here
-            return (primes[i] * search(n - primes[i], i+1, target - s)) % 10**9
-        else: 
-            s += f(n - primes[i], i+1) 
-
-    raise ValueError
 
 def mpl(n):
-
-    # median index for list of size n: (n-1)/2
-    return search(n, 0, (f(n, 0)-1) // 2)
-
+    # median index for list of len k: (k-1)/2
+    return search(n, 0, (count_lists(n, 0)-1) // 2)
 
 print(mpl(2026))
-

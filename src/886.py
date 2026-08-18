@@ -1,90 +1,62 @@
 from functools import cache
 from math import gcd
-from collections import Counter
-
-def in_bit(b, i):
-    return bool(b & (1 << i))
-
-def set_bit(b, i):
-    return b | (1 << i)
-
-def clear_bit(b, i):
-    return b & ~(1 << i)
-
 
 def coprime(a, b):
     return gcd(a, b) == 1
 
-#print(coprime(6,9))
-#print(coprime(2,3))
+def count_even(s):
+    return (s & 0x555555555).bit_count()
+
+def count_odd(s):
+    return (s & 0xaaaaaaaaa).bit_count()
+
+N = 34
+
+cp = [[False]*(N+1) for _ in range(N+1)]
+
+for i in range(2, N+1):
+    for j in range(2, N+1):
+        cp[i][j] = coprime(i, j)
 
 
+def P(n):
+    @cache
+    def f(seen, i):
 
-def even_bit_count(n):  # bits 0, 2, 4, 6, ...
-    return (n & 0x55555555).bit_count()
+        if seen == (1 << i): 
+            return 1
 
-def odd_bit_count(n):
-    return (n & 0xaaaaaaaa).bit_count()
+        # try some even-odd parity
+        evens = count_even(seen)
+        odds = count_odd(seen)
+        l = seen.bit_count()
 
-n = 10
+        if l % 2 == 1:
+            if not (i % 2 == 0 and evens - odds == 1): return 0
+        else:
+            if not (i % 2 == 1 and evens - odds == 0): return 0
 
+        r = 0
+        for j in range(2, n+1):
+            if (seen & (1 << j)) and cp[i][j]:
+                r += f(seen & ~(1 << i), j)
 
-@cache
-def f(seen, k):
-    #print(bin(seen), k)
-    if seen.bit_count() == 1: return 1
-
-    # optimization
-    # n=20.
-    # without even-odd: hits=12271501 size=2831840
-    # with even-odd:    hits= 3483249 size=1214491
-    d = even_bit_count(seen) - odd_bit_count(seen)
-    z = seen.bit_count()
-    #if abs(even_bit_count(seen) - odd_bit_count(seen)) > 1: return 0
-
-    if k%2 == 0:
-        if z%2 == 0 and d != 0: return 0
-        if (z%2) != 0 and d != 1: return 0
-
-    if k%2 == 1:
-        if z%2 == 0 and d != 0: return 0
-        if z%2 != 0 and d != -1: return 0
-
+        return r
 
     r = 0
-    for newk in range(2, n+1):
-        if in_bit(seen, newk) and coprime(k, newk):
-            r += f(clear_bit(seen, k), newk)
+    full = ((1 << (n+1)) - 1) & ~3
+    print(bin(full))
 
-    return r
+    for k in range(2, n+1):
+        z = f(full, k)
+        print(k, z)
+        r += z
 
-r = 0
-for k in range(2, n+1):
-    x = ((1 << (n-1)) - 1 ) << 2
-    #print(bin(x))
-    z = f(x, k)
-    #print(k, z)
-    r += z
+    # P(20)
+    # no cond: hits=12271501, misses=2831840
+    #    cond: hits= 3483249, misses=1214491
 
-print(f.cache_info())
-print(r)
+    print(f.cache_info())
+    return r 
 
-
-# # BFS to find all bitsets of length n/2
-# seen = [Counter() for _ in range(n//2)]
-# for i in range(2, n+1):
-#     seen[1][(1 << i, i)] = 1
-#
-# for d in range(2, n//2):
-#     for b,k in seen[d-1]:
-#         for i in range(2, n+1):
-#             if not in_bit(b, i) and coprime(i, k):
-#                 newb = set_bit(b,i)
-#                 seen[d][(newb, i)] += seen[d-1][(b,k)]
-#
-#     print([(hex(k), v, seen[d][(k, v)]) for k, v in seen[d]])
-#     print(len(seen[d]), sum(seen[d].values()))
-
-
-
-
+print(P(20))

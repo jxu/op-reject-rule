@@ -13,6 +13,8 @@ from number import factor
 from collections import defaultdict
 from itertools import accumulate
 
+M = 83456729
+
 # n = 10
 #coprime_hist = (3, 2, 1, 1, 1, 1)
 #REP          = (2, 3, 5, 6, 7, 10) 
@@ -34,38 +36,38 @@ def P(n):
 
     print(coprime_group)
 
-    coprime_hist = tuple(len(v) for v in coprime_group.values())
-    REP          = tuple(v[0] for v in coprime_group.values())
+    rad_freq = tuple(len(v) for v in coprime_group.values())
+    rad          = tuple(v[0] for v in coprime_group.values())
 
-    print(coprime_hist)
-    print(REP)
+    print(rad_freq)
+    print(rad)
 
-    cp = [[False] * len(REP) for _ in range(len(REP))]
+    cp = [[False] * len(rad) for _ in range(len(rad))]
 
-    for i in range(len(REP)):
-        for j in range(len(REP)):
-            cp[i][j] = gcd(REP[i], REP[j]) == 1
+    for i in range(len(rad)):
+        for j in range(len(rad)):
+            cp[i][j] = gcd(rad[i], rad[j]) == 1
 
-    pb_bits = tuple(x.bit_length() for x in coprime_hist)
+    rad_bitcount = tuple(x.bit_length() for x in rad_freq)
 
-    print("pb_bits", pb_bits)
+    print("pb_bits", rad_bitcount)
 
-    pb_shift = (0,) + tuple(accumulate(pb_bits))[:-1]
+    rad_shift = (0,) + tuple(accumulate(rad_bitcount))[:-1]
 
-    print("shift", pb_shift)
+    print("shift", rad_shift)
 
     pb_key = 0
-    for i in range(len(coprime_hist)):
-        pb_key |= (coprime_hist[i]) << pb_shift[i]
+    for i in range(len(rad_freq)):
+        pb_key |= (rad_freq[i]) << rad_shift[i]
 
     print(bin(pb_key))
 
     def extract_count(bits, i):
-        return (bits >> pb_shift[i]) & ((1 << pb_bits[i]) - 1)
+        return (bits >> rad_shift[i]) & ((1 << rad_bitcount[i]) - 1)
 
     def subtract_count(bits, i):
         assert extract_count(bits, i) > 0
-        return bits - (1 << pb_shift[i])
+        return bits - (1 << rad_shift[i])
 
 
     @cache
@@ -74,26 +76,27 @@ def P(n):
         #assert seen[i] > 0
 
         # exactly extract_count(seen, i) == 1 and all other are 0
-        if seen == 1 << pb_shift[i]:
+        if seen == 1 << rad_shift[i]:
             return 1
         
         new_seen = subtract_count(seen, i)
 
         r = 0
-        for j in range(len(REP)):
-            if cp[i][j] and extract_count(seen, j) > 0:
+        for j in range(len(rad)):
+            count_j = extract_count(seen, j)
+            if cp[i][j] and count_j > 0:
 
-                r += extract_count(seen, j) * f(new_seen, j)
+                r = (r + count_j * f(new_seen, j)) % M
 
         #print(seen, i, r)
         return r
 
     r = 0
 
-    for i in range(len(coprime_hist)):
+    for i in range(len(rad_freq)):
         z = f(pb_key, i)
         print(i, z)
-        r += coprime_hist[i] * z
+        r = (r + rad_freq[i] * z) % M
 
     print(f.cache_info())
     return r 

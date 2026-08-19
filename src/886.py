@@ -1,104 +1,65 @@
 # Unique groups based on prime base
-# for n = 10
-# 2, 4, 8
-# 3, 9
-# 5
-# 6
-# 7
-# 10
 
 from functools import cache
-from math import gcd, prod
-from number import factor
+from math import gcd
 from collections import defaultdict
-from itertools import accumulate
 
-M = 83456729
+N = 20
+rad_group = defaultdict(list)
 
-# n = 10
-#coprime_hist = (3, 2, 1, 1, 1, 1)
-#REP          = (2, 3, 5, 6, 7, 10) 
+rad_lookup = (
+    0, 0, 2, 3, 2, 5, 6, 7, 2, 3, 
+    10, 11, 6, 13, 14, 15, 2, 17, 6, 19, 
+    10, 21, 22, 23, 6, 5, 26, 3, 14, 29,
+    30, 31, 2, 33, 34
+)
 
-# n = 34
-# {2,4,8,16,32}
-# {3,9,27}
-# {5,25}
-# 6, 12, 18, 24
-# 10, 20
-# 14, 28
+for i in range(2, N+1):
+    rad_group[rad_lookup[i]].append(i)
+
+print(rad_group)
+
+
+
+rad_freq = tuple(len(v) for v in rad_group.values())
+rad_repr = tuple(v[0] for v in rad_group.values())
+
+print(rad_freq)
+print(rad_repr)
+
+coprime = [[False] * len(rad_repr) for _ in range(len(rad_repr))]
+
+for i in range(len(rad_repr)):
+    for j in range(len(rad_repr)):
+        coprime[i][j] = gcd(rad_repr[i], rad_repr[j]) == 1
+
+@cache
+def f(seen, i):
+    assert seen[i] > 0
+
+    if sum(seen) == 1: 
+        return 1
+    
+    new_seen = tuple(seen[k]-1 if k==i else seen[k] 
+                for k in range(len(seen)))
+
+    r = 0
+    for j in range(len(seen)):
+        if coprime[i][j] and seen[j] > 0:
+
+            r += seen[j] * f(new_seen, j)
+
+    #print(seen, i, r)
+    return r
 
 def P(n):
-    coprime_group = defaultdict(list)
-
-    for i in range(2, n+1):
-        rad = prod(factor(i).keys())
-        coprime_group[rad].append(i)
-
-    print(coprime_group)
-
-    rad_freq = tuple(len(v) for v in coprime_group.values())
-    rad          = tuple(v[0] for v in coprime_group.values())
-
-    print(rad_freq)
-    print(rad)
-
-    cp = [[False] * len(rad) for _ in range(len(rad))]
-
-    for i in range(len(rad)):
-        for j in range(len(rad)):
-            cp[i][j] = gcd(rad[i], rad[j]) == 1
-
-    rad_bitcount = tuple(x.bit_length() for x in rad_freq)
-
-    print("pb_bits", rad_bitcount)
-
-    rad_shift = (0,) + tuple(accumulate(rad_bitcount))[:-1]
-
-    print("shift", rad_shift)
-
-    pb_key = 0
-    for i in range(len(rad_freq)):
-        pb_key |= (rad_freq[i]) << rad_shift[i]
-
-    print(bin(pb_key))
-
-    def extract_count(bits, i):
-        return (bits >> rad_shift[i]) & ((1 << rad_bitcount[i]) - 1)
-
-    def subtract_count(bits, i):
-        assert extract_count(bits, i) > 0
-        return bits - (1 << rad_shift[i])
-
-
-    @cache
-    def f(seen, i):
-        
-        #assert seen[i] > 0
-
-        # exactly extract_count(seen, i) == 1 and all other are 0
-        if seen == 1 << rad_shift[i]:
-            return 1
-        
-        new_seen = subtract_count(seen, i)
-
-        r = 0
-        for j in range(len(rad)):
-            count_j = extract_count(seen, j)
-            if cp[i][j] and count_j > 0:
-
-                r = (r + count_j * f(new_seen, j)) % M
-
-        #print(seen, i, r)
-        return r
-
     r = 0
 
     for i in range(len(rad_freq)):
-        z = f(pb_key, i)
+        z = f(rad_freq, i)
         print(i, z)
-        r = (r + rad_freq[i] * z) % M
+        r += rad_freq[i] * z
 
-    print(f.cache_info())
     return r 
 
-print(P(20))
+print(P(10))

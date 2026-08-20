@@ -3,8 +3,10 @@
 from functools import cache
 from math import gcd
 from collections import defaultdict
+from number import is_prime
 
-N = 20
+M = 83456729
+N = 10
 rad_group = defaultdict(list)
 
 rad_lookup = (
@@ -15,18 +17,23 @@ rad_lookup = (
 )
 
 for i in range(2, N+1):
-    rad_group[rad_lookup[i]].append(i)
+    # optimization: wildcard primes grouped together
+    if i > N // 2 and is_prime(i):
+        # 1 coprime to everything?
+        rad_group[1].append(i)
+    else:
+        rad_group[rad_lookup[i]].append(i)
 
 print(rad_group)
 
 
 
 rad_freq = tuple(len(v) for v in rad_group.values())
-rad_repr = tuple(v[0] for v in rad_group.values())
+rad_repr = tuple(rad_group.keys())
 
 
-print(rad_freq)
-print(rad_repr)
+print("rad freq", rad_freq)
+print("rad representative", rad_repr)
 
 coprime = [[False] * len(rad_repr) for _ in range(len(rad_repr))]
 
@@ -34,61 +41,44 @@ for i in range(len(rad_repr)):
     for j in range(len(rad_repr)):
         coprime[i][j] = gcd(rad_repr[i], rad_repr[j]) == 1
 
+
+# lazy bitpacking
+def extract_bits(x, i):
+    return (x >> (3*i)) & 7
+
+def subtract_count(x, i):
+    return x - (1 << 3*i)
+
 @cache
 def f(seen, i):
-    assert seen[i] > 0
 
-    if sum(seen) == 1: 
+
+    if seen == (1 << (3*i)): 
         return 1
 
-
-    evens = 0
-    odds = 0
-
-    for j in range(len(seen)):
-        if rad_repr[j] % 2 == 0: 
-            evens += seen[j]
-        else: 
-            odds += seen[j]
-
-    l = sum(seen)
-
-    # n = 10: hits = 253, misses=342
-    # with parity: hits = 61, misses = 172
-
-    # n = 20: hits=574131, misses=167527
-    # with parity: hits=129379, misses=65429
-    
-
-    if l % 2 == 1:
-        if not (rad_repr[i] % 2 == 0 and evens - odds == 1): 
-            return 0
-    else:
-        if not (rad_repr[i] % 2 == 1 and evens == odds):
-
-            return 0
-
-    
-    new_seen = tuple(seen[k]-1 if k==i else seen[k] 
-                for k in range(len(seen)))
+    new_seen = subtract_count(seen, i)
 
     r = 0
-    for j in range(len(seen)):
-        if coprime[i][j] and seen[j] > 0:
+    for j in range(len(rad_freq)):
+        count_j = extract_bits(new_seen, j)
 
-            r += seen[j] * f(new_seen, j)
+        if (coprime[i][j]) and count_j > 0:
+
+            r = (r +  count_j * f(new_seen, j)) % M
 
     return r
 
-def P(n):
-    r = 0
+full = 0
+for i in range(len(rad_freq)):
+    full |= rad_freq[i] << (3*i)
 
-    for i in range(len(rad_freq)):
-        z = f(rad_freq, i)
-        print(i, z)
-        r += rad_freq[i] * z
+r = 0
 
-    print(f.cache_info())
-    return r 
+for i in range(len(rad_freq)):
+    z = f(full, i)
+    print(i, z)
+    r += rad_freq[i] * z
 
-print(P(10))
+print(f.cache_info())
+print(r % M)
+

@@ -24,6 +24,7 @@ std::vector<std::vector<bool>> cp;
 
 long long L = 0;
 
+// TODO: combine key into single int
 vector<unordered_map<long long, long long>> dp;
 
 int extract_count(long long bits, int i)
@@ -31,15 +32,19 @@ int extract_count(long long bits, int i)
     return (bits >> (3*i)) & 7;
 }
 
-long long f(long long seen, int i)
-{
+long long f(long long seen, int i, int depth)
+{   
+    // even-odd optimization
+    // the full path using 2 through n (even) must be
+    // even-odd-...-even, so all prefix paths must be too
+    if (depth % 2 != rad[i] % 2)
+        return 0;
+
     if (dp[i].contains(seen))
     {
         return dp[i][seen];
     }
 
-    //if (extract_count(seen, i) == 0)
-    //    return 0;
 
     if (seen == (1ull << (3*i)))
         return 1;
@@ -53,7 +58,7 @@ long long f(long long seen, int i)
         int count_j = extract_count(new_seen, j);
         if (cp[i][j] == 1 && count_j > 0)
         {
-            res = (res + count_j * f(new_seen, j)) % M;
+            res = (res + count_j * f(new_seen, j, depth-1)) % M;
         }
     }
 
@@ -101,7 +106,7 @@ int main()
     long long res = 0;
     for (int i = 0; i < L; i++)
     {
-        long long z = f(full, i);
+        long long z = f(full, i, n);
         std::cout << i << " " << z << endl;
         res = (res + rad_freq[i] * z) % M;
     }

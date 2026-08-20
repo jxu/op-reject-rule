@@ -24,6 +24,7 @@ print(rad_group)
 rad_freq = tuple(len(v) for v in rad_group.values())
 rad_repr = tuple(v[0] for v in rad_group.values())
 
+
 print(rad_freq)
 print(rad_repr)
 
@@ -39,6 +40,34 @@ def f(seen, i):
 
     if sum(seen) == 1: 
         return 1
+
+
+    evens = 0
+    odds = 0
+
+    for j in range(len(seen)):
+        if rad_repr[j] % 2 == 0: 
+            evens += seen[j]
+        else: 
+            odds += seen[j]
+
+    l = sum(seen)
+
+    # n = 10: hits = 253, misses=342
+    # with parity: hits = 61, misses = 172
+
+    # n = 20: hits=574131, misses=167527
+    # with parity: hits=129379, misses=65429
+    
+
+    if l % 2 == 1:
+        if not (rad_repr[i] % 2 == 0 and evens - odds == 1): 
+            return 0
+    else:
+        if not (rad_repr[i] % 2 == 1 and evens == odds):
+
+            return 0
+
     
     new_seen = tuple(seen[k]-1 if k==i else seen[k] 
                 for k in range(len(seen)))
@@ -49,7 +78,6 @@ def f(seen, i):
 
             r += seen[j] * f(new_seen, j)
 
-    #print(seen, i, r)
     return r
 
 def P(n):
@@ -60,6 +88,7 @@ def P(n):
         print(i, z)
         r += rad_freq[i] * z
 
+    print(f.cache_info())
     return r 
 
 print(P(10))

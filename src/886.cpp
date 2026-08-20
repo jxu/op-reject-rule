@@ -24,51 +24,33 @@ std::vector<std::vector<bool>> cp;
 
 long long L = 0;
 
-// Combine (seen, i) into single key
-unordered_map<long long, long long> dp;
-
-long long pack_key(long long seen, int i)
-{
-    return ((long long)i << 56) | seen;
-}
-
-long long unpack_seen(long long key)
-{
-    return key & ((1ull << 56) - 1);
-}
-
-long long unpack_node(long long key)
-{
-    return key >> 56;
-}
+// TODO: combine key into single int
+vector<unordered_map<long long, long long>> dp;
 
 int extract_count(long long bits, int i)
 {
     return (bits >> (3*i)) & 7;
 }
 
-// (seen, i) packed into key
-long long f(long long key, int depth)
+long long f(long long seen, int i, int depth)
 {   
-    if (dp.contains(key))
-    {
-        return dp[key];
-    }
-
-    long long seen = unpack_seen(key);
-    int i = unpack_node(key);
-
     // even-odd optimization
     // the full path using 2 through n (even) must be
     // even-odd-...-even, so all prefix paths must be too
     if (depth % 2 != rad[i] % 2)
         return 0;
 
-    // base case
+    if (dp[i].contains(seen))
+    {
+        return dp[i][seen];
+    }
+
+
     if (seen == (1ull << (3*i)))
         return 1;
 
     long long new_seen = seen - (1ull << (3*i));
+
     long long res = 0;
 
     for (int j = 0; j < L; ++j)
@@ -76,17 +58,19 @@ long long f(long long key, int depth)
         int count_j = extract_count(new_seen, j);
         if (cp[i][j] == 1 && count_j > 0)
         {
-            long long new_key = pack_key(new_seen, j);
-            res = (res + count_j * f(new_key, depth-1)) % M;
+            res = (res + count_j * f(new_seen, j, depth-1)) % M;
         }
     }
 
-    dp[key] = res;
+    dp[i][seen] = res;
+
     return res;
 }
 
 int main()
 {
+
+
     for (int i = 2; i <= n; ++i) {
         int rad_val = rad_lookup[i];
         rad_dict[rad_val].push_back(i);
@@ -103,12 +87,15 @@ int main()
 
     L = rad.size();
 
+    dp.resize(L);
+
     cp = std::vector<std::vector<bool>>(L, std::vector<bool>(L, false));
     for (std::size_t i = 0; i < L; ++i) {
         for (std::size_t j = 0; j < L; ++j) {
             cp[i][j] = (std::gcd(rad[i], rad[j]) == 1);
         }
     }
+
 
     long long full = 0;
     for (int i = 0; i < L; i++)
@@ -119,7 +106,7 @@ int main()
     long long res = 0;
     for (int i = 0; i < L; i++)
     {
-        long long z = f(pack_key(full, i), n);
+        long long z = f(full, i, n);
         std::cout << i << " " << z << endl;
         res = (res + rad_freq[i] * z) % M;
     }

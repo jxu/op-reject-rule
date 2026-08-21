@@ -34,27 +34,40 @@ for i in range(L):
         coprime[i][j] = gcd(rad_repr[i], rad_repr[j]) == 1
 
 
-def extract_bits(x, i):
+def extract_count(x, i):
     return (x >> (3*i)) & 7
 
 def subtract_count(x, i):
     return x - (1 << 3*i)
 
+# Pypy int key is much smaller than 3- or 2-tuple
+# Memory usage 13.3 GiB -> 3.2 GiB and much faster
+def pack(seen, i):
+    return (i << 56) | seen
+
+def unpack(key):
+    return (key & ((1 << 56) - 1), key >> 56)
+
 @cache
-def f(seen, i, depth):
+def f(key):
+    seen, i = unpack(key)
     if seen == 1 << (3*i): 
         return 1
 
-    if depth % 2 != rad_repr[i] % 2:
+    length = 0
+    for j in range(L):
+        length += extract_count(seen, j);
+
+    if length % 2 == rad_repr[i] % 2:
         return 0
 
     new_seen = subtract_count(seen, i)
     r = 0
     for j in range(L):
-        count_j = extract_bits(new_seen, j)
+        count_j = extract_count(new_seen, j)
 
         if (coprime[i][j]) and count_j > 0:
-            r = (r +  count_j * f(new_seen, j, depth-1)) % M
+            r = (r +  count_j * f(pack(new_seen, j))) % M
 
     return r
 
@@ -64,7 +77,7 @@ for i in range(L):
 
 r = 0
 for i in range(L):
-    r += rad_freq[i] * f(full, i, n)
+    r += rad_freq[i] * f(pack(full, i))
 
 print(f.cache_info())
 print(r % M)

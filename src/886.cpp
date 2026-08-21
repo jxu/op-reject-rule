@@ -2,7 +2,7 @@
 #include <cstdint>
 #include <vector>
 #include <numeric>
-#include <unordered_map>
+#include "flat_hash_map.hpp" // more efficient than unordered_map
 
 using namespace std;
 
@@ -24,7 +24,7 @@ std::vector<std::vector<bool>> cp;
 
 int L = 0; // count rad equivalence classes
 
-vector<unordered_map<uint64_t, uint64_t>> dp;
+vector<ska::flat_hash_map<uint64_t, uint64_t>> dp;
 
 int extract_count(uint64_t bits, int i)
 {
@@ -39,8 +39,9 @@ uint64_t f(uint64_t seen, int i, int depth)
     if (depth % 2 != rad_repr[i] % 2)
         return 0;
 
-    if (dp[i].contains(seen))
-        return dp[i][seen];
+    auto it = dp[i].find(seen);
+    if (it != dp[i].end())
+        return it->second;
 
     if (seen == (1ull << (3*i)))
         return 1;
@@ -72,7 +73,11 @@ int main()
 
     L = rad_repr.size();
 
+    // reserve space for hash tables
     dp.resize(L);
+
+    for (int i = 0; i < L; i++)
+        dp[i].reserve(1 << 22);
 
     cp = vector<vector<bool>>(L, vector<bool>(L, false));
     for (int i = 0; i < L; ++i) 

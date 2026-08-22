@@ -4,7 +4,7 @@
 #define M 83456729
 #define N 34
 #define L 18 // count rad classes
-#define HASHTABLE_BITS 22
+#define HASHTABLE_BITS 26
 #define HASHTABLE_SIZE (1 << HASHTABLE_BITS)
 
 #define EMPTY_VAL ((uint32_t)(-1))
@@ -23,10 +23,9 @@ int rad_freq[L];
 int coprime[L][L];
 
 // Handmade linear probing hash table for fun
-uint64_t keys[L][HASHTABLE_SIZE]; // auto-init to 0
-uint32_t values[L][HASHTABLE_SIZE]; 
-
-int hits = 0, misses = 0;
+// Fits in under 20 lines, which is pretty compact
+uint64_t keys[HASHTABLE_SIZE]; // auto-init to 0
+uint32_t values[HASHTABLE_SIZE]; 
 
 // multiplicative hash
 size_t hash_key(uint64_t key)
@@ -34,30 +33,29 @@ size_t hash_key(uint64_t key)
     return (key * 0x9E3779B97F4A7C15ULL) >> (64 - HASHTABLE_BITS);
 }
 
-// flat array for now
-void table_insert(int i, uint64_t key, uint32_t val)
+void table_insert(uint64_t key, uint32_t val)
 {
     size_t idx;
 
     // linear probe until we hit our key or empty key 0
     for (idx = hash_key(key); 
-         keys[i][idx] != key && keys[i][idx] != 0;
+         keys[idx] != key && keys[idx] != 0;
          idx = (idx + 1) % HASHTABLE_SIZE) 
         ;
         
-    keys[i][idx] = key;
-    values[i][idx] = val;
+    keys[idx] = key;
+    values[idx] = val;
 }
 
-uint32_t table_get(int i, uint64_t key)
+uint32_t table_get(uint64_t key)
 {
     // linear probe for our key until we hit empty key
     for (size_t idx = hash_key(key); 
-         keys[i][idx] != 0;
+         keys[idx] != 0;
          idx = (idx + 1) % HASHTABLE_SIZE)
     {
-        if (keys[i][idx] == key)
-            return values[i][idx];
+        if (keys[idx] == key)
+            return values[idx];
     }
 
     return EMPTY_VAL;
@@ -68,6 +66,15 @@ int extract_count(uint64_t bits, int i)
     return (bits >> (3*i)) & 7;
 }
 
+// Store rad class i and DP bit-pack in one key.
+// In theory, it is possible to really compress the key into a 32-bit int:
+// Given these rad_freq at n = 34:
+// (5, 3, 2, 4, 1, 2, 1, 1, 2, 1, 1, 4, 1, 1, 1, 1, 1, 1)
+// and also storing 33 values of i,
+// In mixed-radix representation, this requires exactly
+// 33 * (5+1) * (4+1)^2 * (3+1) * (2+1)^3 * (1+1)^11 = 1094860800 values
+// So 31 bits. But I don't think it's worth doing so I just give 3 bits per
+// rad and have lots of space left over.
 uint64_t pack_key(int i, uint64_t bits)
 {
     return ((uint64_t)i << 56) | bits;
@@ -76,7 +83,7 @@ uint64_t pack_key(int i, uint64_t bits)
 int gcd(int a, int b)
 {
     if (b == 0) return a;
-    return gcd(b, a % b);
+    return gcd(b, a % b); // compiler optimizes tail-call
 }
 
 uint64_t f(uint64_t seen, int i, int depth)
@@ -87,13 +94,10 @@ uint64_t f(uint64_t seen, int i, int depth)
     if (depth % 2 != rad_repr[i] % 2)
         return 0;
 
-    uint32_t cached = table_get(i, seen);
+    uint32_t cached = table_get(pack_key(i, seen));
 
     if (cached != EMPTY_VAL)
-    {   
-        hits++;
         return cached;
-    }
 
     if (seen == (1ull << (3*i)))
         return 1;
@@ -108,8 +112,7 @@ uint64_t f(uint64_t seen, int i, int depth)
             res = (res + count_j * f(new_seen, j, depth-1)) % M;
     }
 
-    table_insert(i, seen, res);
-    misses++;
+    table_insert(pack_key(i, seen), res);
     return res;
 }
 
@@ -141,17 +144,14 @@ int main()
         }
     }
 
+    // Bit-pack rad freqs into 3 bits each
     uint64_t full = 0;
     for (int i = 0; i < L; i++)
         full |= (uint64_t)(rad_freq[i]) << (3 * i);
 
     uint64_t res = 0;
     for (int i = 0; i < L; i++)
-    {
         res = (res + rad_freq[i] * f(full, i, N)) % M;
-    }
-
-    printf("Hits: %d Misses: %d\n", hits, misses);
 
     printf("%lu\n", res);
 }

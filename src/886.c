@@ -2,7 +2,7 @@
 #include <stdint.h>
 
 #define M 83456729
-#define n 10
+#define N 34
 #define L 18 // count rad classes
 #define HASHTABLE_BITS 22
 #define HASHTABLE_SIZE (1 << HASHTABLE_BITS)
@@ -26,6 +26,8 @@ int coprime[L][L];
 uint64_t keys[L][HASHTABLE_SIZE]; // auto-init to 0
 uint32_t values[L][HASHTABLE_SIZE]; 
 
+int hits = 0, misses = 0;
+
 // multiplicative hash
 size_t hash_key(uint64_t key)
 {
@@ -35,14 +37,31 @@ size_t hash_key(uint64_t key)
 // flat array for now
 void table_insert(int i, uint64_t key, uint32_t val)
 {
-    values[i][key] = val;
+    size_t idx;
+
+    // linear probe until we hit our key or empty key 0
+    for (idx = hash_key(key); 
+         keys[i][idx] != key && keys[i][idx] != 0;
+         idx = (idx + 1) % HASHTABLE_SIZE) 
+        ;
+        
+    keys[i][idx] = key;
+    values[i][idx] = val;
 }
 
 uint32_t table_get(int i, uint64_t key)
 {
+    // linear probe for our key until we hit empty key
+    for (size_t idx = hash_key(key); 
+         keys[i][idx] != 0;
+         idx = (idx + 1) % HASHTABLE_SIZE)
+    {
+        if (keys[i][idx] == key)
+            return values[i][idx];
+    }
+
     return EMPTY_VAL;
 }
-
 
 int extract_count(uint64_t bits, int i)
 {
@@ -63,7 +82,7 @@ int gcd(int a, int b)
 uint64_t f(uint64_t seen, int i, int depth)
 {   
     // even-odd optimization
-    // the full path using 2 through n (even) must be
+    // the full path using 2 through N (even) must be
     // even-odd-...-even, so all prefix paths must be too
     if (depth % 2 != rad_repr[i] % 2)
         return 0;
@@ -71,7 +90,10 @@ uint64_t f(uint64_t seen, int i, int depth)
     uint32_t cached = table_get(i, seen);
 
     if (cached != EMPTY_VAL)
+    {   
+        hits++;
         return cached;
+    }
 
     if (seen == (1ull << (3*i)))
         return 1;
@@ -87,27 +109,26 @@ uint64_t f(uint64_t seen, int i, int depth)
     }
 
     table_insert(i, seen, res);
+    misses++;
     return res;
 }
 
 int main()
 {
     // temp array that maps rad to count
-    int rad_count[n+1] = {0};
+    int rad_count[N+1] = {0};
 
-    for (int i = 2; i <= n; i++) 
+    for (int i = 2; i <= N; i++) 
         rad_count[rad[i]]++;
 
     // extract unique rad classes
     int l = 0;
-    for (int r = 0; r <= n; r++) // goes through rad values in order
+    for (int r = 0; r <= N; r++) // goes through rad values in order
     {   
         if (rad_count[r] > 0)
         {
             rad_repr[l] = r;
             rad_freq[l] = rad_count[r];
-            
-            printf("%d %d\n", rad_repr[l], rad_freq[l]);
             l++;
         }
     }
@@ -127,8 +148,10 @@ int main()
     uint64_t res = 0;
     for (int i = 0; i < L; i++)
     {
-        res = (res + rad_freq[i] * f(full, i, n)) % M;
+        res = (res + rad_freq[i] * f(full, i, N)) % M;
     }
+
+    printf("Hits: %d Misses: %d\n", hits, misses);
 
     printf("%lu\n", res);
 }

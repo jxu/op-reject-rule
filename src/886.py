@@ -27,12 +27,8 @@ print("rad freq", rad_freq)
 print("rad representative", rad_repr)
 
 L = len(rad_freq)
-coprime = [[False] * L for _ in range(L)]
 
-for i in range(L):
-    for j in range(L):
-        coprime[i][j] = gcd(rad_repr[i], rad_repr[j]) == 1
-
+coprime = [[gcd(a, b) == 1 for a in rad_repr] for b in rad_repr]
 
 def extract_count(x, i):
     return (x >> (3*i)) & 7
@@ -56,7 +52,7 @@ def f(key):
 
     length = 0
     for j in range(L):
-        length += extract_count(seen, j);
+        length += extract_count(seen, j)
 
     if length % 2 == rad_repr[i] % 2:
         return 0
@@ -66,7 +62,7 @@ def f(key):
     for j in range(L):
         count_j = extract_count(new_seen, j)
 
-        if (coprime[i][j]) and count_j > 0:
+        if coprime[i][j] and count_j > 0:
             r = (r +  count_j * f(pack(new_seen, j))) % M
 
     return r

@@ -7,7 +7,8 @@
 #define HASHTABLE_BITS 26
 #define HASHTABLE_SIZE (1 << HASHTABLE_BITS)
 
-#define EMPTY_VAL ((uint32_t)(-1))
+#define EMPTY_KEY 0
+#define NOT_FOUND_VAL ((uint32_t)(-1))
 
 // special: primes > N/2 get special rad 1 that is coprime to all
 const int rad[] = 
@@ -28,7 +29,7 @@ uint64_t keys[HASHTABLE_SIZE]; // auto-init to 0
 uint32_t values[HASHTABLE_SIZE]; 
 
 // multiplicative hash
-size_t hash_key(uint64_t key)
+inline size_t hash_key(uint64_t key)
 {
     return (key * 0x9E3779B97F4A7C15ULL) >> (64 - HASHTABLE_BITS);
 }
@@ -37,9 +38,9 @@ void table_insert(uint64_t key, uint32_t val)
 {
     size_t idx;
 
-    // linear probe until we hit our key or empty key 0
+    // linear probe until we hit our key or empty key
     for (idx = hash_key(key); 
-         keys[idx] != key && keys[idx] != 0;
+         keys[idx] != key && keys[idx] != EMPTY_KEY;
          idx = (idx + 1) % HASHTABLE_SIZE) 
         ;
         
@@ -51,17 +52,17 @@ uint32_t table_get(uint64_t key)
 {
     // linear probe for our key until we hit empty key
     for (size_t idx = hash_key(key); 
-         keys[idx] != 0;
+         keys[idx] != EMPTY_KEY;
          idx = (idx + 1) % HASHTABLE_SIZE)
     {
         if (keys[idx] == key)
             return values[idx];
     }
 
-    return EMPTY_VAL;
+    return NOT_FOUND_VAL;
 }
 
-int extract_count(uint64_t bits, int i)
+inline int extract_count(uint64_t bits, int i)
 {
     return (bits >> (3*i)) & 7;
 }
@@ -75,28 +76,28 @@ int extract_count(uint64_t bits, int i)
 // 33 * (5+1) * (4+1)^2 * (3+1) * (2+1)^3 * (1+1)^11 = 1094860800 values
 // So 31 bits. But I don't think it's worth doing so I just give 3 bits per
 // rad and have lots of space left over.
-uint64_t pack_key(int i, uint64_t bits)
+inline uint64_t pack_key(int i, uint64_t bits)
 {
     return ((uint64_t)i << 56) | bits;
 }
 
-int gcd(int a, int b)
+inline int gcd(int a, int b)
 {
     if (b == 0) return a;
     return gcd(b, a % b); // compiler optimizes tail-call
 }
 
-uint64_t f(uint64_t seen, int i, int depth)
+uint64_t f(uint64_t seen, int i, int height)
 {   
     // even-odd optimization
     // the full path using 2 through N (even) must be
     // even-odd-...-even, so all prefix paths must be too
-    if (depth % 2 != rad_repr[i] % 2)
+    if (height % 2 == rad_repr[i] % 2)
         return 0;
 
     uint32_t cached = table_get(pack_key(i, seen));
 
-    if (cached != EMPTY_VAL)
+    if (cached != NOT_FOUND_VAL)
         return cached;
 
     if (seen == (1ull << (3*i)))
@@ -109,7 +110,7 @@ uint64_t f(uint64_t seen, int i, int depth)
     {
         int count_j = extract_count(new_seen, j);
         if (coprime[i][j] && count_j > 0)
-            res = (res + count_j * f(new_seen, j, depth-1)) % M;
+            res = (res + count_j * f(new_seen, j, height-1)) % M;
     }
 
     table_insert(pack_key(i, seen), res);
@@ -151,7 +152,7 @@ int main()
 
     uint64_t res = 0;
     for (int i = 0; i < L; i++)
-        res = (res + rad_freq[i] * f(full, i, N)) % M;
+        res = (res + rad_freq[i] * f(full, i, N-1)) % M;
 
     printf("%lu\n", res);
 }

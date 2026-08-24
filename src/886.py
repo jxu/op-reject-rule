@@ -40,13 +40,13 @@ This was finally enough to get the C++ rewrite to run in a few minutes.
 
 Another optimization I included, actually my first approach, is to notice all
 paths are the form even-odd-even-odd-...-even. 
+(Note this only works for even n.)
 The recursion uses path prefixes, so I can enforce even/odd constraint on the
 end node based on path length. I also considered things like #even - #odd = 1
 which is redundant. This cuts down on the original DP states by something like
 O(1 / sqrt n) since it compares O(2^n) to O((n choose n/2)).
 """
 
-from functools import cache
 from math import gcd
 from collections import defaultdict
 
@@ -60,6 +60,9 @@ rad = (
     10, 21, 22, 1, 6, 5, 26, 3, 14, 1,
     30, 1, 2, 33, 34
 )
+
+# manually maintain memo for more control than @cache
+memo = {}
 
 rad_dict = defaultdict(list)
 for i in range(2, n+1):
@@ -85,24 +88,20 @@ def subtract_count(x, i):
     return x - (1 << 3*i)
 
 # Pypy int key is much smaller than 3- or 2-tuple
-# Memory usage 13.3 GiB -> 3.2 GiB and much faster
+# Memory usage of @cache 13.3 GiB -> 3.2 GiB and much faster
 def pack(seen, i):
     return (i << 56) | seen
 
-def unpack(key):
-    return (key & ((1 << 56) - 1), key >> 56)
+def f(seen, i, height):
+    key = pack(seen, i)
+    if key in memo:
+        return memo[key]
 
-@cache
-def f(key):
-    seen, i = unpack(key)
     if seen == 1 << (3*i):  # base case
         return 1
 
-    length = 0
-    for j in range(L):
-        length += extract_count(seen, j)
-
-    if length % 2 == rad_repr[i] % 2:
+    # even-odd optimization
+    if height % 2 == rad_repr[i] % 2:
         return 0
 
     new_seen = subtract_count(seen, i)
@@ -111,8 +110,9 @@ def f(key):
         count_j = extract_count(new_seen, j)
 
         if coprime[i][j] and count_j > 0:
-            r = (r +  count_j * f(pack(new_seen, j))) % M
+            r = (r +  count_j * f(new_seen, j, height-1)) % M
 
+    memo[key] = r
     return r
 
 # load max rad_freq into packed binary
@@ -123,7 +123,6 @@ for i in range(L):
 # sum main DP over all ending nodes
 r = 0
 for i in range(L):
-    r += rad_freq[i] * f(pack(full, i))
+    r += rad_freq[i] * f(full, i, n-1)
 
-print(f.cache_info())
 print(r % M)

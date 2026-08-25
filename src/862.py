@@ -6,18 +6,8 @@
 
 # My original solution involved generating partitions of k, like 1+1+2, then
 # some string combinatorics based on if the multiset had zeros or not
-
-from math import prod, factorial
-from functools import cache
 from itertools import combinations
-
-# factorial recomputing is really slow 
-fact = cache(factorial)
-
-# should probably go into number.py
-def multinomial(coefs):
-    return fact(sum(coefs)) // prod(fact(c) for c in coefs)
-
+from number import multinomial
 
 def weak_compositions(n, m):
     """Generate m-tuples of nonnegative integers that sum to n.

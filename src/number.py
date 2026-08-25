@@ -463,6 +463,15 @@ def val_fact(p, n):
     return v
 
 
+# Cache factorial to avoid recomputing
+fact = cache(math.factorial)
+
+
+def multinomial(coefs):
+    """Multinomial coefficient"""
+    return fact(sum(coefs)) // prod(fact(c) for c in coefs)
+
+
 ### ALGORITHM
 def binary_search(f, l, r):
     """Return L s.t. f(L)=0, f(L+1)=f(R)=1, if it exists

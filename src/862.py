@@ -8,30 +8,33 @@
 # some string combinatorics based on if the multiset had zeros or not
 
 from math import prod, factorial
+from functools import cache
+from itertools import combinations
 
 # factorial recomputing is really slow 
-fact = [factorial(i) for i in range(13)]
+fact = cache(factorial)
 
-# trying out generator to save memory
-# also aryanc403 idea: use DP to return sum of c, c^2?
-def make_hists(N, min_d=0):
-    if N == 0:
-        yield [0] * 10
-        return
-
-    for d in range(min_d, 10):
-        for hist in make_hists(N-1, d):
-            hist[d] += 1
-            yield hist
+# should probably go into number.py
+def multinomial(coefs):
+    return fact(sum(coefs)) // prod(fact(c) for c in coefs)
 
 
-def T(N, hist):
-    c = (fact[N] // prod(fact[hist[i]] for i in range(10)) *
-         (N - hist[0]) // N)
-    return c * (c-1) // 2
+def weak_compositions(n, m):
+    """Generate m-tuples of nonnegative integers that sum to n.
+    
+    i.e. (a_1, ..., a_m) where a_1 + ... + a_m = n, a_i >= 0.
+    """
+    # Stars-and-bars approach: pick m - 1 dividers from m + n - 1 slots
+    for bars in combinations(range(1, n + m), m - 1):
+        bars = (0,) + bars + (n + m,)  # endpoints
+        yield tuple(bars[i+1] - bars[i] - 1 for i in range(m))
 
 
-def S(N):
-    return sum(T(N, hist) for hist in make_hists(N))
+def S(k):
+    def T(comp):
+        c = multinomial(comp) * (k - comp[0]) // k
+        return c * (c-1) // 2
+
+    return sum(T(comp) for comp in weak_compositions(k, 10))
 
 print(S(12))

@@ -325,13 +325,16 @@ def mod_inv(a, m):
     return x % m
 
 
-def mod_inv_range(p, end):
+def mod_inv_range(p, end=None):
     """Computes inverse mod p in range [1, end] in O(end) time
 
     Warning: still may be slow for large end and p.
 
     Credit: cp-algorithms, e-maxx.ru
     """
+    if end is None:
+        end = p-1
+
     inv = [0] * (end+1)
     inv[1] = 1
     for i in range(2, end+1):

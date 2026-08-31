@@ -1,31 +1,32 @@
 from number import sieve
-
+from sortedcontainers import SortedList
 
 primes = sieve(10**6)
 
 
     
 def S(n):
-    result = [1]
+    result = SortedList([1])
 
     # non-recursive version
     for p in primes:
-        result = sorted(result)
-        new_result = result.copy()
-        for x in result:
+        if p**3 > n: break
 
+        old_len = len(result)
+        print(p, old_len)
+        new_res = []
+        for i in range(old_len):
+            x = result[i]
             y = p**3 * x
+            if y > n: break
+
             while y <= n:
-                new_result.append(y)
+                new_res.append(y)
                 y *= p
 
-        result = new_result 
 
-
-
-
-
-
+        for x in new_res:
+            result.add(x)  # fast insert
 
     s = n
     for x in result:
@@ -33,4 +34,4 @@ def S(n):
         s += n // x
     return s
 
-print(S(10**4))
+print(S(10**18))

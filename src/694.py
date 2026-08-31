@@ -12,11 +12,8 @@ def S(n):
     for p in primes:
         if p**3 > n: break
 
-        old_len = len(result)
-        print(p, old_len)
         new_res = []
-        for i in range(old_len):
-            x = result[i]
+        for x in result:
             y = p**3 * x
             if y > n: break
 

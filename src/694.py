@@ -7,13 +7,14 @@ def f(c, i):
     s = n // c
 
     for j in range(i, len(primes)):
-        if c * primes[j]**3 > n: break
-        
-        for k in range(3, 100):
-            y = c * primes[j]**k
-            if y > n: break
-            
+        y = c * primes[j]**3  # minimum y
+        if y > n: break  # important: exit j loop early
+       
+        while y <= n: 
             s += f(y, j+1)
+            y *= primes[j]
+    
     return s
 
 print(f(1, 0))
+

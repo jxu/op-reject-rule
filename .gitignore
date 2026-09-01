@@ -105,3 +105,4 @@ src/.idea
 *.exe
 .idea/
 *.nb
+*.sage.py

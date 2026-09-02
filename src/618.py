@@ -1,23 +1,18 @@
-# Simple DP (F_24 ~ 50000, about 5000 primes below F_24)
-# Recursion runs out of stack memory using Python 3.6.
-# Runs fine in about 1.5 mins with Pypy 2.7 and 3.6
-
-# (also A002098) G.f. approach is
-# Product_p ((p x^p)^0 + (p x^p)^1 + (p x^p)^2 + ...)
-# = Product_p 1 / (1 - p x^p)
-
+# Basic recurrence, considering up to ith prime:
+# S(k, i) = S(k, i-1) + p_i * S(k - p_i, i)
+# Requires O(k pi(k)) space, where k = F_24 ≈ 50000, pi(k) ≈ 5000
+# Simple space optimization: let level i overwrite level i-1 as k increases
 from number import fib_list, sieve
-from functools import cache
-import sys
-sys.setrecursionlimit(30000)
 
 fib = fib_list(24)
 primes = sieve(fib[-1])
 
-@cache
-def S(k, i):
-    if k < 0 or i < 0: return 0
-    if k == 0: return 1
-    return (S(k, i-1) + primes[i] * S(k - primes[i], i)) % 10**9
+def S(k):
+    m = [1] + [0] * fib[-1]
+    for p in primes:
+        for j in range(p, k+1):
+            m[j] = (m[j] + p * m[j-p]) % 10**9
+    return m
 
-print(sum(S(fib[i], len(primes)-1) for i in range(2, 25)) % 10**9)
+m = S(fib[-1])
+print(sum(m[fib[i]] for i in range(2, 25)) % 10**9)

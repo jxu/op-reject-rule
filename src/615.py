@@ -1,38 +1,44 @@
-# Let M = 10^6. Smallest num with 1 million prime factors: 2^M
-# Upper bounds: 2^(M-1) * M,
-# 2^(M-1)*n with n having at least 1 prime factor,
-# 2^(M-2)*n with n having at least 2 prime factors,
-# ... for 2^(M-4)*n with n having 4 or more prime factors. There are ~M such
-# n below 2.11e6.
-from __future__ import division
-from number import sieve
-import heapq
+# Dijkstra like search idea
 
-# Parameters to tune
-DEPTH = 22
-max_num = 10**12
-M = 10**6
-PRIMES = sieve(10**7)
+# best known upper bound: 86597.5
+
+from number import sieve
+from heapq import heappush, heappop
+
+max_num = 10**5  # upper bound to tune
+N = 10**6
+PRIMES = sieve(2 * max_num)
 MAX_I = len(PRIMES)
 
-h = []
+half_primes = [3/2, 2] + [p/2 for p in PRIMES[2:]]
 
-def build(product, depth, min_i):
+print(half_primes)
 
-    if depth >= DEPTH:
-        heapq.heappush(h, product)
-        if len(h) >= M and len(h) % 10**4 == 0:
-            global max_num
-            max_num = min(max_num, h[M-1])
-            print(len(h), max_num, max_num/(2**DEPTH))
+visited = []
 
+# store s, min_i
+h = [(1,0)]
+
+for t in range(N):
+    s, min_i = heappop(h)
+    visited.append(s)
+    print(s)
+
+    # add new frontier nodes
     for i in range(min_i, MAX_I):
-        if product * PRIMES[i] >= max_num: break
-        build(product*PRIMES[i], depth+1, i)
+        x = s * half_primes[i]
+        if x > max_num: break
 
+        heappush(h, (x, i))
 
-build(1, 0, 0)
-n = h[M-1]
+# recover number
+x = visited[-1]
 
-print(n, n/(2**DEPTH), len(h))
-print((pow(2, M - DEPTH, 123454321) * n) % 123454321)
+pow2 = N
+y = x
+while int(y) != y:
+    y *= 2
+    pow2 -= 1
+
+print(x, y, pow2)
+print(int(y) * pow(2, pow2, 123454321) % 123454321)

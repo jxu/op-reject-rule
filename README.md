@@ -40,6 +40,7 @@ Problems Solved Milestones/Levels
 | 8     | 200      | 2018-08-26 |
 | 9     | 225      | 2023-02-08 |
 | 10    | 250      | 2024-07-14 |
+| 11    | 275      | 2026-09-18 |
 
 Solution Highlights
 -------------------

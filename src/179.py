@@ -1,15 +1,10 @@
-# Brute force
-from number import linear_sieve, linear_sieve_factors, prod
+# JohnMorris: Clever sieve solution for the divisor function without factoring
 
 N = 10**7
-lp = linear_sieve(N)
-sigma = [0] * (N+1)
+sigma = [1] * (N+1)
 
 for n in range(2, N+1):
-    pp = linear_sieve_factors(lp, n)
-    sigma[n] = prod(e+1 for e in pp.values())
+    for i in range(n, N+1, n):
+        sigma[i] += 1
 
-s = 0
-for n in range(2, N):
-    if sigma[n] == sigma[n+1]: s += 1
-print(s)
+print(sum(sigma[n] == sigma[n+1] for n in range(2, N)))

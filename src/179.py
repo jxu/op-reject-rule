@@ -1,5 +1,5 @@
 # JohnMorris: Clever sieve solution for the divisor function without factoring
-
+# Time complexity: sum_{i=2..N} N/i = O(N log N)
 N = 10**7
 sigma = [1] * (N+1)
 

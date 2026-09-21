@@ -36,31 +36,26 @@ states, with special handling for the constant term at x = 0.
 
 from functools import cache
 
+# Try to yield new state per element instead of building list for fun
+def new_state(Y, a, l):
+    for i in range(10):
+        x = i - 9
+        y = Y[i]
+        if y is None:
+            yield y
+        elif x == 0:
+            # special case for constant term
+            yield a if l == 1 else 0
+        elif (y - a) % x == 0:
+            yield (y - a) // x
+        else: 
+            yield None  # special invalid value
+
 @cache
 def f(Y, l):
     if l == 0:
         return int(any(y == 0 for y in Y))
 
-    s = 0
-    for a in range(10):
-        newY = list(Y)
-        for i in range(10):
-            x = i - 9
-            y = Y[i]
-            if y is None: 
-                continue  # leave as is
-
-            if x == 0:
-                # special case for constant term
-                newY[i] = a if l == 1 else 0
-            elif (y - a) % x == 0:
-                newY[i] = (y - a) // x
-            else: 
-                newY[i] = None  # special invalid value
-
-        s += f(tuple(newY), l-1)
-
-    return s 
-
+    return sum(f(tuple(new_state(Y, a, l)), l-1) for a in range(10))
 
 print(f((0,)*10, 16))

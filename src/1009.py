@@ -1,39 +1,35 @@
-from math import ceil, floor, log
-from number import int_to_base, ceil_div
-
-# max is inclusive
-def f(a, b, k, n_min, n_max, a_base=0, b_base=0):
-    if k == -1:
-        return n_max
-
-    res = 0
-
-    for d in range(a-1, -1, -1):
-        n_a_min = a_base + d * a**k
-        n_a_max = n_a_min + a**k - 1
-
-        n_b_min = ceil_div((b_base + d * b**k), 2)
-        n_b_max = (b_base + (d+1) * b**k - 1) // 2
-
-        # restrict interval
-        new_n_min = max(n_min, n_a_min, n_b_min)
-        new_n_max = min(n_max, n_a_max, n_b_max)
-
-        if new_n_max - new_n_min < 0:
-            continue 
-
-        z = f(a, b, k-1, new_n_min, new_n_max, a_base=n_a_min, b_base=(b_base + d * b**k))
-        if z != 0:
-            return z
-
-    return 0
-
+from math import log
 
 def F(a, b):
-    max_k = int(log(4) / log(b / a))
-    return f(a, b, max_k, 0, a**(max_k+1) - 1)
+    k = int(log(4) / log(b / a))
+
+    def f(A, j, t):
+        #print(A, j, t)
+        if j == -1:
+            if t == 0:
+                return sum(A[i] * a**i for i in range(k+1))
+            else:
+                return 0
+
+        for d in range(a-1, -1, -1):
+            newA = A[:]
+            newA[j] = d
+            if (sum((a-1)*abs(2*a**i - b**i) for i in range(j)) >=
+                abs(sum(newA[i] * (2*a**i - b**i) for i in range(j, k+1)))):
+                ret = f(newA, j-1, t + d * (2*a**j - b**j))
+            
+                if ret != 0: return ret
+
+        return 0
+
+    z = f([0]*(k+1), k, 0)
+    #print("F", a, b, z)
+    return z
 
 def G(a):
-    return sum(F(a, b) for b in range(a+1, 4*a))
+    return sum(F(a, b) for b in range(a+1, 3*a))
 
+assert F(3,4) == 53
+assert F(3,6) == 6
+assert F(3,7) == 8
 print(sum(G(a) for a in range(2, 21)))

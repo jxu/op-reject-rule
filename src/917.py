@@ -1,4 +1,5 @@
 from itertools import accumulate
+from functools import cache
 
 def lower_hull(points):
     """Lower convex hull given points (x, y) in sorted x order, with x distinct
@@ -15,62 +16,57 @@ def lower_hull(points):
             x_j, y_j = points[j]
             return (y_j - y_i) / (x_j - x_i)
 
-        # O(n) min operation
-        j = min(range(i+1, len(points)), key = slope)
+        # O(n) min operation to find next i
+        i = min(range(i+1, len(points)), key = slope)
         
-        hull.append(points[j])
-        i = j
+        hull.append(points[i])
 
     return hull
 
 
 N = 10**7
 
-a = [0]
-b = [0]
+a, b = [0], [0]
 s = 102022661
-for n in range(1, 2*N+1):
-    if n % 2: a.append(s)
-    else: b.append(s)
+for n in range(N):
+    a.append(s)
+    s = (s*s) % 998388889
+    b.append(s)
     s = (s*s) % 998388889
 
-points = [(j, b[j]) for j in range(1, N+1)]
+
+pts_a = [(i, a[i]) for i in range(1, N+1)]
+pts_b = [(j, b[j]) for j in range(1, N+1)]
 
 # 1-index?
-hull = [(0,0)] + lower_hull(points)
-h = [p[0] for p in hull]
+hull_a = [0] + [p[0] for p in lower_hull(pts_a)]
+hull_b = [0] + [p[0] for p in lower_hull(pts_b)]
 
 # DP with hull
-print(hull)
-print(h)
-
+print(hull_a)
+print(hull_b)
 
 # prefix sum
-pre = list(accumulate(b))
-#print(pre)
+pre_a = list(accumulate(a))
+pre_b = list(accumulate(b))
 
-from functools import cache
+@cache
+def f(i, j):
+    if i == 1 and j == 1:
+        return a[hull_a[i]] + b[hull_b[j]]
 
-dp = [[0] * len(h)]
+    x = 1e20
+    if i > 1:
+        x = ((hull_a[i] - hull_a[i-1]) * b[hull_b[j]] + 
+             pre_a[hull_a[i]] - pre_a[hull_a[i-1]] + f(i-1, j))
 
-for i in range(1, N+1):
-    new_dp = [0] * len(h)  # dp[i][k]
-    for k in range(1, len(h)):
-        if i == 1 and k == 1:
-            new_dp[k] = a[i] + b[h[k]]
-            continue
+    y = 1e20
+    if j > 1:
+        y = ((hull_b[j] - hull_b[j-1]) * a[hull_a[i]] + 
+             pre_b[hull_b[j]] - pre_b[hull_b[j-1]] + f(i, j-1))
 
-        x = 1e20
-        if i > 1:
-            x = a[i] + b[h[k]] + dp[k]
+    return min(x, y)
 
-        y = 1e20
-        if k > 1:
-            y = (h[k] - h[k-1]) * a[i] + pre[h[k]] - pre[h[k-1]] + new_dp[k-1]
 
-        new_dp[k] = min(x, y)
-
-    dp = new_dp
-
-print(dp[-1])
-    
+print(f(len(hull_a)-1, len(hull_b)-1))
+        

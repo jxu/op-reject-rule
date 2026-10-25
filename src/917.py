@@ -1,24 +1,27 @@
 from itertools import accumulate
 from functools import cache
 
-def lower_hull(points):
-    """Lower convex hull given points (x, y) in sorted x order, with x distinct
+def cross2d(p0, p1, p2):
+    """2D cross product (p1 - p0) x (p2 - p0)
     
-    Takes O(n h) time, where h is number of points in hull, using gift-wrap
+    Equals signed area of parallelogram formed by vectors p0p1 and p0p2.
+    If positive, p2p0 is counterclockwise from p0p1
+    If negative, p2p0 is clockwise from p0p1
     """
-    hull = [points[0]]
+    return (p1[0]-p0[0]) * (p2[1]-p0[1]) - (p2[0]-p0[0]) * (p1[1]-p0[1])
 
-    i = 0
-    while points[i][0] < points[-1][0]:
-        # find least slope
-        def slope(j):
-            x_i, y_i = points[i]
-            x_j, y_j = points[j]
-            return (y_j - y_i) / (x_j - x_i)
+def lower_hull(points):
+    """Lower convex hull given points (x, y) with sorted distinct x.
 
-        # O(n) min operation to find next i
-        i = min(range(i+1, len(points)), key = slope)
-        
+    Andrew's monotone chain algorithm in O(n) time.
+    """
+    hull = points[0:3]
+
+    for i in range(3, len(points)):
+        # makes a CW (or non-CCW) turn
+        while cross2d(hull[-2], hull[-1], points[i]) <= 0:
+            hull.pop()
+
         hull.append(points[i])
 
     return hull

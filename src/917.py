@@ -1,35 +1,27 @@
-
+from itertools import accumulate
 
 def lower_hull(points):
-    """Lower convex hull given points (x, y) in sorted x order, with x distinct"""
-    # Gift-wrap
-    x0, y0 = points[0]
+    """Lower convex hull given points (x, y) in sorted x order, with x distinct
+    
+    Takes O(n h) time, where h is number of points in hull, using gift-wrap
+    """
     hull = [points[0]]
 
     i = 0
-    pt = points[0]
-    x_i, y_i = pt
-
-    while x_i < points[-1][0]:
-        # find least slope?
-        best_slope = float("inf")
-        best_j = None
-        for j in range(i+1, len(points)):
+    while points[i][0] < points[-1][0]:
+        # find least slope
+        def slope(j):
+            x_i, y_i = points[i]
             x_j, y_j = points[j]
-            slope = (y_j - y_i) / (x_j - x_i)
-            if slope < best_slope:
-                best_slope = slope
-                best_j = j
-            
-        hull.append(points[best_j])
+            return (y_j - y_i) / (x_j - x_i)
 
-        i = best_j
-        x_i, y_i = points[best_j]
-
-
+        # O(n) min operation
+        j = min(range(i+1, len(points)), key = slope)
+        
+        hull.append(points[j])
+        i = j
 
     return hull
-
 
 
 N = 10**7
@@ -53,7 +45,6 @@ print(hull)
 print(h)
 
 
-from itertools import accumulate
 # prefix sum
 pre = list(accumulate(b))
 #print(pre)
@@ -81,5 +72,5 @@ for i in range(1, N+1):
 
     dp = new_dp
 
-print(dp)
+print(dp[-1])
     

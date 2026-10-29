@@ -61,11 +61,11 @@ def lower_hull(points):
 
     Andrew's monotone chain algorithm in O(n) time.
     """
-    hull = points[0:3]
+    hull = []
 
-    for i in range(3, len(points)):
+    for i in range(len(points)):
         # makes a CW (or non-CCW) turn
-        while cross2d(hull[-2], hull[-1], points[i]) <= 0:
+        while len(hull) >= 2 and cross2d(hull[-2], hull[-1], points[i]) <= 0:
             hull.pop()
 
         hull.append(points[i])
